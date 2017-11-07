@@ -3,7 +3,9 @@ package jdz.jbu.misc;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 
 import jdz.jbu.JonosBukkitUtils;
 import jdz.jbu.fileIO.FileLogger;
@@ -37,4 +39,41 @@ public final class WorldUtils {
 		}
 		return location;
 	}
+	
+	/**
+	 * Fetches the nearest block, above or below the current block from bedrock to sky limit,
+	 * whose material and data match the desired type
+	 * @param block
+	 * @param blockType
+	 * @param blockData
+	 * @return the block, or null if not found
+	 */
+	public static Block getBlockAboveOrBelow(Block block, Material blockType, byte blockData) {
+		return getBlockAboveOrBelow(block, blockType, blockData, 1);
+	}
+	
+	@SuppressWarnings("deprecation")
+	private static Block getBlockAboveOrBelow(Block block, Material blockType, byte blockData, int distance) {
+		boolean maxHeightReached = block.getLocation().getBlockY() > block.getWorld().getMaxHeight()-1;
+		boolean minHeightReached = block.getLocation().getBlockY() < 1;
+		
+		if (maxHeightReached && minHeightReached)
+			return null;
+		
+		if (!maxHeightReached) {
+			Block blockAbove = block.getWorld().getBlockAt(block.getLocation().add(0, distance, 0));
+			if (blockAbove.getType() == blockType && blockAbove.getData() == blockData)
+				return blockAbove;
+		}
+		
+		if (!minHeightReached) {
+			Block blockAbove = block.getWorld().getBlockAt(block.getLocation().add(0, distance, 0));
+			if (blockAbove.getType() == blockType && blockAbove.getData() == blockData)
+				return blockAbove;
+		}
+		
+		return getBlockAboveOrBelow(block, blockType, blockData, distance+1);
+	}
+	
+	
 }

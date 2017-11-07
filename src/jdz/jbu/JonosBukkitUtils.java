@@ -23,7 +23,7 @@ import jdz.jbu.misc.PluginUpdater;
  */
 public final class JonosBukkitUtils extends JavaPlugin{
 	public static JonosBukkitUtils instance;
-	private int bukkitID = 0;
+	private final int bukkitID = 281287;
 	
 	@Override
 	public void onEnable() {

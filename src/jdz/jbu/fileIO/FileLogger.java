@@ -154,11 +154,11 @@ public final class FileLogger {
 			file.mkdirs();
 	}
 	
-	private String getTimestamp(){
+	public String getTimestamp(){
 		return new SimpleDateFormat("yyyy-MM-dd  HH-mm-ss").format(new Date());
 	}
 	
-	private String getTimestampShort(){
+	public String getTimestampShort(){
 		return "["+new SimpleDateFormat("HH-mm-ss").format(new Date())+"]";
 	}
 	
