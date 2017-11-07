@@ -28,7 +28,7 @@ public final class Config {
 	 * @return
 	 */
 	public static FileConfiguration getConfig(Plugin plugin){
-		return getConfig(plugin, "config.txt");
+		return getConfig(plugin, "config.yml");
 	}
 	
 	/**
@@ -37,7 +37,7 @@ public final class Config {
 	 * @return
 	 */
 	public static File getConfigFile(Plugin plugin){
-		return getConfigFile(plugin, "config.txt");
+		return getConfigFile(plugin, "config.yml");
 	}
 	
 	/**
