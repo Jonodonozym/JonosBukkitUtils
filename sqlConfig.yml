@@ -1,0 +1,7 @@
+database:
+  URL: "localhost"
+  port: 3306
+  name: ""
+  username: ""
+  password: "" 
+  autoReconnectSeconds: 60
