@@ -2,12 +2,13 @@
 package jdz.jbu.clickableSigns;
 
 import org.bukkit.ChatColor;
-import org.bukkit.Material;
+import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -22,44 +23,80 @@ public class SignEventListener implements Listener {
 		this.factory = new InteractableSignFactory(classes);
 		this.plugin = plugin;
 	}
+	
+	private boolean registered = false;
+	public void register() {
+		if (!registered) {
+			plugin.getServer().getPluginManager().registerEvents(this,  plugin);
+			registered = true;
+		}
+	}
+	
+	public boolean isRegistered() {
+		return registered;
+	}
 
 	@EventHandler
 	public void onSignClick(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		Action action = event.getAction();
+		
 		if (!action.equals(Action.RIGHT_CLICK_BLOCK))
 			return;
 
-		Material clickedBlock = event.getClickedBlock().getType();
-
-		if (clickedBlock != Material.WALL_SIGN && clickedBlock != Material.SIGN_POST)
+		if (event.getClickedBlock() == null || event.getClickedBlock().getState() == null || !(event.getClickedBlock().getState() instanceof Sign))
 			return;
 
 		InteractableSign sign;
 		try {
-			sign = factory.construct(event.getClickedBlock());
+			sign = factory.construct(event.getClickedBlock(), (Sign) event.getClickedBlock().getState());
 
 			if (sign == null)
 				return;
 
 			sign.onInteract(player);
 		} catch (InvalidSignException e) {
-			player.sendMessage(ChatColor.RED + "An error occurred trying to click this sign");
+			player.sendMessage(ChatColor.RED + "An error occurred trying to click this sign.");
 			new FileLogger(plugin).createErrorLog(e);
 		}
 	}
 
 	@EventHandler
-	public void onSignPlace(BlockPlaceEvent event) {
+	public void onSignPlace(SignChangeEvent event) {
+		Player player = event.getPlayer();
+		
+		try {
+			InteractableSign sign = factory.construct(event.getBlock(), event.getLines());
+
+			System.out.println(sign);
+			if (sign == null)
+				return;
+
+			SignCreatePermission perms = sign.getClass().getAnnotation(SignCreatePermission.class);
+
+			if (perms != null && !player.hasPermission(perms.value())) {
+				event.getBlock().breakNaturally();
+				player.sendMessage("You don't have the permissions to place that sign!");
+				return;
+			}
+
+			sign.onCreate(player);
+			player.sendMessage(ChatColor.GREEN+sign.getType()+" sign created!");
+		} catch (InvalidSignException e) {
+			event.getBlock().breakNaturally();
+			player.sendMessage(ChatColor.RED + e.getMessage());
+		}
+	}
+	
+	@EventHandler
+	public void onSignBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
 
-		Material placedBlock = event.getBlock().getType();
-
-		if (placedBlock != Material.WALL_SIGN && placedBlock != Material.SIGN_POST)
+		if (event.getBlock().getState() == null || !(event.getBlock().getState() instanceof Sign))
 			return;
 
 		try {
-			InteractableSign sign = factory.construct(event.getBlock());
+			InteractableSign sign = factory.construct(event.getBlock(), (Sign) event.getBlock().getState());
 
 			if (sign == null)
 				return;
@@ -68,14 +105,9 @@ public class SignEventListener implements Listener {
 
 			if (perms != null && !player.hasPermission(perms.value())) {
 				event.setCancelled(true);
-				player.sendMessage("You don't have the permissions to place that sign!");
+				player.sendMessage("You don't have the permissions to break that sign!");
 				return;
 			}
-
-			sign.onCreate(player);
-		} catch (InvalidSignException e) {
-			player.sendMessage(ChatColor.RED + "An error occurred trying to click this sign");
-			new FileLogger(plugin).createErrorLog(e);
-		}
+		} catch (InvalidSignException e) { }
 	}
 }

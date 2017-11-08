@@ -15,6 +15,7 @@ import jdz.jbu.misc.StringUtils;
 
 public abstract class CommandExecutor implements org.bukkit.command.CommandExecutor {
 	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("hh:mm:ss");
+	private final JavaPlugin plugin;
 	private final boolean logCommands;
 	private final String label;
 	private final FileLogger fileLogger;
@@ -23,13 +24,26 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		this.logCommands = false;
 		this.label = "";
 		fileLogger = null;
+		this.plugin = null;
 	}
 	
 	public CommandExecutor(JavaPlugin plugin, String label, boolean logCommands) {
 		this.logCommands = logCommands;
 		this.label = label;
-		plugin.getCommand(label).setExecutor(this);
+		this.plugin = plugin;
 		fileLogger = new FileLogger(plugin, "CommandLogs");
+	}
+	
+	private boolean registered = false;
+	public void register() {
+		if (!registered) {
+			plugin.getCommand(label).setExecutor(this);
+			registered = true;
+		}
+	}
+	
+	public boolean isRegistered() {
+		return registered;
 	}
 	
 	public String getLabel() {

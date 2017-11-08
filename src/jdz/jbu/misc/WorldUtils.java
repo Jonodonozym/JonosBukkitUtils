@@ -54,8 +54,8 @@ public final class WorldUtils {
 	
 	@SuppressWarnings("deprecation")
 	private static Block getBlockAboveOrBelow(Block block, Material blockType, byte blockData, int distance) {
-		boolean maxHeightReached = block.getLocation().getBlockY() > block.getWorld().getMaxHeight()-1;
-		boolean minHeightReached = block.getLocation().getBlockY() < 1;
+		boolean maxHeightReached = block.getLocation().getBlockY()+distance > block.getWorld().getMaxHeight()-1;
+		boolean minHeightReached = block.getLocation().getBlockY()-distance < 1;
 		
 		if (maxHeightReached && minHeightReached)
 			return null;
@@ -67,9 +67,9 @@ public final class WorldUtils {
 		}
 		
 		if (!minHeightReached) {
-			Block blockAbove = block.getWorld().getBlockAt(block.getLocation().add(0, distance, 0));
-			if (blockAbove.getType() == blockType && blockAbove.getData() == blockData)
-				return blockAbove;
+			Block blockBelow = block.getWorld().getBlockAt(block.getLocation().subtract(0, distance, 0));
+			if (blockBelow.getType() == blockType && blockBelow.getData() == blockData)
+				return blockBelow;
 		}
 		
 		return getBlockAboveOrBelow(block, blockType, blockData, distance+1);

@@ -117,7 +117,6 @@ public final class FileLogger {
 	 * @param exception
 	 */
 	public void createErrorLog(String fileDir, String error) {
-		Bukkit.getLogger().info("An error occurred. Check the Error log file for details.");
 		
 		createDefaultDirectory(getLogsDirectory());
 		createDefaultDirectory(getLogsDirectory() + File.separator + "Errors");
@@ -133,7 +132,7 @@ public final class FileLogger {
 	 * @param exception
 	 */
 	public void createErrorLog(String error) {
-		Bukkit.getLogger().info("An error occurred. Check the Error log file for details.");
+		Bukkit.getLogger().info("["+plugin.getName()+"] An error occurred. Check the Error log file for details.");
 		
 		createDefaultDirectory(getLogsDirectory());
 		createDefaultDirectory(getLogsDirectory() + File.separator + "Errors");

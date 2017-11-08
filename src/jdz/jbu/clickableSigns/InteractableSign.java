@@ -14,6 +14,11 @@ public abstract class InteractableSign {
 		this.sign = sign;
 	}
 	
+	public String getType(){
+		SignType type = getClass().getAnnotation(SignType.class);
+		return type.value();
+	}
+	
 	/**
 	 * Is called when a player interacts with the sign
 	 * @param player

@@ -18,7 +18,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.jar.JarFile;
 
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.jbu.JonosBukkitUtils;
 
@@ -39,13 +39,13 @@ public final class FileExporter {
 	 * @throws IOException
 	 * @throws Exception
 	 */
-	static private void ExportResource(String resourceName, String destinationPath, boolean isSilent) {
+	static private void ExportResource(JavaPlugin plugin, String resourceName, String destinationPath, boolean isSilent) {
 		InputStream stream = null;
 		OutputStream resStreamOut = null;
 		try {
-			stream = FileExporter.class.getResourceAsStream("/" + resourceName);
+			stream = plugin.getClass().getResourceAsStream("/" + resourceName);
 			if (stream == null) {
-				throw new Exception("Cannot get resource \"" + resourceName + "\" from Jar file.");
+				throw new Exception("Cannot get resource \"/" + resourceName + "\" from Jar file.");
 			}
 
 			int readBytes;
@@ -65,6 +65,10 @@ public final class FileExporter {
 			}
 		}
 	}
+	
+	public static boolean hasResource(JavaPlugin plugin, String fileName){
+		return (plugin.getClass().getResourceAsStream("/" + fileName) != null);
+	}
 
 	/**
 	 * Export a resource embedded into a Jar file to the local file path without
@@ -76,8 +80,8 @@ public final class FileExporter {
 	 * @throws IOException
 	 * @throws Exception
 	 */
-	public static void ExportResourceSilent(String resourceName, String destinationPath) {
-		ExportResource("/" + resourceName, destinationPath, true);
+	public static void ExportResourceSilent(JavaPlugin plugin, String resourceName, String destinationPath) {
+		ExportResource(plugin, resourceName, destinationPath, true);
 	}
 
 	/**
@@ -86,8 +90,8 @@ public final class FileExporter {
 	 * @param resourceName
 	 *            ie.: "SmartLibrary.dll"
 	 */
-	public static void ExportResource(String resourceName, String destinationPath) {
-		ExportResource("/" + resourceName, destinationPath, false);
+	public static void ExportResource(JavaPlugin plugin, String resourceName, String destinationPath) {
+		ExportResource(plugin, resourceName, destinationPath, false);
 	}
 
 	/**
@@ -96,9 +100,9 @@ public final class FileExporter {
 	 * @param resourceName
 	 *            ie.: "SmartLibrary.dll"
 	 */
-	public static void ExportResource(String resourceName, Plugin plugin) {
+	public static void ExportResource(String resourceName, JavaPlugin plugin) {
 		String location = plugin.getDataFolder().getParentFile().getPath() + File.separator + resourceName;
-		ExportResource("/" + resourceName, location, false);
+		ExportResource(plugin, resourceName, location, false);
 	}
 
 	public static JarFile getRunningJar() throws IOException {

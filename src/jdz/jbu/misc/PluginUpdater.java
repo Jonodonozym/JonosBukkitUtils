@@ -10,6 +10,7 @@ import java.util.logging.Level;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -294,7 +295,7 @@ public class PluginUpdater {
 			} else {
 				message = "The updater could not load configuration at " + updaterFile.getAbsolutePath();
 			}
-			this.plugin.getLogger().log(Level.SEVERE, message, e);
+			Bukkit.getLogger().log(Level.SEVERE, message, e);
 		}
 
 		if (config.getBoolean(DISABLE_CONFIG_KEY)) {
@@ -312,7 +313,7 @@ public class PluginUpdater {
 		try {
 			this.url = new URL(PluginUpdater.HOST + PluginUpdater.QUERY + this.id);
 		} catch (final MalformedURLException e) {
-			this.plugin.getLogger().log(Level.SEVERE,
+			Bukkit.getLogger().log(Level.SEVERE,
 					"The project ID provided for updating, " + this.id + " is invalid.", e);
 			this.result = UpdateResult.FAIL_BADID;
 		}
@@ -394,7 +395,7 @@ public class PluginUpdater {
 			try {
 				this.thread.join();
 			} catch (final InterruptedException e) {
-				this.plugin.getLogger().log(Level.SEVERE, null, e);
+				Bukkit.getLogger().log(Level.SEVERE, null, e);
 			}
 		}
 	}
@@ -421,7 +422,7 @@ public class PluginUpdater {
 			this.unzip(dFile.getAbsolutePath());
 		}
 		if (this.announce) {
-			this.plugin.getLogger().info("Finished updating.");
+			Bukkit.getLogger().info("Finished updating.");
 		}
 	}
 
@@ -440,7 +441,7 @@ public class PluginUpdater {
 			final byte[] data = new byte[PluginUpdater.BYTE_SIZE];
 			int count;
 			if (this.announce) {
-				this.plugin.getLogger().info("About to download a new update: " + this.versionName);
+				Bukkit.getLogger().info("About to download a new update: " + this.versionName);
 			}
 			long downloaded = 0;
 			while ((count = in.read(data, 0, PluginUpdater.BYTE_SIZE)) != -1) {
@@ -448,11 +449,11 @@ public class PluginUpdater {
 				fout.write(data, 0, count);
 				final int percent = (int) ((downloaded * 100) / fileLength);
 				if (this.announce && ((percent % 10) == 0)) {
-					this.plugin.getLogger().info("Downloading update: " + percent + "% of " + fileLength + " bytes.");
+					Bukkit.getLogger().info("Downloading update: " + percent + "% of " + fileLength + " bytes.");
 				}
 			}
 		} catch (Exception ex) {
-			this.plugin.getLogger().log(Level.WARNING,
+			Bukkit.getLogger().log(Level.WARNING,
 					"The auto-updater tried to download a new update, but was unsuccessful.", ex);
 			this.result = PluginUpdater.UpdateResult.FAIL_DOWNLOAD;
 		} finally {
@@ -461,14 +462,14 @@ public class PluginUpdater {
 					in.close();
 				}
 			} catch (final IOException ex) {
-				this.plugin.getLogger().log(Level.SEVERE, null, ex);
+				Bukkit.getLogger().log(Level.SEVERE, null, ex);
 			}
 			try {
 				if (fout != null) {
 					fout.close();
 				}
 			} catch (final IOException ex) {
-				this.plugin.getLogger().log(Level.SEVERE, null, ex);
+				Bukkit.getLogger().log(Level.SEVERE, null, ex);
 			}
 		}
 	}
@@ -556,7 +557,7 @@ public class PluginUpdater {
 			moveNewZipFiles(zipPath);
 
 		} catch (final IOException e) {
-			this.plugin.getLogger().log(Level.SEVERE,
+			Bukkit.getLogger().log(Level.SEVERE,
 					"The auto-updater tried to unzip a new update file, but was unsuccessful.", e);
 			this.result = PluginUpdater.UpdateResult.FAIL_DOWNLOAD;
 		} finally {
@@ -648,10 +649,10 @@ public class PluginUpdater {
 				// The file's name did not contain the string 'vVersion'
 				final String authorInfo = this.plugin.getDescription().getAuthors().isEmpty() ? ""
 						: " (" + this.plugin.getDescription().getAuthors().get(0) + ")";
-				this.plugin.getLogger().warning(
+				Bukkit.getLogger().warning(
 						"The author of this plugin" + authorInfo + " has misconfigured their Auto Update system");
-				this.plugin.getLogger().warning("File versions should follow the format 'PluginName vVERSION'");
-				this.plugin.getLogger().warning("Please notify the author of this error.");
+				Bukkit.getLogger().warning("File versions should follow the format 'PluginName vVERSION'");
+				Bukkit.getLogger().warning("Please notify the author of this error.");
 				this.result = PluginUpdater.UpdateResult.FAIL_NOVERSION;
 				return false;
 			}
@@ -735,7 +736,7 @@ public class PluginUpdater {
 			final JSONArray array = (JSONArray) JSONValue.parse(response);
 
 			if (array.isEmpty()) {
-				this.plugin.getLogger().warning("The updater could not find any files for the project id " + this.id);
+				Bukkit.getLogger().warning("The updater could not find any files for the project id " + this.id);
 				this.result = UpdateResult.FAIL_BADID;
 				return false;
 			}
@@ -749,17 +750,17 @@ public class PluginUpdater {
 			return true;
 		} catch (final IOException e) {
 			if (e.getMessage().contains("HTTP response code: 403")) {
-				this.plugin.getLogger()
+				Bukkit.getLogger()
 						.severe("dev.bukkit.org rejected the API key provided in plugins/Updater/config.yml");
-				this.plugin.getLogger().severe("Please double-check your configuration to ensure it is correct.");
+				Bukkit.getLogger().severe("Please double-check your configuration to ensure it is correct.");
 				this.result = UpdateResult.FAIL_APIKEY;
 			} else {
-				this.plugin.getLogger().severe("The updater could not contact dev.bukkit.org for updating.");
-				this.plugin.getLogger().severe(
+				Bukkit.getLogger().severe("The updater could not contact dev.bukkit.org for updating.");
+				Bukkit.getLogger().severe(
 						"If you have not recently modified your configuration and this is the first time you are seeing this message, the site may be experiencing temporary downtime.");
 				this.result = UpdateResult.FAIL_DBO;
 			}
-			this.plugin.getLogger().log(Level.SEVERE, null, e);
+			Bukkit.getLogger().severe(e.getClass().getName());
 			return false;
 		}
 	}
@@ -776,7 +777,7 @@ public class PluginUpdater {
 	 */
 	private void fileIOOrError(File file, boolean result, boolean create) {
 		if (!result) {
-			this.plugin.getLogger().severe(
+			Bukkit.getLogger().severe(
 					"The updater could not " + (create ? "create" : "delete") + " file at: " + file.getAbsolutePath());
 		}
 	}
@@ -784,7 +785,7 @@ public class PluginUpdater {
 	private File[] listFilesOrError(File folder) {
 		File[] contents = folder.listFiles();
 		if (contents == null) {
-			this.plugin.getLogger()
+			Bukkit.getLogger()
 					.severe("The updater could not access files at: " + this.updateFolder.getAbsolutePath());
 			return new File[0];
 		} else {
@@ -814,28 +815,28 @@ public class PluginUpdater {
 	}
 
 	private void runUpdater() {
-		if (this.url != null && (this.read() && this.versionCheck())) {
-			// Obtain the results of the project's file feed
-			if ((this.versionLink != null) && (this.type != UpdateType.NO_DOWNLOAD)) {
-				String name = this.file.getName();
-				// If it's a zip file, it shouldn't be downloaded as the plugin's name
-				if (this.versionLink.endsWith(".zip")) {
-					name = this.versionLink.substring(this.versionLink.lastIndexOf("/") + 1);
+			if (this.url != null && (this.read() && this.versionCheck())) {
+				// Obtain the results of the project's file feed
+				if ((this.versionLink != null) && (this.type != UpdateType.NO_DOWNLOAD)) {
+					String name = this.file.getName();
+					// If it's a zip file, it shouldn't be downloaded as the plugin's name
+					if (this.versionLink.endsWith(".zip")) {
+						name = this.versionLink.substring(this.versionLink.lastIndexOf("/") + 1);
+					}
+					this.saveFile(name);
+				} else {
+					this.result = UpdateResult.UPDATE_AVAILABLE;
 				}
-				this.saveFile(name);
-			} else {
-				this.result = UpdateResult.UPDATE_AVAILABLE;
 			}
-		}
-
-		if (this.callback != null) {
-			new BukkitRunnable() {
-				@Override
-				public void run() {
-					runCallback();
-				}
-			}.runTask(this.plugin);
-		}
+	
+			if (this.callback != null) {
+				new BukkitRunnable() {
+					@Override
+					public void run() {
+						runCallback();
+					}
+				}.runTask(this.plugin);
+			}
 	}
 
 	private void runCallback() {

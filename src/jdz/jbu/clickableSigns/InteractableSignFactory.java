@@ -10,7 +10,6 @@ import org.bukkit.block.Sign;
 
 import jdz.jbu.JonosBukkitUtils;
 import jdz.jbu.fileIO.FileLogger;
-import jdz.jbu.misc.WorldUtils;
 
 class InteractableSignFactory {
 	private final List<Class<? extends InteractableSign>> classes;
@@ -19,51 +18,40 @@ class InteractableSignFactory {
 	public InteractableSignFactory(Class<? extends InteractableSign>... classes) {
 		this.classes = Arrays.asList(classes);
 	}
-
-	public final InteractableSign construct(Block block) throws InvalidSignException {
+	
+	public final InteractableSign construct(Block block, String[] lines) throws InvalidSignException {
 		if (block.getState() == null || !(block.getState() instanceof Sign))
 			return null;
-
+		
 		Sign sign = (Sign) block.getState();
+		for (int i=0; i<lines.length; i++)
+			sign.setLine(i, lines[i]);
+		
+		return construct(block, sign);
+	}
+
+	public final InteractableSign construct(Block block, Sign sign) throws InvalidSignException {
+		if (block.getState() == null || !(block.getState() instanceof Sign))
+			return null;
 		
 		for (Class<? extends InteractableSign> c : classes) {
-			SignType type = c.getAnnotation(SignType.class);
-			if (type != null && sign.getLine(0).toLowerCase().contains("[" + type.value().toLowerCase() + "]"))
-				try {
-					return (InteractableSign) c.getConstructors()[0].newInstance(block);
-				} catch (InstantiationException | IllegalAccessException
-						| InvocationTargetException | SecurityException e) {
-					new FileLogger(JonosBukkitUtils.instance).createErrorLog(e);
-				} catch (IllegalArgumentException e) {
-					throw new InvalidSignException(e);
-				}
+			SignType[] types = c.getAnnotationsByType(SignType.class);
+			for(SignType type: types) {
+				if (type != null && sign.getLine(0).toLowerCase().contains("[" + type.value().toLowerCase() + "]"))
+					try {
+						return (InteractableSign) c.getConstructors()[0].newInstance(block, sign);
+					} catch (InstantiationException | IllegalAccessException
+							| InvocationTargetException | SecurityException e) {
+						
+						if (e.getCause() != null && e.getCause() instanceof InvalidSignException)
+							throw (InvalidSignException)e.getCause();
+						new FileLogger(JonosBukkitUtils.instance).createErrorLog(e);
+					} catch (IllegalArgumentException e) {
+						throw new InvalidSignException(type.value()+" doesn't have the constructor agruments Block and Sign!");
+					}
+			}
 		}
 
 		return null;
-	}
-
-	@Deprecated
-	public static final InteractableSign construct(Block block, Class<? extends InteractableSign> c)
-			throws InvalidSignException {
-		if (block.getState() == null || !(block.getState() instanceof Sign))
-			throw new InvalidSignException(
-					"Block at " + WorldUtils.locationToString(block.getLocation()) + " is not a sign");
-
-		Sign sign = (Sign) block.getState();
-		SignType type = c.getAnnotation(SignType.class);
-
-		if (type == null)
-			throw new InvalidSignException("SignType annotation not used in " + c.getName() + " class");
-
-		if (!sign.getLine(0).equalsIgnoreCase("[" + type.value() + "]"))
-			throw new InvalidSignException("First line on the sign must be [" + type.value() + "]");
-
-		try {
-			return (InteractableSign) c.getConstructors()[0].newInstance(block);
-		} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException
-				| SecurityException e) {
-			new FileLogger(JonosBukkitUtils.instance).createErrorLog(e);
-			throw new InvalidSignException(e);
-		}
 	}
 }

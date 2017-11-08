@@ -13,7 +13,7 @@ import java.io.File;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.jbu.fileIO.FileExporter;
 
@@ -27,7 +27,7 @@ public final class Config {
 	 * Gets the config as a FileConfiguration
 	 * @return
 	 */
-	public static FileConfiguration getConfig(Plugin plugin){
+	public static FileConfiguration getConfig(JavaPlugin plugin){
 		return getConfig(plugin, "config.yml");
 	}
 	
@@ -36,7 +36,7 @@ public final class Config {
 	 * what do you think this method does?
 	 * @return
 	 */
-	public static File getConfigFile(Plugin plugin){
+	public static File getConfigFile(JavaPlugin plugin){
 		return getConfigFile(plugin, "config.yml");
 	}
 	
@@ -44,14 +44,16 @@ public final class Config {
 	 * Gets the config as a FileConfiguration
 	 * @return
 	 */
-	public static FileConfiguration getConfig(Plugin plugin, String fileName){
+	public static FileConfiguration getConfig(JavaPlugin plugin, String fileName){
 		return YamlConfiguration.loadConfiguration(getConfigFile(plugin, fileName));
 	}
 	
-	public static File getConfigFile(Plugin plugin, String fileName) {
+	public static File getConfigFile(JavaPlugin plugin, String fileName) {
 		File file = new File(plugin.getDataFolder() + File.separator + fileName);
+		plugin.getDataFolder().mkdir();
 		if (!file.exists())
-			FileExporter.ExportResource("/"+fileName, plugin.getDataFolder() + File.separator + fileName);
+			if (FileExporter.hasResource(plugin, fileName))
+				FileExporter.ExportResource(plugin, fileName, plugin.getDataFolder() + File.separator + fileName);
 		return file;
 	}
 }
