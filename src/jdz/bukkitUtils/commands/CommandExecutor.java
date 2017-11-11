@@ -25,6 +25,8 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	private final HelpCommand helpCommand;
 	private SubCommand defaultCommand = null;
 	
+	private boolean isHelpEnabled = true;
+	
 	public CommandExecutor() {
 		this(null, "", false);
 	}
@@ -55,6 +57,14 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	public String getLabel() {
 		return label;
 	}
+	
+	public void disableHelpCommand() {
+		isHelpEnabled = false;
+	}
+	
+	public void enableHelpCommand() {
+		isHelpEnabled = true;
+	}
 
 	@Override
 	public final boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
@@ -70,7 +80,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		}
 		
 		List<SubCommand> commands = getSubCommands();
-		commands.add(helpCommand);
+		if (isHelpEnabled) commands.add(helpCommand);
 		for (SubCommand command : commands) {
 			if (command.labelMatches(args[1])) {
 				String[] subArgs = new String[args.length - 2];
@@ -81,7 +91,10 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			}
 		}
 
-		execute(getDefaultCommand(), sender, args);
+		if (!isHelpEnabled && getDefaultCommand() instanceof HelpCommand)
+			return false;
+		else
+			execute(getDefaultCommand(), sender, args);
 		
 		return true;
 	}
@@ -99,9 +112,9 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	}
 	
 	private final void executeIfHasPerms(SubCommand command, CommandSender sender, String...args) {
-		logCommand(sender, command.getLabel(), args);
-		if (getDefaultCommand().hasRequiredPermissions(sender))
-			getDefaultCommand().execute(sender, args);
+		logCommand(sender, command.getLabel(), args);		
+		if (command.hasRequiredPermissions(sender))
+			command.execute(sender, args);
 		else
 			sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that");
 	}	

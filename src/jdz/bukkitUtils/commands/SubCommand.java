@@ -7,6 +7,7 @@ import jdz.bukkitUtils.commands.annotations.CommandDescription;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandLabels;
 import jdz.bukkitUtils.commands.annotations.CommandPermission;
+import jdz.bukkitUtils.commands.annotations.CommandPermissions;
 import jdz.bukkitUtils.commands.annotations.CommandPlayerOnly;
 import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 import jdz.bukkitUtils.commands.annotations.CommandUsage;
@@ -21,10 +22,15 @@ public abstract class SubCommand {
 	}
 	
 	public boolean hasRequiredPermissions(CommandSender sender) {
-		CommandPermission perms = this.getClass().getAnnotation(CommandPermission.class);
+		CommandPermissions perms = this.getClass().getAnnotation(CommandPermissions.class);
 		if (perms == null)
 			return true;
-		return sender.hasPermission(perms.value());
+
+		for (CommandPermission perm: perms.value())
+			if (!sender.hasPermission(perm.value()))
+				return false;
+		
+		return true;
 	}
 	
 	public int requiredArgs() {

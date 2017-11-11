@@ -9,8 +9,12 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.commands.annotations.CommandDescription;
+import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.misc.StringUtils;
 
+@CommandLabel("about")
+@CommandDescription("Gives information about the plugin")
 public class AboutPluginCommand extends SubCommand {
 	private static final ChatColor titleColor = ChatColor.GOLD;
 	private static final ChatColor fieldColor = ChatColor.GOLD;
@@ -19,6 +23,8 @@ public class AboutPluginCommand extends SubCommand {
 	private static final ChatColor authorColor = ChatColor.GOLD;
 	
 	private final String[] messages;
+
+	private String[] permissions = new String[0];
 
 	public AboutPluginCommand(JavaPlugin plugin) {
 		this(plugin.getDescription().getFullName(),
@@ -48,8 +54,17 @@ public class AboutPluginCommand extends SubCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String... args) {
+		for (String permission : permissions)
+			if (!sender.hasPermission(permission)) {
+				sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
+				return true;
+			}
 		sender.sendMessage(messages);
 		return true;
+	}
+
+	public void setPermissions(String... permissions) {
+		this.permissions = permissions;
 	}
 
 }

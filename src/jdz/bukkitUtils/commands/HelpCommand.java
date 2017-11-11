@@ -14,9 +14,12 @@ import jdz.bukkitUtils.misc.StringUtils;
 
 @CommandLabel("help")
 @CommandLabel("?")
+@CommandNoHelp
 public class HelpCommand extends SubCommand {
 	private final CommandExecutor executor;
-	
+
+	private String[] permissions = new String[0];
+
 	private ChatColor titleColor, usageColor, descColor;
 	private int linesPerPage = 10;
 
@@ -26,13 +29,17 @@ public class HelpCommand extends SubCommand {
 	HelpCommand(CommandExecutor executor) {
 		this(executor, ChatColor.GOLD, ChatColor.GREEN, ChatColor.WHITE);
 	}
-	
+
 	HelpCommand(CommandExecutor executor, ChatColor titleColor, ChatColor usageColor, ChatColor descColor) {
 		this.executor = executor;
 		this.titleColor = titleColor;
 		this.usageColor = usageColor;
 		this.descColor = descColor;
 		reload();
+	}
+
+	public void setPermissions(String... permissions) {
+		this.permissions = permissions;
 	}
 
 	private void reload() {
@@ -59,19 +66,19 @@ public class HelpCommand extends SubCommand {
 
 			messages.add(line);
 		}
-		
+
 		numPages = (messages.size() + linesPerPage - 1) / linesPerPage;
 	}
-	
+
 	public void setTitleColor(ChatColor color) {
 		this.titleColor = color;
 	}
-	
+
 	public void setUsageColor(ChatColor color) {
 		this.usageColor = color;
 		reload();
 	}
-	
+
 	public void setDescriptionColor(ChatColor color) {
 		this.descColor = color;
 		reload();
@@ -79,28 +86,33 @@ public class HelpCommand extends SubCommand {
 
 	@Override
 	public boolean execute(CommandSender sender, String... args) {
+		for (String permission : permissions)
+			if (!sender.hasPermission(permission)) {
+				sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
+				return true;
+			}
 		try {
 			int i = Integer.parseInt(args[0]);
 			showPage(sender, i);
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 			showPage(sender, 0);
 		}
 		return true;
 	}
-	
+
 	public void showPage(CommandSender sender, int pageNumber) {
 		if (pageNumber < 1)
 			pageNumber = 1;
 		if (pageNumber > numPages)
 			pageNumber = numPages;
-			
-		String[] lines = new String[linesPerPage+2];
-		lines[0] = ChatColor.GRAY+"==========[ "+titleColor+executor.getLabel()+" Help"+ (numPages<=1?"":(" "+pageNumber + "/"+numPages))+ChatColor.GRAY +" ]==========";
-		lines[linesPerPage+1] = ChatColor.GRAY + StringUtils.repeat("=", lines[0].length()-4);
+
+		String[] lines = new String[linesPerPage + 2];
+		lines[0] = ChatColor.GRAY + "==========[ " + titleColor + executor.getLabel() + " Help"
+				+ (numPages <= 1 ? "" : (" " + pageNumber + "/" + numPages)) + ChatColor.GRAY + " ]==========";
+		lines[linesPerPage + 1] = ChatColor.GRAY + StringUtils.repeat("=", lines[0].length() - 4);
 		for (int i = pageNumber * linesPerPage; i < Math.min((pageNumber + 1) * linesPerPage, messages.size()); i++)
 			lines[i - pageNumber * linesPerPage + 1] = messages.get(i);
-		
+
 		sender.sendMessage(lines);
 	}
 
