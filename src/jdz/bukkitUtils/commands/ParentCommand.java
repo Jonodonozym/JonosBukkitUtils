@@ -1,9 +1,11 @@
 
 package jdz.bukkitUtils.commands;
 
-import java.util.List;
+import java.util.Set;
 
 import org.bukkit.command.CommandSender;
+
+import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 
 @CommandRequiredArgs(1)
 /**
@@ -24,23 +26,19 @@ public abstract class ParentCommand extends SubCommand{
 		return executor.onCommand(sender, null, args[0], subArgs);
 	}
 	
-	protected abstract List<SubCommand> getSubCommands();
-	protected abstract SubCommand getDefaultCommand();
+	protected abstract Set<SubCommand> getSubCommands();
+	public final void setDefaultCommand(SubCommand command) {executor.setDefaultCommand(command); }
 	
 	private final class ParentCommandExecutor extends CommandExecutor {
 		private final ParentCommand command;
 		public ParentCommandExecutor(ParentCommand command) {
+			super(null, command.getLabel(), false);
 			this.command = command;
 		}
 		
 		@Override
-		protected List<SubCommand> getSubCommands() {
+		protected Set<SubCommand> getSubCommands() {
 			return command.getSubCommands();
-		}
-
-		@Override
-		protected SubCommand getDefaultCommand() {
-			return command.getDefaultCommand();
 		}
 	}
 }

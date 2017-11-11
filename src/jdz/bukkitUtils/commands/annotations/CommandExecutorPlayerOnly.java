@@ -1,5 +1,5 @@
 
-package jdz.bukkitUtils.commands;
+package jdz.bukkitUtils.commands.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -8,6 +8,6 @@ import java.lang.annotation.Target;
 
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
-public @interface CommandRequiredArgs {
-	public int value();
+public @interface CommandExecutorPlayerOnly {
+
 }

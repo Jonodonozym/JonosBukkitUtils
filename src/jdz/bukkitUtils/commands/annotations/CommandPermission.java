@@ -1,5 +1,5 @@
 
-package jdz.bukkitUtils.commands;
+package jdz.bukkitUtils.commands.annotations;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

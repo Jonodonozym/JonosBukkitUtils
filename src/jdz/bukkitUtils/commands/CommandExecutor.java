@@ -3,47 +3,53 @@ package jdz.bukkitUtils.commands;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.commands.annotations.CommandExecutorPlayerOnly;
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.StringUtils;
 
 public abstract class CommandExecutor implements org.bukkit.command.CommandExecutor {
 	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("hh:mm:ss");
+	
 	private final JavaPlugin plugin;
 	private final boolean logCommands;
 	private final String label;
 	private final FileLogger fileLogger;
 	
+	private final HelpCommand helpCommand;
+	private SubCommand defaultCommand = null;
+	
 	public CommandExecutor() {
-		this.logCommands = false;
-		this.label = "";
-		fileLogger = null;
-		this.plugin = null;
+		this(null, "", false);
 	}
 	
 	public CommandExecutor(JavaPlugin plugin, String label, boolean logCommands) {
 		this.logCommands = logCommands;
 		this.label = label;
 		this.plugin = plugin;
-		fileLogger = new FileLogger(plugin, "CommandLogs");
+		
+		this.helpCommand = new HelpCommand(this);
+		setDefaultCommand(helpCommand);
+		
+		if (plugin != null)
+			fileLogger = new FileLogger(plugin, "CommandLogs");
+		else
+			fileLogger = null;
 	}
 	
-	private boolean registered = false;
 	public void register() {
-		if (!registered) {
+		if (!isRegistered())
 			plugin.getCommand(label).setExecutor(this);
-			registered = true;
-		}
 	}
 	
 	public boolean isRegistered() {
-		return registered;
+		return plugin.getCommand(label).isRegistered();
 	}
 	
 	public String getLabel() {
@@ -58,12 +64,14 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			return true;
 		}
 		
-		if (args.length == 0 && getDefaultCommand() != null) {
+		if (args.length == 0) {
 			execute(getDefaultCommand(), sender, args);
 			return true;
 		}
 		
-		for (SubCommand command : getSubCommands()) {
+		Set<SubCommand> commands = getSubCommands();
+		commands.add(helpCommand);
+		for (SubCommand command : commands) {
 			if (command.labelMatches(args[1])) {
 				String[] subArgs = new String[args.length - 2];
 				for (int i = 0; i < subArgs.length; i++)
@@ -73,19 +81,16 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			}
 		}
 
-		if (getDefaultCommand() != null) {
-			logCommand(sender, label, args);
-			return true;
-		}
+		execute(getDefaultCommand(), sender, args);
 		
-		return false;
+		return true;
 	}
 	
 	public final void execute(SubCommand command, CommandSender sender, String...args) {
 		if (command.requiredArgs() > args.length-2) {
 			sender.sendMessage(ChatColor.RED+"Insufficient arguments");
-			if (!command.usage().equals(""))
-				sender.sendMessage(ChatColor.RED+"Usage: "+command.usage());
+			if (!command.getUsage().equals(""))
+				sender.sendMessage(ChatColor.RED+"Usage: "+command.getUsage());
 		}
 		else if (command.isPlayerOnly() && !(sender instanceof Player))
 			sender.sendMessage(ChatColor.RED+"You must be a player to do that!");
@@ -107,6 +112,10 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 					+ " " + StringUtils.arrayToString(args, 0, " "));
 	}
 
-	protected abstract List<SubCommand> getSubCommands();
-	protected abstract SubCommand getDefaultCommand();
+	public void setDefaultCommand(SubCommand c) { defaultCommand = c; }
+	public SubCommand getDefaultCommand() { return defaultCommand; }
+	
+	public final HelpCommand getHelpCommand() { return helpCommand; }
+
+	protected abstract Set<SubCommand> getSubCommands();
 }
