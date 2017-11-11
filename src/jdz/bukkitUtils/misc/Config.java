@@ -51,9 +51,9 @@ public final class Config {
 	public static File getConfigFile(JavaPlugin plugin, String fileName) {
 		File file = new File(plugin.getDataFolder() + File.separator + fileName);
 		plugin.getDataFolder().mkdir();
-		if (!file.exists())
-			if (FileExporter.hasResource(plugin, fileName))
-				FileExporter.ExportResource(plugin, fileName, plugin.getDataFolder() + File.separator + fileName);
+		FileExporter fe = new FileExporter(plugin);
+		if (!file.exists() && fe.hasResource(fileName))
+				fe.ExportResource(fileName, plugin.getDataFolder() + File.separator + fileName);
 		return file;
 	}
 }
