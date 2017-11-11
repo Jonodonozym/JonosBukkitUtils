@@ -1,7 +1,7 @@
 
 package jdz.bukkitUtils.commands;
 
-import java.util.Set;
+import java.util.List;
 
 import org.bukkit.command.CommandSender;
 
@@ -26,7 +26,7 @@ public abstract class ParentCommand extends SubCommand{
 		return executor.onCommand(sender, null, args[0], subArgs);
 	}
 	
-	protected abstract Set<SubCommand> getSubCommands();
+	protected abstract List<SubCommand> getSubCommands();
 	public final void setDefaultCommand(SubCommand command) {executor.setDefaultCommand(command); }
 	
 	private final class ParentCommandExecutor extends CommandExecutor {
@@ -37,7 +37,7 @@ public abstract class ParentCommand extends SubCommand{
 		}
 		
 		@Override
-		protected Set<SubCommand> getSubCommands() {
+		protected List<SubCommand> getSubCommands() {
 			return command.getSubCommands();
 		}
 	}

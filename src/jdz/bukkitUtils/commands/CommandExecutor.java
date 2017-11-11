@@ -3,7 +3,7 @@ package jdz.bukkitUtils.commands;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.Set;
+import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -69,7 +69,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			return true;
 		}
 		
-		Set<SubCommand> commands = getSubCommands();
+		List<SubCommand> commands = getSubCommands();
 		commands.add(helpCommand);
 		for (SubCommand command : commands) {
 			if (command.labelMatches(args[1])) {
@@ -117,5 +117,5 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	
 	public final HelpCommand getHelpCommand() { return helpCommand; }
 
-	protected abstract Set<SubCommand> getSubCommands();
+	protected abstract List<SubCommand> getSubCommands();
 }
