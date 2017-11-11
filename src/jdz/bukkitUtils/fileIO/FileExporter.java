@@ -29,6 +29,11 @@ import jdz.bukkitUtils.JonosBukkitUtils;
  */
 public final class FileExporter {
 	static boolean RUNNING_FROM_JAR = false;
+	private final JavaPlugin plugin;
+	
+	public FileExporter(JavaPlugin plugin) {
+		this.plugin = plugin;
+	}
 
 	/**
 	 * Export a resource embedded into a Jar file to the local file path.
@@ -39,7 +44,7 @@ public final class FileExporter {
 	 * @throws IOException
 	 * @throws Exception
 	 */
-	static private void ExportResource(JavaPlugin plugin, String resourceName, String destinationPath, boolean isSilent) {
+	private void ExportResource(String resourceName, String destinationPath, boolean isSilent) {
 		InputStream stream = null;
 		OutputStream resStreamOut = null;
 		try {
@@ -66,7 +71,7 @@ public final class FileExporter {
 		}
 	}
 	
-	public static boolean hasResource(JavaPlugin plugin, String fileName){
+	public boolean hasResource(String fileName){
 		return (plugin.getClass().getResourceAsStream("/" + fileName) != null);
 	}
 
@@ -80,8 +85,8 @@ public final class FileExporter {
 	 * @throws IOException
 	 * @throws Exception
 	 */
-	public static void ExportResourceSilent(JavaPlugin plugin, String resourceName, String destinationPath) {
-		ExportResource(plugin, resourceName, destinationPath, true);
+	public void ExportResourceSilent(String resourceName, String destinationPath) {
+		ExportResource(resourceName, destinationPath, true);
 	}
 
 	/**
@@ -90,8 +95,8 @@ public final class FileExporter {
 	 * @param resourceName
 	 *            ie.: "SmartLibrary.dll"
 	 */
-	public static void ExportResource(JavaPlugin plugin, String resourceName, String destinationPath) {
-		ExportResource(plugin, resourceName, destinationPath, false);
+	public void ExportResource(String resourceName, String destinationPath) {
+		ExportResource(resourceName, destinationPath, false);
 	}
 
 	/**
@@ -100,12 +105,12 @@ public final class FileExporter {
 	 * @param resourceName
 	 *            ie.: "SmartLibrary.dll"
 	 */
-	public static void ExportResource(String resourceName, JavaPlugin plugin) {
+	public void ExportResource(String resourceName) {
 		String location = plugin.getDataFolder().getParentFile().getPath() + File.separator + resourceName;
-		ExportResource(plugin, resourceName, location, false);
+		ExportResource(resourceName, location, false);
 	}
 
-	public static JarFile getRunningJar() throws IOException {
+	public JarFile getRunningJar() throws IOException {
 		if (!RUNNING_FROM_JAR) {
 			return null; // null if not running from jar
 		}

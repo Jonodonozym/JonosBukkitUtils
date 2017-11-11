@@ -24,7 +24,7 @@ import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 
@@ -34,13 +34,15 @@ import jdz.bukkitUtils.JonosBukkitUtils;
  * @author Jaiden Baker
  */
 public final class JarUtils {
-	private static Plugin plugin;
+	private final JavaPlugin plugin;
+	private final FileExporter fileExporter;
 	
-	public static void init(Plugin plugin) {
-		JarUtils.plugin = plugin;
+	public JarUtils(JavaPlugin plugin) {
+		this.plugin = plugin;
+		fileExporter = new FileExporter(plugin);
 	}
 
-	public static void extractLibs(String... libNames) {
+	public void extractLibs(String... libNames) {
 		try {
 			for (final String libName : libNames) {
 				File lib = new File(plugin.getDataFolder().getParentFile(), libName);
@@ -64,7 +66,7 @@ public final class JarUtils {
 		}
 	}
 
-	private static void addClassPath(final URL url) throws IOException {
+	private void addClassPath(final URL url) throws IOException {
 		final URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
 		final Class<URLClassLoader> sysclass = URLClassLoader.class;
 		try {
@@ -77,8 +79,8 @@ public final class JarUtils {
 		}
 	}
 
-	private static boolean extractFromJar(final String fileName, final String dest) throws IOException {
-		if (FileExporter.getRunningJar() == null) {
+	private boolean extractFromJar(final String fileName, final String dest) throws IOException {
+		if (fileExporter.getRunningJar() == null) {
 			return false;
 		}
 		final File file = new File(dest);
@@ -90,7 +92,7 @@ public final class JarUtils {
 			file.getParentFile().mkdirs();
 		}
 
-		final JarFile jar = FileExporter.getRunningJar();
+		final JarFile jar = fileExporter.getRunningJar();
 		final Enumeration<JarEntry> e = jar.entries();
 		while (e.hasMoreElements()) {
 			final JarEntry je = e.nextElement();
@@ -107,11 +109,11 @@ public final class JarUtils {
 		return false;
 	}
 
-	private static URL getJarUrl(final File file) throws IOException {
+	private URL getJarUrl(final File file) throws IOException {
 		return new URL("jar:" + file.toURI().toURL().toExternalForm() + "!/");
 	}
 
-	private final static void copyInputStream(final InputStream in, final OutputStream out) throws IOException {
+	private final void copyInputStream(final InputStream in, final OutputStream out) throws IOException {
 		try {
 			final byte[] buff = new byte[4096];
 			int n;
