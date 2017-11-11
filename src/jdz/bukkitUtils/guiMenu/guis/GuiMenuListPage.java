@@ -15,11 +15,11 @@ import org.bukkit.plugin.java.JavaPlugin;
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStackLinkedMenu;
 
-class ListGuiPage extends GuiMenu{
+class GuiMenuListPage extends GuiMenu{
 	private final Inventory inventory;
 	private final int pageNumber;
 	
-	public ListGuiPage(JavaPlugin plugin, String name, int pageNumber) {
+	public GuiMenuListPage(JavaPlugin plugin, String name, int pageNumber) {
 		super(plugin);
 		this.pageNumber = pageNumber;
 		inventory = Bukkit.createInventory(null, 54, name+" | Page "+pageNumber);

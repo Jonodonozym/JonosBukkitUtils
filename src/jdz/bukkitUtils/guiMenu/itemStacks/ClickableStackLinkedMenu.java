@@ -23,6 +23,9 @@ public class ClickableStackLinkedMenu extends ClickableStack{
 	@Override
 	public void onClick(GuiMenu menu, InventoryClickEvent event) {
 		targetGuiMenu.open((Player)event.getWhoClicked());
+		
+		if (closeOnClick)
+			event.getWhoClicked().closeInventory();
 	}
 
 }

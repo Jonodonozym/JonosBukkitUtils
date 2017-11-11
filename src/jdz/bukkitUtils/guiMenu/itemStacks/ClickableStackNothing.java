@@ -20,6 +20,9 @@ public class ClickableStackNothing extends ClickableStack{
 	@Override
 	public void onClick(GuiMenu menu, InventoryClickEvent event) {
 		event.setCancelled(true);
+		
+		if (closeOnClick)
+			event.getWhoClicked().closeInventory();
 	}
 
 }
