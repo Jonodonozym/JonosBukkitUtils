@@ -10,7 +10,7 @@ import jdz.bukkitUtils.guiMenu.guis.GuiMenu;
 public class ClickableStackLinkedMenu extends ClickableStack{
 	private final GuiMenu targetGuiMenu;
 	
-	protected ClickableStackLinkedMenu(GuiMenu targetGuiMenu) {
+	public ClickableStackLinkedMenu(GuiMenu targetGuiMenu) {
 		super();
 		this.targetGuiMenu = null;
 	}
