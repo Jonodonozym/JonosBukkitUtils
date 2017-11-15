@@ -1,4 +1,4 @@
-main: jdz.jbu.JonosBukkitUtils
+main: jdz.bukkitUtils.JonosBukkitUtils
 name: JBU
 version: 1.0
 author: Jonodonozym

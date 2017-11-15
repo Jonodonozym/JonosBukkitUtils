@@ -48,6 +48,7 @@ public final class SqlApi {
 		this.config = config;
 		this.plugin = plugin;
 		fileLogger = new FileLogger(plugin);
+		openConnection(true);
 	}
 	
 	public void runOnConnect(Runnable r){
@@ -281,11 +282,11 @@ public final class SqlApi {
 	 * @param columns
 	 */
 	public void addTable(String tableName, SqlColumn... columns){
-	    String update = "CREATE TABLE IF NOT EXISTS"+tableName+" (";
+	    String update = "CREATE TABLE IF NOT EXISTS "+tableName+" (";
 	    for(SqlColumn c: columns)
-	    	update += c.name()+" "+c.type().getSqlSyntax()+",";
-	    if (update.contains(","))
-	    	update.substring(0, update.length()-1);
+	    	update += c.name()+" "+c.type().getSqlSyntax()+", ";
+	    if (columns.length != 0)
+	    	update = update.substring(0, update.length()-2);
 	    update += ");";
 	    
 	    executeUpdate(update);

@@ -9,13 +9,12 @@ import org.bukkit.command.CommandSender;
 
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandNoHelp;
-import jdz.bukkitUtils.commands.annotations.CommandUsage;
 import jdz.bukkitUtils.misc.StringUtils;
 
 @CommandLabel("help")
 @CommandLabel("?")
 @CommandNoHelp
-public class HelpCommand extends SubCommand {
+public final class HelpCommand extends SubCommand {
 	private final CommandExecutor executor;
 
 	private String[] permissions = new String[0];
@@ -23,51 +22,24 @@ public class HelpCommand extends SubCommand {
 	private ChatColor titleColor, usageColor, descColor;
 	private int linesPerPage = 10;
 
-	List<String> messages = new ArrayList<String>();
+	private List<String> extraMessages = new ArrayList<String>();
+	private List<String> messages = null;
+	
 	private int numPages = 1;
 
-	HelpCommand(CommandExecutor executor) {
+	public HelpCommand(CommandExecutor executor) {
 		this(executor, ChatColor.GOLD, ChatColor.GREEN, ChatColor.WHITE);
 	}
 
-	HelpCommand(CommandExecutor executor, ChatColor titleColor, ChatColor usageColor, ChatColor descColor) {
+	public HelpCommand(CommandExecutor executor, ChatColor titleColor, ChatColor usageColor, ChatColor descColor) {
 		this.executor = executor;
 		this.titleColor = titleColor;
 		this.usageColor = usageColor;
 		this.descColor = descColor;
-		reload();
 	}
 
 	public void setPermissions(String... permissions) {
 		this.permissions = permissions;
-	}
-
-	private void reload() {
-		messages.clear();
-		for (SubCommand command : executor.getSubCommands()) {
-			Class<? extends SubCommand> c = command.getClass();
-
-			if (c.equals(getClass()))
-				continue;
-			if (c.getAnnotation(CommandNoHelp.class) != null)
-				continue;
-
-			CommandUsage usage = c.getAnnotation(CommandUsage.class);
-
-			String line = usageColor.toString();
-			if (usage == null)
-				line += "/" + executor.getLabel() + " " + command.getLabel();
-			else
-				line += command.getUsage();
-
-			String desc = command.getDescription();
-			if (!desc.equals(""))
-				line += descColor + " - " + desc;
-
-			messages.add(line);
-		}
-
-		numPages = (messages.size() + linesPerPage - 1) / linesPerPage;
 	}
 
 	public void setTitleColor(ChatColor color) {
@@ -83,9 +55,17 @@ public class HelpCommand extends SubCommand {
 		this.descColor = color;
 		reload();
 	}
+	
+	public void addExtraMessage(String message) {
+		extraMessages.add(message);
+		reload();
+	}
 
 	@Override
 	public boolean execute(CommandSender sender, String... args) {
+		if (messages == null)
+			reload();
+		
 		for (String permission : permissions)
 			if (!sender.hasPermission(permission)) {
 				sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
@@ -93,25 +73,77 @@ public class HelpCommand extends SubCommand {
 			}
 		try {
 			int i = Integer.parseInt(args[0]);
-			showPage(sender, i);
+			showPage(sender, i+1);
 		} catch (Exception e) {
+			
+			if (args.length > 0)
+				for(SubCommand command: executor.getSubCommands())
+					if (command.getClass().getAnnotation(CommandNoHelp.class) == null)
+						if (command.labelMatches(args[0])) 
+							if (!command.getClass().equals(HelpCommand.class)) {
+							sender.sendMessage(getCommandDesc(command, false));
+							return true;
+						}
+			
 			showPage(sender, 0);
 		}
 		return true;
 	}
 
-	public void showPage(CommandSender sender, int pageNumber) {
-		if (pageNumber < 1)
-			pageNumber = 1;
-		if (pageNumber > numPages)
-			pageNumber = numPages;
+	private void reload() {
+		if (messages == null)
+			messages = new ArrayList<String>();
+		messages.clear();
+		
+		for (SubCommand command : executor.getSubCommands()) {
+			Class<? extends SubCommand> c = command.getClass();
 
-		String[] lines = new String[linesPerPage + 2];
-		lines[0] = ChatColor.GRAY + "==========[ " + titleColor + executor.getLabel() + " Help"
-				+ (numPages <= 1 ? "" : (" " + pageNumber + "/" + numPages)) + ChatColor.GRAY + " ]==========";
-		lines[linesPerPage + 1] = ChatColor.GRAY + StringUtils.repeat("=", lines[0].length() - 4);
-		for (int i = pageNumber * linesPerPage; i < Math.min((pageNumber + 1) * linesPerPage, messages.size()); i++)
-			lines[i - pageNumber * linesPerPage + 1] = messages.get(i);
+			if (c.equals(getClass()))
+				continue;
+			if (c.getAnnotation(CommandNoHelp.class) != null)
+				continue;
+
+			messages.add(getCommandDesc(command, true));
+		}
+
+		numPages = (extraMessages.size() + messages.size() + linesPerPage - 1) / linesPerPage;
+	}
+	
+	public String getCommandDesc(SubCommand command, boolean isShort) {
+		String usage = command.getUsage();
+		String description = isShort?command.getShortDescription():command.getLongDescription();
+		if (description.equals(""))
+			description = command.getShortDescription();
+		
+		String returnValue = usageColor.toString();
+		if (usage.equals(""))
+			returnValue += "/" + executor.getLabel() + " " + command.getLabel();
+		else
+			returnValue += usage;
+		
+		returnValue += descColor;
+		if (!description.equals(""))
+			returnValue += " - "+description;
+		
+		return returnValue;
+	}
+
+	public void showPage(CommandSender sender, int pageNumber) {
+		if (pageNumber < 0)
+			pageNumber = 0;
+		if (pageNumber >= numPages)
+			pageNumber = numPages-1;
+
+		int numLines = Math.min(linesPerPage, messages.size() - pageNumber*linesPerPage);
+		
+		String[] lines = new String[numLines + 2];
+		lines[0] = ChatColor.GRAY + "============[ " + titleColor + executor.getLabel() + " Help"
+				+ (numPages <= 1 ? "" : (" " + (1+pageNumber) + "/" + numPages)) + ChatColor.GRAY + " ]============";
+		
+		lines[numLines + 1] = ChatColor.GRAY + StringUtils.repeat("=", lines[0].length() - 8);
+		
+		for (int i = 0; i < numLines; i++)
+			lines[i + 1] = messages.get(pageNumber*linesPerPage+i);
 
 		sender.sendMessage(lines);
 	}

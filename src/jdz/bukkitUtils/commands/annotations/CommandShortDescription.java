@@ -1,6 +1,6 @@
 
 package jdz.bukkitUtils.commands.annotations;
 
-public @interface CommandDescription {
+public @interface CommandShortDescription {
 	public String value();
 }

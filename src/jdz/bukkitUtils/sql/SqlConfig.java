@@ -13,7 +13,7 @@ import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.Config;
 
-public class SqlConfig {
+class SqlConfig {
 	String dbURL = "";
 	String dbPort = "";
 	String dbName = "";
@@ -22,7 +22,10 @@ public class SqlConfig {
 	int dbReconnectTime = 1200;
 	
 	public SqlConfig(JavaPlugin plugin) {
-		reload(Config.getConfigFile(plugin, "sqlConfig.yml"));
+		File config = Config.getConfigFile(plugin, "sqlConfig.yml");
+		if (!config.exists())
+			config = Config.getDefaultSqlFile(plugin);
+		reload(config);
 	}
 	
 	public SqlConfig(File configFile){
@@ -40,7 +43,8 @@ public class SqlConfig {
 		dbReconnectTime = config.getInt("database.autoReconnectSeconds")*20;
 		dbReconnectTime = dbReconnectTime<=600?600:dbReconnectTime;
 		
-		if (dbURL.equals("") || dbName.equals("") || dbUsername.equals("") || dbPassword.equals("")) {
+		if (dbURL == null || dbPort == null || dbName == null || dbUsername == null || dbPassword == null ||
+				dbURL.equals("") || dbPort.equals("") || dbName.equals("") || dbUsername.equals("") || dbPassword.equals("")) {
 			Bukkit.getLogger().info(
 					"Some of the database lines in config.yml are empty or missing, please fill in the config.yml and reload the plugin.");
 

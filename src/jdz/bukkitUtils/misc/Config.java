@@ -15,6 +15,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.fileIO.FileExporter;
 
 /**
@@ -54,6 +55,15 @@ public final class Config {
 		FileExporter fe = new FileExporter(plugin);
 		if (!file.exists() && fe.hasResource(fileName))
 				fe.ExportResource(fileName, plugin.getDataFolder() + File.separator + fileName);
+		return file;
+	}
+	
+	public static File getDefaultSqlFile(JavaPlugin targetPlugin) {
+		File file = new File(JonosBukkitUtils.instance.getDataFolder() + File.separator + "sqlConfig.yml");
+		targetPlugin.getDataFolder().mkdir();
+		FileExporter fe = new FileExporter(JonosBukkitUtils.instance);
+		if (!file.exists() && fe.hasResource("sqlConfig.yml"))
+				fe.ExportResource("sqlConfig.yml", targetPlugin.getDataFolder() + File.separator + "sqlConfig.yml");
 		return file;
 	}
 }

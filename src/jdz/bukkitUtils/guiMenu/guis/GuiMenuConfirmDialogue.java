@@ -8,8 +8,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.material.Wool;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
@@ -20,30 +19,25 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 	private ClickableStack confirmStack;
 	private ClickableStack cancelStack;
 
-	@SuppressWarnings("deprecation")
 	public GuiMenuConfirmDialogue(JavaPlugin plugin, String name) {
 		super(plugin);
-		inventory = Bukkit.createInventory(null, 45);
+		inventory = Bukkit.createInventory(null, 27, name);
 
-		confirmStack = new ClickableStack(new ItemStack(Material.WOOL, 1, DyeColor.LIME.getWoolData())) {
+		confirmStack = new ClickableStack(Material.WOOL, ChatColor.GREEN+"Confim") {
 			@Override
 			public void onClick(GuiMenu menu, InventoryClickEvent event) {
 				onConfirm();
 			}
 		};
-		ItemMeta confirmItemMeta = confirmStack.getItemMeta();
-		confirmItemMeta.setDisplayName(ChatColor.GREEN + "Confirm");
-		confirmStack.setItemMeta(confirmItemMeta);
+		confirmStack.getStack().setData(new Wool(DyeColor.LIME).toItemStack(1).getData());
 
-		cancelStack = new ClickableStack(new ItemStack(Material.WOOL, 1, DyeColor.RED.getWoolData())) {
+		cancelStack = new ClickableStack(Material.WOOL, ChatColor.RED + "Cancel") {
 			@Override
 			public void onClick(GuiMenu menu, InventoryClickEvent event) {
 				onCancel();
 			}
 		};
-		ItemMeta cancelItemMeta = cancelStack.getItemMeta();
-		cancelItemMeta.setDisplayName(ChatColor.RED + "Cancel");
-		cancelStack.setItemMeta(cancelItemMeta);
+		confirmStack.getStack().setData(new Wool(DyeColor.RED).toItemStack(1).getData());
 
 		setItem(confirmStack, 11, inventory);
 		setItem(cancelStack, 15, inventory);

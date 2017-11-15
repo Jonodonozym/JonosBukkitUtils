@@ -1,32 +1,25 @@
 
 package jdz.bukkitUtils.guiMenu.itemStacks;
 
+import java.util.List;
+
 import org.bukkit.Bukkit;
+import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.ItemStack;
 
 import jdz.bukkitUtils.guiMenu.guis.GuiMenu;
 
 public class ClickableStackCommands extends ClickableStack{
-	private final String[] commands;
+	private final List<String> commands;
 	private final boolean isConsole;
 	
-	public ClickableStackCommands(String... commands) {
-		this(false, commands);
-	}
-	
-	public ClickableStackCommands(ItemStack i, String... commands) {
-		this(i, false, commands);
-	}
-	
-	public ClickableStackCommands(ItemStack i, boolean isConsole, String... commands) {
-		super(i);
+	public ClickableStackCommands(Material material, String name, boolean isConsole, List<String> commands) {
+		super(material, name);
 		this.isConsole = isConsole;
 		this.commands = commands;
 	}
-	
-	public ClickableStackCommands(boolean isConsole, String... commands) {
-		super();
+	public ClickableStackCommands(Material material, String name, List<String> lore, boolean isConsole, List<String> commands) {
+		super(material, name, lore);
 		this.isConsole = isConsole;
 		this.commands = commands;
 	}

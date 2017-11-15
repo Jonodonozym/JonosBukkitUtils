@@ -1,11 +1,15 @@
 
 package jdz.bukkitUtils.commands;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.bukkit.command.CommandSender;
 
-import jdz.bukkitUtils.commands.annotations.CommandDescription;
+import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandLabels;
+import jdz.bukkitUtils.commands.annotations.CommandLongDescription;
 import jdz.bukkitUtils.commands.annotations.CommandPermission;
 import jdz.bukkitUtils.commands.annotations.CommandPermissions;
 import jdz.bukkitUtils.commands.annotations.CommandPlayerOnly;
@@ -13,10 +17,26 @@ import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 import jdz.bukkitUtils.commands.annotations.CommandUsage;
 
 public abstract class SubCommand {
-	public boolean labelMatches(String label) {
+	private final List<String> labels;
+	
+	public SubCommand() {
 		CommandLabels commandLabels = this.getClass().getAnnotation(CommandLabels.class);
-		for (CommandLabel commandLabel: commandLabels.value())
-			if (commandLabel.value().equalsIgnoreCase(label))
+		CommandLabel label = this.getClass().getAnnotation(CommandLabel.class);
+		if (commandLabels == null && label == null)
+			throw new RuntimeException(getClass().getName()+" command doesn't have the required @CommandLabel annotation!");
+
+		labels = new ArrayList<String>(commandLabels==null?1:commandLabels.value().length);
+		
+		if (commandLabels != null)
+			for(CommandLabel l: commandLabels.value())
+				labels.add(l.value());
+		else
+			labels.add(label.value());
+	}
+	
+	public boolean labelMatches(String label) {
+		for (String s: labels)
+			if (s.equalsIgnoreCase(label))
 				return true;
 		return false;
 	}
@@ -34,24 +54,31 @@ public abstract class SubCommand {
 	}
 	
 	public int requiredArgs() {
-		return this.getClass().getAnnotation(CommandRequiredArgs.class).value();
+		CommandRequiredArgs an = getClass().getAnnotation(CommandRequiredArgs.class);
+		return an == null?0:an.value();
 	}
 	
-	public String getDescription() {
-		CommandDescription desc = this.getClass().getAnnotation(CommandDescription.class);
-		if (desc == null) return "";
-		return desc.value();
+	public String getShortDescription() {
+		CommandShortDescription desc = getClass().getAnnotation(CommandShortDescription.class);
+		return desc == null?"":desc.value();
 	}
 	
 	public String getUsage() {
-		CommandUsage usage = this.getClass().getAnnotation(CommandUsage.class);
-		if (usage == null) return "";
-		return usage.value();
+		CommandUsage usage = getClass().getAnnotation(CommandUsage.class);
+		return usage == null?"":usage.value();
+	}
+	
+	public String getLongDescription() {
+		CommandLongDescription desc = getClass().getAnnotation(CommandLongDescription.class);
+		return desc == null?getShortDescription():desc.value();
 	}
 	
 	public String getLabel() {
-		CommandLabels commandLabels = this.getClass().getAnnotation(CommandLabels.class);
-		return commandLabels.value()[0].value();
+		return labels.get(0);
+	}
+	
+	public List<String> getLabels() {
+		return labels;
 	}
 	
 	public boolean isPlayerOnly() {

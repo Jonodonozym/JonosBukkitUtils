@@ -31,8 +31,8 @@ public final class WorldUtils {
 	
 	public static Location getNearestLocationUnder(Location l){
 		Location location = new Location(l.getWorld(), l.getBlockX()+0.5, l.getBlockY(), l.getBlockZ()+0.5);
-		while (location.getBlock().isEmpty()){
-			location = location.add(0, 1, 0);
+		while (location.getBlock().getType() == Material.AIR){
+			location = location.add(0, -1, 0);
 			if (location.getY() < 0){
 				return null;
 			}

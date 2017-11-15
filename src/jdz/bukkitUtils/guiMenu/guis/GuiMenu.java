@@ -50,11 +50,6 @@ public abstract class GuiMenu implements Listener{
 		inv.clear();
 	}
 	
-	protected boolean addItem(ClickableStack item, int slot, Inventory inv) {
-		if (inv.getItem(slot) != null) return false;
-		return setItem(item, slot, inv);
-	}
-	
 	protected boolean setItem(ClickableStack item, int slot, Inventory inv) {
 		if (slot < 0 || slot >= inv.getSize()) return false;
 
@@ -62,6 +57,7 @@ public abstract class GuiMenu implements Listener{
 			pages.put(inv.getName(), new HashMap<Integer, ClickableStack>());
 		
 		pages.get(inv.getName()).put(slot, item);
+		inv.setItem(slot, item.getStack());
 		return true;
 	}
 	

@@ -1,6 +1,9 @@
 
 package jdz.bukkitUtils.guiMenu.itemStacks;
 
+import java.util.List;
+
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
@@ -10,14 +13,14 @@ import jdz.bukkitUtils.guiMenu.guis.GuiMenu;
 public class ClickableStackLinkedMenu extends ClickableStack{
 	private final GuiMenu targetGuiMenu;
 	
-	public ClickableStackLinkedMenu(GuiMenu targetGuiMenu) {
-		super();
-		this.targetGuiMenu = null;
+	public ClickableStackLinkedMenu(Material material, String name, GuiMenu targetGuiMenu) {
+		super(material, name);
+		this.targetGuiMenu = targetGuiMenu;
 	}
 
-	public ClickableStackLinkedMenu(GuiMenu targetGuiMenu, ItemStack i) {
-		super(i);
-		this.targetGuiMenu = null;
+	public ClickableStackLinkedMenu(Material material, String name, List<String> lore, GuiMenu targetGuiMenu, ItemStack i) {
+		super(material, name, lore);
+		this.targetGuiMenu = targetGuiMenu;
 	}
 
 	@Override

@@ -9,25 +9,25 @@ import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import jdz.bukkitUtils.commands.annotations.CommandDescription;
+import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.misc.StringUtils;
 
 @CommandLabel("about")
-@CommandDescription("Gives information about the plugin")
+@CommandShortDescription("Gives information about the plugin")
 public class AboutPluginCommand extends SubCommand {
 	private static final ChatColor titleColor = ChatColor.GOLD;
-	private static final ChatColor fieldColor = ChatColor.GOLD;
-	private static final ChatColor descColor = ChatColor.GOLD;
-	private static final ChatColor versionColor = ChatColor.GOLD;
-	private static final ChatColor authorColor = ChatColor.GOLD;
+	private static final ChatColor fieldColor = ChatColor.GREEN;
+	private static final ChatColor descColor = ChatColor.GREEN;
+	private static final ChatColor versionColor = ChatColor.YELLOW;
+	private static final ChatColor authorColor = ChatColor.YELLOW;
 	
 	private final String[] messages;
 
 	private String[] permissions = new String[0];
 
 	public AboutPluginCommand(JavaPlugin plugin) {
-		this(plugin.getDescription().getFullName(),
+		this(plugin.getDescription().getName(),
 				plugin.getDescription().getDescription(),
 				plugin.getDescription().getVersion(),
 				plugin.getDescription().getAuthors());
@@ -46,7 +46,7 @@ public class AboutPluginCommand extends SubCommand {
 				lines.add(fieldColor+"Author: "+authorColor+authors.iterator().next());
 			else
 				lines.add(fieldColor+"Authors: "+StringUtils.collectionToString(authors, ", "));
-		lines.add(ChatColor.GRAY+StringUtils.repeat("=", lines.get(0).length()-4));
+		lines.add(ChatColor.GRAY+StringUtils.repeat("=", lines.get(0).length()-8));
 		
 		messages = lines.toArray(new String[lines.size()]);
 		

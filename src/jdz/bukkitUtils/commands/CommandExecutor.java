@@ -1,8 +1,8 @@
 
 package jdz.bukkitUtils.commands;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.List;
 
 import org.bukkit.ChatColor;
@@ -15,7 +15,7 @@ import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.StringUtils;
 
 public abstract class CommandExecutor implements org.bukkit.command.CommandExecutor {
-	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("hh:mm:ss");
+	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 	
 	private final JavaPlugin plugin;
 	private final boolean logCommands;
@@ -27,7 +27,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	
 	private boolean isHelpEnabled = true;
 	
-	public CommandExecutor() {
+	CommandExecutor() {
 		this(null, "", false);
 	}
 	
@@ -46,12 +46,15 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	}
 	
 	public void register() {
-		if (!isRegistered())
+		if (!isRegistered()) {
 			plugin.getCommand(label).setExecutor(this);
+			isregistered = true;
+		}
 	}
 	
+	private boolean isregistered = false;
 	public boolean isRegistered() {
-		return plugin.getCommand(label).isRegistered();
+		return isregistered;
 	}
 	
 	public String getLabel() {
@@ -67,7 +70,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	}
 
 	@Override
-	public final boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
+	public final boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {		
 		CommandExecutorPlayerOnly cepo = this.getClass().getAnnotation(CommandExecutorPlayerOnly.class);
 		if (cepo != null && !(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED+"You must be a player to do that!");
@@ -82,10 +85,10 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		List<SubCommand> commands = getSubCommands();
 		if (isHelpEnabled) commands.add(helpCommand);
 		for (SubCommand command : commands) {
-			if (command.labelMatches(args[1])) {
-				String[] subArgs = new String[args.length - 2];
+			if (command.labelMatches(args[0])) {
+				String[] subArgs = new String[args.length - 1];
 				for (int i = 0; i < subArgs.length; i++)
-					subArgs[i] = args[i + 2];
+					subArgs[i] = args[i + 1];
 				execute(command, sender, subArgs);
 				return true;
 			}
@@ -100,7 +103,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	}
 	
 	public final void execute(SubCommand command, CommandSender sender, String...args) {
-		if (command.requiredArgs() > args.length-2) {
+		if (command.requiredArgs() > args.length) {
 			sender.sendMessage(ChatColor.RED+"Insufficient arguments");
 			if (!command.getUsage().equals(""))
 				sender.sendMessage(ChatColor.RED+"Usage: "+command.getUsage());
@@ -121,7 +124,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	
 	private final void logCommand(CommandSender sender, String label, String[] args) {
 		if (logCommands)
-			fileLogger.log("[" + dtf.format(new Date().toInstant()) + "] " + sender.getName() + " : /" + label
+			fileLogger.log("[" + dtf.format(LocalDateTime.now()) + "] " + sender.getName() + " : /" + label
 					+ " " + StringUtils.arrayToString(args, 0, " "));
 	}
 

@@ -75,6 +75,7 @@ public final class FileLogger {
 				startNewLog();
 			defaultLogWriter.write(getTimestampShort()+": "+message);
 			defaultLogWriter.newLine();
+			defaultLogWriter.flush();
 		}
 		catch(IOException exception){
 			exception.printStackTrace();
@@ -158,7 +159,7 @@ public final class FileLogger {
 	}
 	
 	public String getTimestampShort(){
-		return "["+new SimpleDateFormat("HH-mm-ss").format(new Date())+"]";
+		return "["+new SimpleDateFormat("HH-mm-ss.SSS").format(new Date())+"]";
 	}
 	
 	private void writeFile(String header, String contents, File file){

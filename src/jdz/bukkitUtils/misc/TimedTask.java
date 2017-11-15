@@ -29,16 +29,15 @@ public final class TimedTask {
 	private final int tickInterval;
 	private final JavaPlugin plugin;
 	
-	public TimedTask(JavaPlugin plugin, int tickInterval, Task t){
+	public TimedTask(JavaPlugin plugin, int tickInterval, Runnable r){
 		this.tickInterval = tickInterval;
 		this.plugin = plugin;
 		runnable = new BukkitRunnable() {
 			@Override
 			public void run() {
-				t.execute();
+				r.run();
 			}
 		};
-		start();
 	}
 	
 	/**
@@ -70,9 +69,5 @@ public final class TimedTask {
 
 	public boolean isRunning(){
 		return isRunning;
-	}
-
-	public interface Task{
-		public void execute();
 	}
 }
