@@ -8,7 +8,6 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.material.Wool;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
@@ -19,6 +18,7 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 	private ClickableStack confirmStack;
 	private ClickableStack cancelStack;
 
+	@SuppressWarnings("deprecation")
 	public GuiMenuConfirmDialogue(JavaPlugin plugin, String name) {
 		super(plugin);
 		inventory = Bukkit.createInventory(null, 27, name);
@@ -29,7 +29,7 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 				onConfirm();
 			}
 		};
-		confirmStack.getStack().setData(new Wool(DyeColor.LIME).toItemStack(1).getData());
+		confirmStack.getStack().setDurability(DyeColor.LIME.getWoolData());
 
 		cancelStack = new ClickableStack(Material.WOOL, ChatColor.RED + "Cancel") {
 			@Override
@@ -37,7 +37,7 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 				onCancel();
 			}
 		};
-		confirmStack.getStack().setData(new Wool(DyeColor.RED).toItemStack(1).getData());
+		cancelStack.getStack().setDurability(DyeColor.RED.getWoolData());
 
 		setItem(confirmStack, 11, inventory);
 		setItem(cancelStack, 15, inventory);

@@ -130,6 +130,7 @@ public final class SqlApi {
 			return false;
 		
 		if (autoReconnectTask == null){
+			plugin.getLogger().info("SQL database '"+config.dbName+"' recently went offline, will auto-reconnect.");
 			autoReconnectTask = new TimedTask(plugin, config.dbReconnectTime, ()->{
 				Connection con = openConnection(false);
 				if (con !=null)
