@@ -20,6 +20,7 @@ import java.util.concurrent.Executors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.TimedTask;
@@ -243,6 +244,23 @@ public final class SqlApi {
 				}
 			}
 		}
+	}
+
+
+	/**
+	 * Executes a database update asynchronously
+	 * be wary of concurrency issues
+	 * 
+	 * @param connection
+	 * @param update
+	 */
+	public void executeUpdateAsync(String update) {
+		new BukkitRunnable() {
+			@Override
+			public void run() {
+				executeUpdate(update);
+			}
+		}.runTaskAsynchronously(plugin);
 	}
 
 	/**
