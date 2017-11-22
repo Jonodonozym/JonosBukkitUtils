@@ -21,6 +21,8 @@ import java.util.Date;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.JonosBukkitUtils;
+
 /**
  * Lets you log plugin messages in a file
  * Also lets you log errors in the file instead of displaying a big ugly message on the console
@@ -31,6 +33,7 @@ public final class FileLogger {
 	private BufferedWriter defaultLogWriter = null;
 	private final JavaPlugin plugin;
 	private final String logName;
+	private final String logDirectory;
 	
 	public FileLogger(JavaPlugin plugin) {
 		this(plugin, "Log");
@@ -39,6 +42,7 @@ public final class FileLogger {
 	public FileLogger(JavaPlugin plugin, String logName) {
 		this.plugin = plugin;
 		this.logName = logName;
+		this.logDirectory = plugin.getDataFolder()+File.separator+"Logs";
 	}
 	
 	/**
@@ -52,8 +56,9 @@ public final class FileLogger {
 			if (defaultLogWriter != null)
 				defaultLogWriter.close();
 
-			createDefaultDirectory(getLogsDirectory());
-			File file = new File(getLogsDirectory() + File.separator + logName+" "+getTimestamp()+".txt");
+			File file = new File(logDirectory + File.separator + logName+" "+getTimestamp()+".txt");
+			if (!file.getParentFile().exists())
+				file.getParentFile().mkdirs();
 			if (!file.exists())
 				file.createNewFile();
 			
@@ -90,41 +95,15 @@ public final class FileLogger {
 	public void createErrorLog(Exception exception, String... extraData) {
 		PrintWriter pw = new PrintWriter(new StringWriter());
 		exception.printStackTrace(pw);
-		pw.println();
-		pw.println("Extra data:");
-		for (String s : extraData)
-			pw.println('\t' + s);
+		if (extraData.length > 0) {
+			pw.println();
+			pw.println("Extra data:");
+			for (String s : extraData)
+				pw.println('\t' + s);
+		}
 		String exceptionAsString = pw.toString();
-		createErrorLog(getLogsDirectory() + File.separator + "Errors" + File.separator+exception.getClass().getName()
+		createErrorLog(logDirectory + File.separator + "Errors" + File.separator+exception.getClass().getSimpleName()
 				+ getTimestamp() + ".txt", exceptionAsString);
-	}
-
-	/**
-	 * Writes an exception's stack trace to an error log file, given an exception
-	 * 
-	 * @param exception
-	 */
-	public void createErrorLog(Exception exception) {
-		StringWriter sw = new StringWriter();
-		exception.printStackTrace(new PrintWriter(sw));
-		String exceptionAsString = "\n"+sw.toString();
-		createErrorLog(getLogsDirectory() + File.separator + "Errors" + File.separator+exception.getClass().getName()
-				+ getTimestamp() + ".txt", exceptionAsString);
-	}
-
-	/**
-	 * Writes an error message to an error log file
-	 * 
-	 * @param exception
-	 */
-	public void createErrorLog(String fileDir, String error) {
-		
-		createDefaultDirectory(getLogsDirectory());
-		createDefaultDirectory(getLogsDirectory() + File.separator + "Errors");
-		
-		File file = new File(fileDir);
-		
-		writeFile("An error occurred in the plugin. If you can't work out the issue from this file, send this file to the plugin developer with a description of the failure",error,file);
 	}
 
 	/**
@@ -133,25 +112,28 @@ public final class FileLogger {
 	 * @param exception
 	 */
 	public void createErrorLog(String error) {
+		createErrorLog(logDirectory + File.separator + "Errors" + File.separator+"Error "
+				+ getTimestamp() + ".txt", error);
+		}
+
+	/**
+	 * Writes an error message to an error log file
+	 * 
+	 * @param exception
+	 */
+	public void createErrorLog(String fileDir, String error) {
 		Bukkit.getLogger().info("["+plugin.getName()+"] An error occurred. Check the Error log file for details.");
+
+		File file = new File(fileDir);
+		if (!file.getParentFile().exists())
+			file.getParentFile().mkdirs();
 		
-		createDefaultDirectory(getLogsDirectory());
-		createDefaultDirectory(getLogsDirectory() + File.separator + "Errors");
+		String header = "An error occurred in the plugin. If you can't work out the issue from this file, send this file to the plugin developer with a description of the failure\n";
+		header += "Plugin name: "+plugin.getName() +"\n";
+		header += "Plugin version: "+plugin.getDescription().getVersion() +"\n";
+		header += "JBU version: "+JonosBukkitUtils.instance.getDescription().getVersion() +"\n";
 		
-		File file = new File(getLogsDirectory() + File.separator + "Errors" + File.separator+"Error "
-				+ getTimestamp() + ".txt");
-		
-		writeFile("An error occurred in the plugin. If you can't work out the issue from this file, send this file to the plugin developer with a description of the failure",error,file);
-	}
-	
-	private String getLogsDirectory(){
-		return plugin.getDataFolder()+File.separator+"Logs";
-	}
-	
-	private void createDefaultDirectory(String directory){
-		File file = new File(directory);
-		if (!file.exists())
-			file.mkdirs();
+		writeFile(header,error,file);
 	}
 	
 	public String getTimestamp(){
