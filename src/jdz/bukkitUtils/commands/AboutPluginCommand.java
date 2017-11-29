@@ -4,6 +4,7 @@ package jdz.bukkitUtils.commands;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -53,14 +54,13 @@ public class AboutPluginCommand extends SubCommand {
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, String... args) {
+	public void execute(CommandSender sender, Set<String> flags, String... args) {
 		for (String permission : permissions)
 			if (!sender.hasPermission(permission)) {
 				sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
-				return true;
+				return;
 			}
 		sender.sendMessage(messages);
-		return true;
 	}
 
 	public void setPermissions(String... permissions) {

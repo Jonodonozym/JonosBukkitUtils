@@ -3,6 +3,7 @@ package jdz.bukkitUtils.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -62,14 +63,14 @@ public final class HelpCommand extends SubCommand {
 	}
 
 	@Override
-	public boolean execute(CommandSender sender, String... args) {
+	public void execute(CommandSender sender, Set<String> flags, String... args) {
 		if (messages == null)
 			reload();
 		
 		for (String permission : permissions)
 			if (!sender.hasPermission(permission)) {
 				sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
-				return true;
+				return;
 			}
 		try {
 			int i = Integer.parseInt(args[0]);
@@ -82,12 +83,11 @@ public final class HelpCommand extends SubCommand {
 						if (command.labelMatches(args[0])) 
 							if (!command.getClass().equals(HelpCommand.class)) {
 							sender.sendMessage(getCommandDesc(command, false));
-							return true;
+							return;
 						}
 			
 			showPage(sender, 0);
 		}
-		return true;
 	}
 
 	private void reload() {

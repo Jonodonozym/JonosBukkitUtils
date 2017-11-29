@@ -2,13 +2,13 @@
 package jdz.bukkitUtils.commands;
 
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 
-@CommandRequiredArgs(1)
 /**
  * Command that acts as a parent for more children commands
  * e.g. /plot rent <sub-command>, where rent's sub-commands are: pay, list, payall, and
@@ -16,6 +16,7 @@ import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
  *
  * @author Jaiden Baker
  */
+@CommandRequiredArgs(1)
 public abstract class ParentCommand extends SubCommand{
 	private final ParentCommandExecutor childCommandExecutor = new ParentCommandExecutor(this);
 	private final CommandExecutor commandExecutor;
@@ -25,15 +26,15 @@ public abstract class ParentCommand extends SubCommand{
 	}
 
 	@Override
-	public final boolean execute(CommandSender sender, String... args) {
+	public final void execute(CommandSender sender, Set<String> flags, String... args) {
 		if (args.length == 0) {
 			sender.sendMessage(ChatColor.RED+"Insufficient arguments");
 			if (!getUsage().equals(""))
 				sender.sendMessage(ChatColor.RED+"Usage: "+getUsage());
-			return true;
+			return;
 		}
 		
-		return childCommandExecutor.onCommand(sender, null, "pwarp rent", args);
+		childCommandExecutor.onCommand(sender, null, commandExecutor.getLabel()+" "+getLabel(), args);
 	}
 	
 	protected abstract List<SubCommand> getSubCommands();

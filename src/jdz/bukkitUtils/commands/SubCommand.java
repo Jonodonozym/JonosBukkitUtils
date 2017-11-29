@@ -3,6 +3,7 @@ package jdz.bukkitUtils.commands;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.command.CommandSender;
 
@@ -85,5 +86,5 @@ public abstract class SubCommand {
 		return (this.getClass().getAnnotation(CommandPlayerOnly.class) != null);
 	}
 
-	public abstract boolean execute(CommandSender sender, String... args);
+	public abstract void execute(CommandSender sender, Set<String> flags, String... args);
 }

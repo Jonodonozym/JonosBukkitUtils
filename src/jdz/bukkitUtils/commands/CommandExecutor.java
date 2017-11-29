@@ -3,7 +3,9 @@ package jdz.bukkitUtils.commands;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -78,18 +80,29 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		}
 		
 		if (args.length == 0) {
-			execute(getDefaultCommand(), sender, args);
+			execute(getDefaultCommand(), sender, new HashSet<String>(), args);
 			return true;
 		}
+		
+		Set<String> flags = new HashSet<String>();
+		for (String arg: args)
+			if (arg.startsWith("-"))
+				flags.add(arg.substring(1));
+		
+		String[] newArgs = new String[args.length-flags.size()];
+		int i=0;
+		for(String arg: args)
+			if (!flags.contains(arg))
+				newArgs[i++] = arg;
 		
 		List<SubCommand> commands = getSubCommands();
 		if (isHelpEnabled) commands.add(helpCommand);
 		for (SubCommand command : commands) {
-			if (command.labelMatches(args[0])) {
-				String[] subArgs = new String[args.length - 1];
-				for (int i = 0; i < subArgs.length; i++)
-					subArgs[i] = args[i + 1];
-				execute(command, sender, subArgs);
+			if (command.labelMatches(newArgs[0])) {
+				String[] subArgs = new String[newArgs.length - 1];
+				for (int j = 0; j < subArgs.length; j++)
+					subArgs[j] = newArgs[j + 1];
+				execute(command, sender, flags, subArgs);
 				return true;
 			}
 		}
@@ -97,12 +110,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		if (!isHelpEnabled && getDefaultCommand() instanceof HelpCommand)
 			return false;
 		else
-			execute(getDefaultCommand(), sender, args);
+			execute(getDefaultCommand(), sender, flags, args);
 		
 		return true;
 	}
 	
-	public final void execute(SubCommand command, CommandSender sender, String...args) {
+	public final void execute(SubCommand command, CommandSender sender, Set<String> flags, String...args) {
 		if (command.requiredArgs() > args.length) {
 			sender.sendMessage(ChatColor.RED+"Insufficient arguments");
 			if (!command.getUsage().equals(""))
@@ -111,13 +124,13 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		else if (command.isPlayerOnly() && !(sender instanceof Player))
 			sender.sendMessage(ChatColor.RED+"You must be a player to do that!");
 		else
-			executeIfHasPerms(command, sender, args);
+			executeIfHasPerms(command, sender, flags, args);
 	}
 	
-	private final void executeIfHasPerms(SubCommand command, CommandSender sender, String...args) {
+	private final void executeIfHasPerms(SubCommand command, CommandSender sender, Set<String> flags, String...args) {
 		logCommand(sender, command.getLabel(), args);		
 		if (command.hasRequiredPermissions(sender))
-			command.execute(sender, args);
+			command.execute(sender, flags, args);
 		else
 			sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that");
 	}	
