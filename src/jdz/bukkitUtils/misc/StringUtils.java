@@ -33,4 +33,8 @@ public final class StringUtils {
 			returnString += string;
 		return returnString;
 	}
+	
+	public static boolean isVowel(char c) {
+		return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
+	}
 }
