@@ -79,7 +79,7 @@ public final class WorldUtils {
 		return getBlockAboveOrBelow(block, blockType, blockData, distance+1);
 	}
 	
-	public Set<Player> getNearbyPlayers(Location location, int range){
+	public static Set<Player> getNearbyPlayers(Location location, int range){
 		Set<Player> nearbyPlayers = new HashSet<Player>();
 		for (Player player: Bukkit.getServer().getOnlinePlayers())
 			if (player.getLocation().distance(location) < range)
