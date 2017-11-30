@@ -1,11 +1,15 @@
 
 package jdz.bukkitUtils.misc;
 
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Player;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.fileIO.FileLogger;
@@ -75,5 +79,11 @@ public final class WorldUtils {
 		return getBlockAboveOrBelow(block, blockType, blockData, distance+1);
 	}
 	
-	
+	public Set<Player> getNearbyPlayers(Location location, int range){
+		Set<Player> nearbyPlayers = new HashSet<Player>();
+		for (Player player: Bukkit.getServer().getOnlinePlayers())
+			if (player.getLocation().distance(location) < range)
+				nearbyPlayers.add(player);
+		return nearbyPlayers;
+	}
 }
