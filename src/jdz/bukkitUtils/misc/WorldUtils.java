@@ -82,7 +82,7 @@ public final class WorldUtils {
 	public static Set<Player> getNearbyPlayers(Location location, int range){
 		Set<Player> nearbyPlayers = new HashSet<Player>();
 		for (Player player: Bukkit.getServer().getOnlinePlayers())
-			if (player.getLocation().distance(location) < range && player.getWorld().equals(location.getWorld()))
+			if (player.getWorld().equals(location.getWorld()) && player.getLocation().distance(location) < range)
 				nearbyPlayers.add(player);
 		return nearbyPlayers;
 	}
