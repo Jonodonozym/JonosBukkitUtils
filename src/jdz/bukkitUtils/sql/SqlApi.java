@@ -16,7 +16,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.Executors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -81,7 +80,7 @@ public final class SqlApi {
 					+ config.dbPassword + "&loginTimeout=1000&useSSL=false";
 
 			dbConnection = DriverManager.getConnection(url, config.dbUsername, config.dbPassword);
-			dbConnection.setNetworkTimeout(Executors.newFixedThreadPool(2), 15000);
+			
 			if (doLogging)
 				Bukkit.getLogger().info("Successfully connected to the " + config.dbName + " database at the host " + config.dbURL);
 			
