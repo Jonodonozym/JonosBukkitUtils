@@ -20,7 +20,7 @@ public enum SqlColumnType{
 	INT_2_BYTE,
 	INT_3_BYTE,
 	INT_4_BYTE,
-	INT_8_BYTE,
+	LONG,
 	INT,
 	DOUBLE,
 	STRING_32,
@@ -39,7 +39,7 @@ public enum SqlColumnType{
 			case INT_3_BYTE: return "mediumint";
 			case INT_4_BYTE:
 			case INT: return "int";
-			case INT_8_BYTE: return "bigint";
+			case LONG: return "bigint";
 			case DOUBLE: return "double";
 		}
 		
