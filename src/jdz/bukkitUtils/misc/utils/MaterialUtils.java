@@ -138,6 +138,7 @@ public class MaterialUtils {
 		defaultDropMin.put(Material.NETHER_WARTS, 4);
 	}
 
+	@SuppressWarnings("deprecation")
 	public static List<ItemStack> getDrops(ItemStack tool, Block block) {
 		if (tool.getEnchantmentLevel(Enchantment.SILK_TOUCH) > 0)
 			return Arrays.asList(new ItemStack(block.getType(), block.getData()));
