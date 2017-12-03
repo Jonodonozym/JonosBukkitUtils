@@ -37,4 +37,16 @@ public final class StringUtils {
 	public static boolean isVowel(char c) {
 		return c == 'a' || c == 'e' || c == 'i' || c == 'o' || c == 'u';
 	}
+	
+	public static String capitalizeWord(String word) {
+		return word.toUpperCase().charAt(0) + word.toLowerCase().substring(1);
+	}
+	
+	public static String capitalizeWords(String words) {
+		String combined = "";
+		String[] wordArray = words.split("//s+");
+		for (String word: wordArray)
+			combined += " "+capitalizeWord(word);
+		return combined.replaceFirst(" ", "");
+	}
 }
