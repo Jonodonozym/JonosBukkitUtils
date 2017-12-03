@@ -12,7 +12,6 @@ package jdz.bukkitUtils;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import jdz.bukkitUtils.bstats.Metrics;
 import jdz.bukkitUtils.misc.Config;
 import jdz.bukkitUtils.misc.PluginUpdater;
 
@@ -30,10 +29,7 @@ public final class JonosBukkitUtils extends JavaPlugin{
 	public void onEnable() {
 		instance = this;
 		FileConfiguration config = Config.getConfig(this);
-		boolean update = config.getBoolean("autoupdate");
-		if (update)
+		if (config.getBoolean("autoUpdate"))
 			new PluginUpdater(this, bukkitID, this.getFile(), PluginUpdater.UpdateType.DEFAULT, false);
-		
-		new Metrics(this);
 	}
 }
