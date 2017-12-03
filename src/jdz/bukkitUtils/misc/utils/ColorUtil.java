@@ -1,4 +1,4 @@
-package jdz.bukkitUtils.misc;
+package jdz.bukkitUtils.misc.utils;
 
 import java.util.ArrayList;
 import java.util.List;
