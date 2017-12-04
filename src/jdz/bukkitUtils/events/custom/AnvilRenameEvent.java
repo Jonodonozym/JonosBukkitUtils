@@ -34,7 +34,7 @@ public class AnvilRenameEvent extends AnvilEvent {
 		return getHandlers(AnvilRenameEvent.class);
 	}
 
-	public static final class AnvilRenameListener extends AnvilEventListener {
+	static final class AnvilRenameListener extends AnvilEventListener {
 
 		@Override
 		protected AnvilEvent onEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem,

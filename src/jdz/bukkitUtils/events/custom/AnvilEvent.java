@@ -15,7 +15,7 @@ import org.bukkit.inventory.meta.Repairable;
 import jdz.bukkitUtils.events.Cancellable;
 import jdz.bukkitUtils.events.Event;
 
-public abstract class AnvilEvent extends Event implements Cancellable {
+abstract class AnvilEvent extends Event implements Cancellable {
 	private final Player player;
 	private final ItemStack leftItem, rightItem, resultItem;
 	private final int cost;
@@ -48,7 +48,7 @@ public abstract class AnvilEvent extends Event implements Cancellable {
 		return cost;
 	}
 	
-	public static abstract class AnvilEventListener implements Listener{
+	static abstract class AnvilEventListener implements Listener{
 
 		@EventHandler
 		public void onInventoryClick(InventoryClickEvent e){

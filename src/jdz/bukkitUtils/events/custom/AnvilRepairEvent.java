@@ -15,7 +15,7 @@ public class AnvilRepairEvent extends AnvilEvent {
 		return getHandlers(AnvilRepairEvent.class);
 	}
 	
-	public static final class AnvilRepairListener extends AnvilEventListener{
+	static final class AnvilRepairListener extends AnvilEventListener{
 
 		@Override
 		protected AnvilEvent onEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem, int cost) {
