@@ -3,6 +3,7 @@ package jdz.bukkitUtils.misc;
 
 import java.lang.reflect.Field;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
@@ -11,6 +12,8 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.AnvilInventory;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
@@ -23,29 +26,25 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
 	public Enchantment(JavaPlugin plugin, int id) {
 		super(id);
 		
-		if (enchantments.contains(this))
-			throw new IllegalArgumentException("An enchantment with an id of "+id+" has already been registered!");
-		
-		enchantments.add(this);
-		register(plugin);
+		if (!enchantments.contains(this)){
+			enchantments.add(this);
+			register(plugin);
+		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	private void register(JavaPlugin plugin) {
 		try {
-			try {
-				Field f = Enchantment.class.getDeclaredField("acceptingNew");
-				f.setAccessible(true);
-				f.set(null, true);
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-			try {
-				Enchantment.registerEnchantment(this);
-			} catch (IllegalArgumentException e) {
-				new FileLogger(plugin).createErrorLog(e);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
+			Field f = org.bukkit.enchantments.Enchantment.class.getDeclaredField("acceptingNew");
+			f.setAccessible(true);
+			f.set(null, true);
+			Enchantment.registerEnchantment(this);
+		}
+		catch (IllegalArgumentException e) {
+			plugin.getLogger().severe("Enchantment "+getName()+"'s ID Conflicts with "+Enchantment.getById(getId()).getName());
+		}
+		catch (Exception e) {
+			new FileLogger(plugin).createErrorLog(e);
 		}
 	}
 	
@@ -64,8 +63,22 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
 		return getId();
 	}
 	
-	
-	
+	/**
+	 * Adds the enchantment to the item
+	 * Also adds the enchantment to the lore, like a normal enchantment
+	 * @param item
+	 * @param level
+	 */
+	public void addTo(ItemStack item, int level) {
+		item.addUnsafeEnchantment(this, level);
+		
+		ItemMeta im = item.getItemMeta();
+		List<String> lore = im.getLore();
+		lore.add(ChatColor.GRAY+getName()+(getMaxLevel()<=1?"":" "+RomanNumber.of(level)));
+		im.setLore(lore);
+		
+		item.setItemMeta(im);
+	}
 	
 	
 	
