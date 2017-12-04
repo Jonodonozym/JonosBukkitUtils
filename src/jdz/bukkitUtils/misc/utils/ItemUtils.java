@@ -5,10 +5,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
@@ -46,12 +45,20 @@ public class ItemUtils {
 		return new ArrayList<ItemStack>(itemOverflow.values());
 	}
 	
-	private static final Set<Enchantment> enchants = new HashSet<Enchantment>(Arrays.asList(Enchantment.values()));
+	public static Map<Enchantment, Integer> getCustomEnchants(ItemStack stack){
+		Map<Enchantment, Integer> customEnchants = new HashMap<Enchantment, Integer>();
+
+		for (Entry<Enchantment, Integer> entry: stack.getEnchantments().entrySet())
+			if (!jdz.bukkitUtils.misc.Enchantment.getDefaults().contains(entry.getKey()))
+				customEnchants.put((jdz.bukkitUtils.misc.Enchantment)entry.getKey(), entry.getValue());
+		
+		return customEnchants;
+	}
 	
 	public static List<String> getCustomEnchantsLore(ItemStack stack){
 		List<String> lore = new ArrayList<String>();
 		for (Entry<Enchantment, Integer> entry: stack.getEnchantments().entrySet())
-			if (!enchants.contains(entry.getKey()))
+			if (!jdz.bukkitUtils.misc.Enchantment.getDefaults().contains(entry.getKey()))
 				lore.add(ChatColor.GRAY+entry.getKey().getName()+(entry.getValue()<=1?"":" "+RomanNumber.of(entry.getValue())));
 		return lore;
 	}

@@ -3,21 +3,17 @@ package jdz.bukkitUtils.misc;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
-import org.bukkit.event.EventHandler;
-import org.bukkit.event.Listener;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.fileIO.FileLogger;
 
 public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
@@ -42,6 +38,8 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
 			Enchantment.registerEnchantment(this);
 		}
 		catch (IllegalArgumentException e) {
+			if (Enchantment.getById(getId()).equals(this))
+				return;
 			plugin.getLogger().severe("Enchantment "+getName()+"'s ID Conflicts with "+Enchantment.getById(getId()).getName());
 		}
 		catch (Exception e) {
@@ -49,19 +47,17 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
 		}
 	}
 	
+	public abstract boolean keepOnRepair();
+	public abstract boolean isUpgradeable();
 	
 	@Override
-	@SuppressWarnings("deprecation")
 	public boolean equals(Object other) {
-		if (!(other instanceof Enchantment))
-			return false;
-		return ((Enchantment)other).getId() == getId();
+		return (other).getClass().equals(getClass());
 	}
 	
 	@Override
-	@SuppressWarnings("deprecation")
 	public int hashCode() {
-		return getId();
+		return getClass().hashCode();
 	}
 	
 	/**
@@ -81,26 +77,14 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
 		
 		item.setItemMeta(im);
 	}
-	
-	
-	
-	static {
-		Bukkit.getPluginManager().registerEvents(new AnvilCrashPreventer(), JonosBukkitUtils.instance);
+
+	private static final Set<org.bukkit.enchantments.Enchantment> defaultEnchantments = new HashSet<org.bukkit.enchantments.Enchantment>(Arrays.asList(Enchantment.values()));
+			
+	public static Set<org.bukkit.enchantments.Enchantment> getDefaults(){
+		return defaultEnchantments;
 	}
 	
-	private static class AnvilCrashPreventer implements Listener{
-		
-		@EventHandler
-		public void onInventoryClick(InventoryClickEvent event) {
-			if (!(event.getInventory() instanceof AnvilInventory))
-				return;
-			
-			for (org.bukkit.enchantments.Enchantment enchant: event.getCurrentItem().getEnchantments().keySet())
-				if (enchantments.contains(enchant)) {
-					event.getWhoClicked().sendMessage(ChatColor.RED+"Items with custom enchantments cannot be used on anvils!");
-					event.setCancelled(true);
-					return;
-				}
-		}
+	public static Set<Enchantment> getCustomEnchantments() {
+		return Collections.unmodifiableSet(enchantments);
 	}
 }
