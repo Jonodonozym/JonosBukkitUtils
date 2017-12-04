@@ -3,6 +3,7 @@ package jdz.bukkitUtils.commands;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -49,6 +50,8 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	
 	public void register() {
 		if (!isRegistered()) {
+			if (plugin.getCommand(label) == null)
+				new FileLogger(plugin).createErrorLog(new IllegalArgumentException(), "No command found in "+plugin.getName()+"'s plugin.yml file labeled '"+label+"'");
 			plugin.getCommand(label).setExecutor(this);
 			isregistered = true;
 		}
@@ -92,11 +95,13 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		String[] newArgs = new String[args.length-flags.size()];
 		int i=0;
 		for(String arg: args)
-			if (!flags.contains(arg))
+			if (!arg.startsWith("-"))
 				newArgs[i++] = arg;
 		
-		List<SubCommand> commands = getSubCommands();
+		List<SubCommand> commands = new ArrayList<SubCommand>(getSubCommands());
+		
 		if (isHelpEnabled) commands.add(helpCommand);
+		
 		for (SubCommand command : commands) {
 			if (command.labelMatches(newArgs[0])) {
 				String[] subArgs = new String[newArgs.length - 1];
@@ -137,7 +142,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	
 	private final void logCommand(CommandSender sender, String label, String[] args) {
 		if (logCommands)
-			fileLogger.log("[" + dtf.format(LocalDateTime.now()) + "] " + sender.getName() + " : /" + label
+			fileLogger.log("[" + dtf.format(LocalDateTime.now()) + "] " + sender.getName() + " : /" + this.label+" "+label
 					+ " " + StringUtils.arrayToString(args, 0, " "));
 	}
 

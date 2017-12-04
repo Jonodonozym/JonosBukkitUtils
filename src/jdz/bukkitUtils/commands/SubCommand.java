@@ -14,6 +14,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
+import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandLabels;
 import jdz.bukkitUtils.commands.annotations.CommandLongDescription;
@@ -22,6 +23,7 @@ import jdz.bukkitUtils.commands.annotations.CommandPermissions;
 import jdz.bukkitUtils.commands.annotations.CommandPlayerOnly;
 import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 import jdz.bukkitUtils.commands.annotations.CommandUsage;
+import jdz.bukkitUtils.fileIO.FileLogger;
 
 public abstract class SubCommand {
 	private final List<String> labels;
@@ -94,20 +96,21 @@ public abstract class SubCommand {
 	}
 
 	public abstract void execute(CommandSender sender, Set<String> flags, String... args);
-	
-	public boolean tryParse(String methodName, boolean showErrors, CommandSender sender, Set<String> flags, String... args) {
-		for (Method method: this.getClass().getMethods())
+
+	public boolean tryParse(String methodName, boolean showErrors, CommandSender sender, Set<String> flags,
+			String... args) {
+		for (Method method : this.getClass().getMethods())
 			if (method.getName().equalsIgnoreCase(methodName))
 				return tryParse(method, showErrors, sender, flags, args);
-		
-		throw new IllegalArgumentException("No method found with the name "+methodName);
+
+		throw new IllegalArgumentException("No method found with the name " + methodName);
 	}
 
 	/**
-	 * Attempts to parse the given arguments into a given method's format
-	 *  either m(CommandSender, Set<String> flags, int arg1, Player arg2...)
-	 *  or     m(CommandSender, int arg1, Player arg2...)
-	 * and invokes said method, or sends the sender error messages if something went wrong.
+	 * Attempts to parse the given arguments into a given method's format either
+	 * m(CommandSender, Set<String> flags, int arg1, Player arg2...) or
+	 * m(CommandSender, int arg1, Player arg2...) and invokes said method, or sends
+	 * the sender error messages if something went wrong.
 	 * 
 	 * @param method
 	 * @param showErrors
@@ -117,93 +120,120 @@ public abstract class SubCommand {
 	 * @return
 	 */
 	@SuppressWarnings("deprecation")
-	protected boolean tryParse(Method method, boolean showErrors, CommandSender sender, Set<String> flags, String... args) {
+	protected boolean tryParse(Method method, boolean showErrors, CommandSender sender, Set<String> flags,
+			String... args) {
 		Class<?>[] parameterTypes = method.getParameterTypes();
-		
+
 		if (parameterTypes.length < 1 || !parameterTypes[0].equals(CommandSender.class))
-			throw new IllegalArgumentException("Method "+method.getName()+"Must have a CommandSender argument");
-		
+			throw new IllegalArgumentException("Method " + method.getName() + " Must have a CommandSender argument");
+
 		int startIndex = 1;
 		if (parameterTypes.length > 1 && parameterTypes[1].equals(Set.class))
 			startIndex = 2;
-		
-		try {			
+
+		try {
 			Object[] newArgs = new Object[parameterTypes.length];
 			newArgs[0] = sender;
 			if (startIndex == 2)
 				newArgs[1] = flags;
-			
-			for (int i=startIndex; i<parameterTypes.length; i++) {
-				
+
+			for (int i = startIndex; i < parameterTypes.length; i++) {
+
 				if (parameterTypes[i].equals(String.class))
-					newArgs[i] = args[i-startIndex];
-				
+					newArgs[i] = args[i - startIndex];
+
 				else if (parameterTypes[i].equals(Integer.class) || parameterTypes[i].equals(int.class)) {
-					try { newArgs[i] = Integer.parseInt(args[i-startIndex]); }
-					catch(NumberFormatException e) {
+					try {
+						newArgs[i] = Integer.parseInt(args[i - startIndex]);
+					} catch (NumberFormatException e) {
 						if (showErrors) {
-							sender.sendMessage(ChatColor.RED+"Argument #"+(i-startIndex+1)+" must be an integer");
+							sender.sendMessage(
+									ChatColor.RED + "Argument #" + (i - startIndex + 1) + " must be an integer");
 							if (!getUsage().equals(""))
-								sender.sendMessage(ChatColor.RED+"Usage: "+getUsage());
+								sender.sendMessage(ChatColor.RED + "Usage: " + getUsage());
 						}
 						return false;
 					}
 				}
-				
+
 				else if (parameterTypes[i].equals(Long.class) || parameterTypes[i].equals(long.class)) {
-					try { newArgs[i] = Long.parseLong(args[i-startIndex]); }
-					catch(NumberFormatException e) {
+					try {
+						newArgs[i] = Long.parseLong(args[i - startIndex]);
+					} catch (NumberFormatException e) {
 						if (showErrors) {
-							sender.sendMessage(ChatColor.RED+"Argument #"+(i-startIndex+1)+" must be an integer");
+							sender.sendMessage(
+									ChatColor.RED + "Argument #" + (i - startIndex + 1) + " must be an integer");
 							if (!getUsage().equals(""))
-								sender.sendMessage(ChatColor.RED+"Usage: "+getUsage());
+								sender.sendMessage(ChatColor.RED + "Usage: " + getUsage());
 						}
 						return false;
 					}
 				}
-				
+
 				else if (parameterTypes[i].equals(Double.class) || parameterTypes[i].equals(double.class)) {
-					try { newArgs[i] = Double.parseDouble(args[i-startIndex]); }
-					catch(NumberFormatException e) {
+					try {
+						newArgs[i] = Double.parseDouble(args[i - startIndex]);
+					} catch (NumberFormatException e) {
 						if (showErrors) {
-							sender.sendMessage(ChatColor.RED+"Argument #"+(i-startIndex+1)+" must be a number");
+							sender.sendMessage(
+									ChatColor.RED + "Argument #" + (i - startIndex + 1) + " must be a number");
 							if (!getUsage().equals(""))
-								sender.sendMessage(ChatColor.RED+"Usage: "+getUsage());
+								sender.sendMessage(ChatColor.RED + "Usage: " + getUsage());
 						}
 						return false;
 					}
 				}
-				
+
 				else if (parameterTypes[i].equals(Player.class)) {
-					OfflinePlayer player = Bukkit.getOfflinePlayer(args[i-startIndex]);
+					OfflinePlayer player = Bukkit.getOfflinePlayer(args[i - startIndex]);
 					if (!player.hasPlayedBefore()) {
-						sender.sendMessage(ChatColor.RED+"'"+args[i-startIndex]+"' has never logged in before!");
+						sender.sendMessage(
+								ChatColor.RED + "'" + args[i - startIndex] + "' has never logged in before!");
 						return false;
 					}
 					if (!player.isOnline()) {
-						sender.sendMessage(ChatColor.RED+"'"+args[i-startIndex]+"' is not online!");
+						sender.sendMessage(ChatColor.RED + "'" + args[i - startIndex] + "' is not online!");
 						return false;
 					}
-					newArgs[i] = (Player)player;
+					newArgs[i] = (Player) player;
 				}
-				
-				else if (parameterTypes[i].equals(OfflinePlayer.class)){
-					OfflinePlayer player = Bukkit.getOfflinePlayer(args[i-startIndex]);
+
+				else if (parameterTypes[i].equals(OfflinePlayer.class)) {
+					OfflinePlayer player = Bukkit.getOfflinePlayer(args[i - startIndex]);
 					if (!player.hasPlayedBefore()) {
-						sender.sendMessage(ChatColor.RED+"'"+args[i-startIndex]+"' has never logged in before!");
+						sender.sendMessage(
+								ChatColor.RED + "'" + args[i - startIndex] + "' has never logged in before!");
 						return false;
 					}
 					newArgs[i] = player;
 				}
-				
+
 			}
 
-			method.invoke(this, newArgs);
-			
+			try {
+				boolean isAccessible = method.isAccessible();
+				method.setAccessible(true);
+				method.invoke(this, newArgs);
+				method.setAccessible(isAccessible);
+			} catch (IllegalAccessException | IllegalArgumentException e) {
+				new FileLogger(JonosBukkitUtils.instance).createErrorLog(e);
+			} catch (InvocationTargetException e) {
+				throw new ExecuteException(e.getCause());
+			}
+
 			return true;
-		} catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-			e.printStackTrace();
+		} catch (Exception e) {
+			if (e instanceof ExecuteException)
+				throw e;
 			return false;
+		}
+	}
+	
+	private static class ExecuteException extends RuntimeException{
+		private static final long serialVersionUID = -2028926700891674754L;
+
+		ExecuteException(Throwable t){
+			super(t);
 		}
 	}
 }
