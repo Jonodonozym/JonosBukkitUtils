@@ -2,6 +2,7 @@
 package jdz.bukkitUtils.misc;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -74,7 +75,8 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
 		
 		ItemMeta im = item.getItemMeta();
 		List<String> lore = im.getLore();
-		lore.add(ChatColor.GRAY+getName()+(getMaxLevel()<=1?"":" "+RomanNumber.of(level)));
+		lore = lore==null?new ArrayList<String>():lore;
+		lore.add(0, ChatColor.GRAY+getName()+(getMaxLevel()<=1?"":" "+RomanNumber.of(level)));
 		im.setLore(lore);
 		
 		item.setItemMeta(im);
