@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class ColorUtil {
+public class ColorUtils {
 	
     private static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
         char[] b = textToTranslate.toCharArray();
@@ -22,6 +22,6 @@ public class ColorUtil {
     }
 
     public static List<String> translate(List<String> string) {
-        return string.stream().map(ColorUtil::translate).collect(Collectors.toCollection(ArrayList::new));
+        return string.stream().map(ColorUtils::translate).collect(Collectors.toCollection(ArrayList::new));
     }
 }

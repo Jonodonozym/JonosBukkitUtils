@@ -84,7 +84,7 @@ public class MaterialUtils {
 	}
 
 	public static enum ToolType {
-		PICKAXE, AXE, HOE, SHOVEL
+		PICKAXE, AXE, HOE, SPADE
 	}
 
 	public static enum ArmourType {
