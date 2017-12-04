@@ -48,18 +48,20 @@ public class ItemUtils {
 	public static Map<Enchantment, Integer> getCustomEnchants(ItemStack stack){
 		Map<Enchantment, Integer> customEnchants = new HashMap<Enchantment, Integer>();
 
+		if (stack.getEnchantments() == null)
+			return customEnchants;
+		
 		for (Entry<Enchantment, Integer> entry: stack.getEnchantments().entrySet())
-			if (!jdz.bukkitUtils.misc.Enchantment.getDefaults().contains(entry.getKey()))
-				customEnchants.put((jdz.bukkitUtils.misc.Enchantment)entry.getKey(), entry.getValue());
+			if (jdz.bukkitUtils.misc.Enchantment.isCustom(entry.getKey()))
+				customEnchants.put(entry.getKey(), entry.getValue());
 		
 		return customEnchants;
 	}
 	
 	public static List<String> getCustomEnchantsLore(ItemStack stack){
 		List<String> lore = new ArrayList<String>();
-		for (Entry<Enchantment, Integer> entry: stack.getEnchantments().entrySet())
-			if (!jdz.bukkitUtils.misc.Enchantment.getDefaults().contains(entry.getKey()))
-				lore.add(ChatColor.GRAY+entry.getKey().getName()+(entry.getValue()<=1?"":" "+RomanNumber.of(entry.getValue())));
+		for (Entry<Enchantment, Integer> entry: getCustomEnchants(stack).entrySet())
+			lore.add(ChatColor.GRAY+entry.getKey().getName()+(entry.getValue()<=1?"":" "+RomanNumber.of(entry.getValue())));
 		return lore;
 	}
 }

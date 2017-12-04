@@ -9,11 +9,16 @@
 
 package jdz.bukkitUtils;
 
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.events.custom.JBUEvents;
 import jdz.bukkitUtils.misc.Config;
+import jdz.bukkitUtils.misc.Enchantment;
 import jdz.bukkitUtils.misc.PluginUpdater;
 
 /**
@@ -25,6 +30,8 @@ import jdz.bukkitUtils.misc.PluginUpdater;
 public final class JonosBukkitUtils extends JavaPlugin{
 	public static JonosBukkitUtils instance;
 	private final int bukkitID = 281287;
+
+	public final Set<org.bukkit.enchantments.Enchantment> defaultEnchantments = new HashSet<org.bukkit.enchantments.Enchantment>(Arrays.asList(Enchantment.values()));
 	
 	@Override
 	public void onEnable() {

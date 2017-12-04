@@ -3,7 +3,6 @@ package jdz.bukkitUtils.misc;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -21,7 +20,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
 	private static final Set<Enchantment> enchantments = new HashSet<Enchantment>();
 	
 	public Enchantment(JavaPlugin plugin, int id) {
-		super(id);
+		super(60000+id%7153);
 		
 		if (!enchantments.contains(this)){
 			enchantments.add(this);
@@ -46,9 +45,6 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
 			new FileLogger(plugin).createErrorLog(e);
 		}
 	}
-	
-	public abstract boolean keepOnRepair();
-	public abstract boolean isUpgradeable();
 	
 	@Override
 	public boolean equals(Object other) {
@@ -77,14 +73,13 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment{
 		
 		item.setItemMeta(im);
 	}
-
-	private static final Set<org.bukkit.enchantments.Enchantment> defaultEnchantments = new HashSet<org.bukkit.enchantments.Enchantment>(Arrays.asList(Enchantment.values()));
-			
-	public static Set<org.bukkit.enchantments.Enchantment> getDefaults(){
-		return defaultEnchantments;
-	}
 	
 	public static Set<Enchantment> getCustomEnchantments() {
 		return Collections.unmodifiableSet(enchantments);
+	}
+	
+	@SuppressWarnings("deprecation")
+	public static boolean isCustom(org.bukkit.enchantments.Enchantment e) {
+		return e.getId() > 59999 && e.getId() < 67153;
 	}
 }

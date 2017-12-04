@@ -11,5 +11,6 @@ public class JBUEvents {
 		// registering custom events
 		Bukkit.getPluginManager().registerEvents(new AnvilRenameEvent.AnvilRenameListener(), plugin);
 		Bukkit.getPluginManager().registerEvents(new AnvilRepairEvent.AnvilRepairListener(), plugin);
+		Bukkit.getPluginManager().registerEvents(new AnvilEvent.CustomEnchantAnvilCrashPreventer(), plugin);
 	}
 }
