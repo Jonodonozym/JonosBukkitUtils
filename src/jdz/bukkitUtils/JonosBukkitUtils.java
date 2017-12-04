@@ -9,9 +9,12 @@
 
 package jdz.bukkitUtils;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.events.custom.AnvilRenameEvent;
+import jdz.bukkitUtils.events.custom.AnvilRepairEvent;
 import jdz.bukkitUtils.misc.Config;
 import jdz.bukkitUtils.misc.PluginUpdater;
 
@@ -31,5 +34,9 @@ public final class JonosBukkitUtils extends JavaPlugin{
 		FileConfiguration config = Config.getConfig(this);
 		if (config.getBoolean("autoUpdate"))
 			new PluginUpdater(this, bukkitID, this.getFile(), PluginUpdater.UpdateType.DEFAULT, false);
+		
+		// registering custom events
+		Bukkit.getPluginManager().registerEvents(new AnvilRenameEvent.AnvilRenameListener(), this);
+		Bukkit.getPluginManager().registerEvents(new AnvilRepairEvent.AnvilRepairListener(), this);
 	}
 }
