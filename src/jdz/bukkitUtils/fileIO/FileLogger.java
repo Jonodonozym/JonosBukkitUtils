@@ -93,7 +93,8 @@ public final class FileLogger {
 	 * @param exception
 	 */
 	public void createErrorLog(Exception exception, String... extraData) {
-		PrintWriter pw = new PrintWriter(new StringWriter());
+		StringWriter sw = new StringWriter();
+		PrintWriter pw = new PrintWriter(sw);
 		exception.printStackTrace(pw);
 		if (extraData.length > 0) {
 			pw.println();
@@ -101,7 +102,8 @@ public final class FileLogger {
 			for (String s : extraData)
 				pw.println('\t' + s);
 		}
-		String exceptionAsString = pw.toString();
+		pw.flush();
+		String exceptionAsString = sw.toString();
 		createErrorLog(logDirectory + File.separator + "Errors" + File.separator+exception.getClass().getSimpleName()
 				+ getTimestamp() + ".txt", exceptionAsString);
 	}
@@ -150,11 +152,18 @@ public final class FileLogger {
 				file.createNewFile();
 			BufferedWriter bfw = new BufferedWriter(new FileWriter(file));
 			if (header != ""){
-				bfw.write(header);
-				bfw.newLine();
+				String[] lines = header.split("\n");
+				for (String line: lines) {
+					bfw.write(line);
+					bfw.newLine();
+				}
 				bfw.newLine();
 			}
-			bfw.write(contents);
+			String[] lines = contents.split("\n");
+			for (String line: lines) {
+				bfw.newLine();
+				bfw.write(line);
+			}
 			bfw.close();
 		} catch (IOException exception) {
 			exception.printStackTrace();
