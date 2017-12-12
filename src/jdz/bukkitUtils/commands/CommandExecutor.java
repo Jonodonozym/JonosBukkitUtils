@@ -1,4 +1,3 @@
-
 package jdz.bukkitUtils.commands;
 
 import java.time.LocalDateTime;
@@ -50,9 +49,6 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 		CommandExecutorAliases commandAliases = this.getClass().getAnnotation(CommandExecutorAliases.class);
 		CommandExecutorAlias alias = this.getClass().getAnnotation(CommandExecutorAlias.class);
-		if (commandAliases == null && alias == null)
-			throw new RuntimeException(
-					getClass().getName() + " command doesn't have the required @CommandLabel annotation!");
 
 		List<String> aliases = new ArrayList<String>(commandAliases == null ? 1 : commandAliases.value().length);
 
