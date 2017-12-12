@@ -4,6 +4,7 @@ package jdz.bukkitUtils.commands;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,6 +17,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.commands.annotations.CommandExecutorAlias;
+import jdz.bukkitUtils.commands.annotations.CommandExecutorAliases;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPlayerOnly;
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.StringUtils;
@@ -27,6 +30,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	protected final JavaPlugin plugin;
 	protected final boolean logCommands;
 	protected final String label;
+	protected final List<String> aliases;
 	protected final FileLogger fileLogger;
 
 	protected final HelpCommand helpCommand;
@@ -43,6 +47,24 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	public CommandExecutor(JavaPlugin plugin, String label, boolean logCommands) {
 		this.logCommands = logCommands;
 		this.label = label;
+
+		CommandExecutorAliases commandAliases = this.getClass().getAnnotation(CommandExecutorAliases.class);
+		CommandExecutorAlias alias = this.getClass().getAnnotation(CommandExecutorAlias.class);
+		if (commandAliases == null && alias == null)
+			throw new RuntimeException(
+					getClass().getName() + " command doesn't have the required @CommandLabel annotation!");
+
+		List<String> aliases = new ArrayList<String>(commandAliases == null ? 1 : commandAliases.value().length);
+
+		if (commandAliases != null)
+			for (CommandExecutorAlias l : commandAliases.value())
+				aliases.add(l.value());
+		else
+			aliases.add(alias.value());
+		aliases.add(label);
+
+		this.aliases = Collections.unmodifiableList(aliases);
+
 		this.plugin = plugin;
 
 		this.helpCommand = new HelpCommand(this);
@@ -57,15 +79,15 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	}
 
 	public void register() {
-		if (!isRegistered()) {
-			if (plugin.getCommand(label) == null)
-				new FileLogger(plugin).createErrorLog(new IllegalArgumentException(),
-						"No command found in " + plugin.getName() + "'s plugin.yml file labeled '" + label + "'");
-			plugin.getCommand(label).setExecutor(this);
-			isRegistered = true;
-		}
+		if (!isRegistered)
+			for (String label : aliases) {
+				if (plugin.getCommand(label) == null)
+					new FileLogger(plugin).createErrorLog(new IllegalArgumentException(),
+							"No command found in " + plugin.getName() + "'s plugin.yml file labeled '" + label + "'");
+				plugin.getCommand(label).setExecutor(this);
+				isRegistered = true;
+			}
 	}
-
 
 	public boolean isRegistered() {
 		return isRegistered;
@@ -186,7 +208,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	}
 
 	protected abstract List<SubCommand> getSubCommands();
-	
+
 	public void addCommand(SubCommand c, JavaPlugin plugin) {
 		extraCommands.put(c, plugin);
 	}
