@@ -158,6 +158,7 @@ public class MaterialUtils {
 	public static final Map<Material, Integer> requiredTier = new HashMap<Material, Integer>();
 	
 	static {
+		/*
 		blockHardness.put(Material.BARRIER, Double.MAX_VALUE);
 		blockHardness.put(Material.BEDROCK, Double.MAX_VALUE);
 		blockHardness.put(Material.COMMAND, Double.MAX_VALUE);
@@ -166,13 +167,15 @@ public class MaterialUtils {
 		blockHardness.put(Material.PORTAL, Double.MAX_VALUE);
 		
 		try { blockHardness.put(Material.STRUCTURE_BLOCK, Double.MAX_VALUE); }
-		catch (Exception e) {}
+		catch (Throwable e) {}
 
 		blockHardness.put(Material.LAVA, 100.0);
 		blockHardness.put(Material.WATER, 100.0);
 		
 		blockHardness.put(Material.OBSIDIAN, 50.0);
+		
 		blockHardness.put(Material.ENDER_CHEST, 22.5);
+		
 		blockHardness.put(Material.ANVIL, 5.0);
 		blockHardness.put(Material.COAL_BLOCK, 5.0);
 		blockHardness.put(Material.DIAMOND_BLOCK, 5.0);
@@ -184,16 +187,77 @@ public class MaterialUtils {
 		blockHardness.put(Material.IRON_DOOR, 5.0);
 		blockHardness.put(Material.IRON_TRAPDOOR, 5.0);
 		blockHardness.put(Material.MOB_SPAWNER, 5.0);
+		
 		blockHardness.put(Material.WEB, 4.0);
+		
 		blockHardness.put(Material.DISPENSER, 3.5);
 		blockHardness.put(Material.DROPPER, 3.5);
 		blockHardness.put(Material.FURNACE, 3.5);
-		
+
+		blockHardness.put(Material.BEACON, 3.0);
+		blockHardness.put(Material.GOLD_BLOCK, 3.0);
+		blockHardness.put(Material.COAL_ORE, 3.0);
+		blockHardness.put(Material.DRAGON_EGG, 3.0);
+		blockHardness.put(Material.DIAMOND_ORE, 3.0);
+		blockHardness.put(Material.EMERALD_ORE, 3.0);
+		blockHardness.put(Material.ENDER_STONE, 3.0);
+		blockHardness.put(Material.GOLD_ORE, 3.0);
+		blockHardness.put(Material.HOPPER, 3.0);
+		blockHardness.put(Material.IRON_ORE, 3.0);
+		blockHardness.put(Material.LAPIS_BLOCK, 3.0);
+		blockHardness.put(Material.LAPIS_ORE, 3.0);
+		blockHardness.put(Material.QUARTZ_ORE, 3.0);
+		blockHardness.put(Material.REDSTONE_ORE, 3.0);
+		blockHardness.put(Material.TRAP_DOOR, 3.0);
+
+		blockHardness.put(Material.WOOD_DOOR, 3.0);
+		blockHardness.put(Material.WOODEN_DOOR, 3.0);
+		blockHardness.put(Material.SPRUCE_DOOR, 3.0);
+		blockHardness.put(Material.BIRCH_DOOR, 3.0);
+		blockHardness.put(Material.JUNGLE_DOOR, 3.0);
+		blockHardness.put(Material.ACACIA_DOOR, 3.0);
+		blockHardness.put(Material.DARK_OAK_DOOR, 3.0);
+
+		blockHardness.put(Material.CHEST, 2.5);
+		blockHardness.put(Material.TRAPPED_CHEST, 2.5);
+		blockHardness.put(Material.WORKBENCH, 2.5);
+
+		blockHardness.put(Material.BONE_BLOCK, 2.0);
+		blockHardness.put(Material.BRICK_STAIRS, 2.0);
+		blockHardness.put(Material.BRICK, 2.0);
+		blockHardness.put(Material.CAULDRON, 2.0);
+		blockHardness.put(Material.COBBLESTONE, 2.0);
+		blockHardness.put(Material.COBBLE_WALL, 2.0);
+		blockHardness.put(Material.COBBLESTONE_STAIRS, 2.0);
+		blockHardness.put(Material.FENCE, 2.0);
+		blockHardness.put(Material.FENCE_GATE, 2.0);
+		blockHardness.put(Material.JUKEBOX, 2.0);
+		blockHardness.put(Material.MOSSY_COBBLESTONE, 2.0);
+		blockHardness.put(Material.NETHER_BRICK, 2.0);
+		blockHardness.put(Material.RED_NETHER_BRICK, 2.0);
+		blockHardness.put(Material.NETHER_BRICK_STAIRS, 2.0);
+		blockHardness.put(Material.NETHER_FENCE, 2.0);
+		blockHardness.put(Material.STONE_SLAB2, 2.0);
+		blockHardness.put(Material.DOUBLE_STONE_SLAB2, 2.0);
+		*/
 		// TODO whenever i can be arsed
 		// https://minecraft.gamepedia.com/Breaking
 		
 	}
 	
+	public static double getHardness(Material block) {
+		if (blockHardness.containsKey(block))
+			return blockHardness.get(block);
+		return 1;
+	}
+	
+	public static double getBreakingSpeed(Material mat, ItemStack stack) {
+		return 1;
+	}
+	
+	public static boolean canBreak(Material block, Material tool) {
+		return true;
+	}
 	
 	//
 	// ITEM DROPS

@@ -41,5 +41,6 @@ public final class JonosBukkitUtils extends JavaPlugin{
 			new PluginUpdater(this, bukkitID, this.getFile(), PluginUpdater.UpdateType.DEFAULT, false);
 		
 		JBUEvents.registerAll(this);
+		
 	}
 }
