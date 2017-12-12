@@ -55,7 +55,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		if (commandAliases != null)
 			for (CommandExecutorAlias l : commandAliases.value())
 				aliases.add(l.value());
-		else
+		else if (alias != null)
 			aliases.add(alias.value());
 		aliases.add(label);
 
