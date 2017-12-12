@@ -9,6 +9,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -208,6 +209,21 @@ public abstract class SubCommand {
 					newArgs[i] = player;
 				}
 
+				else if (parameterTypes[i].equals(Material.class)) {
+					try {
+						Material mat = Material.valueOf(args[i - startIndex].toUpperCase());
+						if (mat == null)
+							throw new Exception();
+						newArgs[i] = mat;
+					} catch (Exception e) {
+						sender.sendMessage(
+								ChatColor.RED + "'" + args[i - startIndex] + "' is not a valid material type");
+						return false;
+					}
+				}
+
+				else
+					throw new IllegalArgumentException("Cannot parse parameter type "+parameterTypes[i].getSimpleName());
 			}
 
 			try {
@@ -228,11 +244,11 @@ public abstract class SubCommand {
 			return false;
 		}
 	}
-	
-	private static class ExecuteException extends RuntimeException{
+
+	private static class ExecuteException extends RuntimeException {
 		private static final long serialVersionUID = -2028926700891674754L;
 
-		ExecuteException(Throwable t){
+		ExecuteException(Throwable t) {
 			super(t);
 		}
 	}

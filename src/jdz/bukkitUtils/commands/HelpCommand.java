@@ -115,9 +115,9 @@ public final class HelpCommand extends SubCommand {
 		if (description.equals(""))
 			description = command.getShortDescription();
 		
-		String returnValue = usageColor.toString();
+		String returnValue = usageColor + "/" + (executor.getLabel().equals("")?"":executor.getLabel() + " ");
 		if (usage.equals(""))
-			returnValue += "/" + executor.getLabel() + " " + command.getLabel();
+			returnValue += command.getLabel();
 		else
 			returnValue += usage;
 		
