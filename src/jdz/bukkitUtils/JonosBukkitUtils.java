@@ -17,6 +17,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.events.custom.JBUEvents;
+import jdz.bukkitUtils.fileIO.JarUtils;
 import jdz.bukkitUtils.misc.Config;
 import jdz.bukkitUtils.misc.Enchantment;
 import jdz.bukkitUtils.misc.PluginUpdater;
@@ -36,11 +37,13 @@ public final class JonosBukkitUtils extends JavaPlugin{
 	@Override
 	public void onEnable() {
 		instance = this;
+		
+		new JarUtils(this).extractLibs("libs/lombok.jar");
+		
 		FileConfiguration config = Config.getConfig(this);
 		if (config.getBoolean("autoUpdate"))
 			new PluginUpdater(this, bukkitID, this.getFile(), PluginUpdater.UpdateType.DEFAULT, false);
 		
 		JBUEvents.registerAll(this);
-		
 	}
 }

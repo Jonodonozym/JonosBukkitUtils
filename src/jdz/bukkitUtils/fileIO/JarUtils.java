@@ -45,12 +45,12 @@ public final class JarUtils {
 	public void extractLibs(String... libNames) {
 		try {
 			for (final String libName : libNames) {
-				File lib = new File(plugin.getDataFolder().getParentFile(), libName);
+				File lib = new File(plugin.getDataFolder(), libName);
 				if (!lib.exists())
 					extractFromJar(lib.getName(), lib.getAbsolutePath());
 			}
 			for (final String libName : libNames) {
-				File lib = new File(plugin.getDataFolder().getParentFile(), libName);
+				File lib = new File(plugin.getDataFolder(), libName);
 				if (!lib.exists()) {
 					String errorMessage = "There was a critical error loading " + plugin.getName() + "! Could not find lib: "
 							+ libName + ". If the problem persists, add it manually to your plugins directory";
