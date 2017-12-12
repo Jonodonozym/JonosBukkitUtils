@@ -20,57 +20,82 @@ class SqlConfig {
 	String dbUsername = "";
 	String dbPassword = "";
 	int dbReconnectTime = 1200;
-	
+
 	public SqlConfig(JavaPlugin plugin) {
+		reload(plugin);
+	}
+
+	public SqlConfig(File configFile) {
+		reload(configFile);
+	}
+
+	private boolean reload(JavaPlugin plugin) {
 		File config = Config.getConfigFile(plugin, "sqlConfig.yml");
 		if (!config.exists())
 			config = Config.getDefaultSqlFile(plugin);
-		reload(config);
+		return reload(config);
 	}
-	
-	public SqlConfig(File configFile){
-		reload(configFile);
-	}
-	
-	public boolean reload(File configFile) {
+
+	private boolean reload(File configFile) {
 		FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-		
+
 		dbURL = config.getString("database.URL");
 		dbPort = config.getString("database.port");
 		dbName = config.getString("database.name");
 		dbUsername = config.getString("database.username");
 		dbPassword = config.getString("database.password");
-		dbReconnectTime = config.getInt("database.autoReconnectSeconds")*20;
-		dbReconnectTime = dbReconnectTime<=600?600:dbReconnectTime;
-		
-		if (dbURL == null || dbPort == null || dbName == null || dbUsername == null || dbPassword == null ||
-				dbURL.equals("") || dbPort.equals("") || dbName.equals("") || dbUsername.equals("") || dbPassword.equals("")) {
+		dbReconnectTime = config.getInt("database.autoReconnectSeconds") * 20;
+		dbReconnectTime = dbReconnectTime <= 600 ? 600 : dbReconnectTime;
+
+		if (dbURL == null || dbPort == null || dbName == null || dbUsername == null || dbPassword == null
+				|| dbURL.equals("") || dbPort.equals("") || dbName.equals("") || dbUsername.equals("")
+				|| dbPassword.equals("")) {
 			Bukkit.getLogger().info(
 					"Some of the database lines in config.yml are empty or missing, please fill in the config.yml and reload the plugin.");
 
 			if (!config.contains("database.URL"))
 				config.addDefault("database.URL", "");
-			
+
+			if (!config.contains("database.port"))
+				config.addDefault("database.port", "3306");
+
 			if (!config.contains("database.name"))
 				config.addDefault("database.name", "");
-			
+
 			if (!config.contains("database.username"))
 				config.addDefault("database.username", "");
-			
+
 			if (!config.contains("database.password"))
 				config.addDefault("database.password", "");
-			
+
 			if (!config.contains("database.autoReconnectSeconds"))
 				config.addDefault("database.autoReconnectSeconds", 60);
-			
+
 			try {
 				config.save(configFile);
 			} catch (IOException e) {
-				new FileLogger(JonosBukkitUtils.instance).createErrorLog(e, "An error occurred in the JonosBukkitUtils");
+				new FileLogger(JonosBukkitUtils.instance).createErrorLog(e,
+						"An error occurred in the JonosBukkitUtils");
 			}
-			
+
 			return false;
-		} 
+		}
 		return true;
+	}
+
+	@Override
+	public boolean equals(Object other) {
+		if (!(other instanceof SqlConfig))
+			return false;
+
+		SqlConfig otherConfig = (SqlConfig) other;
+		return dbURL.equals(otherConfig.dbURL) && dbName.equals(otherConfig.dbName)
+				&& dbUsername.equals(otherConfig.dbUsername) && dbPassword.equals(otherConfig.dbPassword)
+				&& dbPort.equals(otherConfig.dbPort) && dbReconnectTime == otherConfig.dbReconnectTime;
+	}
+	
+	@Override
+	public int hashCode() {
+		return dbURL.hashCode()*dbName.hashCode()*dbUsername.hashCode()*dbPassword.hashCode()*dbPort.hashCode()*dbReconnectTime;
 	}
 }

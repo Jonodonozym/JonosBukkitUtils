@@ -37,7 +37,7 @@ public final class SqlApi {
 	private List<Runnable> connectHooks = new ArrayList<Runnable>();
 	
 	private final JavaPlugin plugin;
-	private final SqlConfig config;
+	private SqlConfig config;
 	private final FileLogger fileLogger;
 	
 	public SqlApi(JavaPlugin plugin) {
@@ -56,6 +56,14 @@ public final class SqlApi {
 			r.run();
 		else
 			connectHooks.add(r);
+	}
+	
+	public void reloadConfig() {
+		SqlConfig newConfig = new SqlConfig(plugin);
+		if (newConfig.equals(config))
+			return;
+		config = newConfig;
+		openConnection(true);
 	}
 
 	/**
