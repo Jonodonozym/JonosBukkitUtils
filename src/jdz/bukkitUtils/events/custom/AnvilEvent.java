@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -14,7 +15,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-import org.bukkit.event.inventory.InventoryMoveItemEvent;
+
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -64,9 +65,6 @@ public abstract class AnvilEvent extends Event implements Cancellable {
 
 		@EventHandler(priority = EventPriority.LOWEST)
 		public void crashBugFix(InventoryClickEvent e) {
-			if (e.isCancelled())
-				return;
-
 			if (!(e.getInventory() instanceof AnvilInventory))
 				return;
 
@@ -76,29 +74,35 @@ public abstract class AnvilEvent extends Event implements Cancellable {
 			if (rawSlot != view.convertSlot(rawSlot))
 				return;
 
-			if (rawSlot == 1 && !ItemUtils.getCustomEnchants(e.getCursor()).isEmpty())
+			if (!ItemUtils.getCustomEnchants(e.getCursor()).isEmpty()) {
 				e.setCancelled(true);
+				e.getWhoClicked().sendMessage(ChatColor.RED + "You cannot repair this item on an anvil");
+			}
 		}
 
 		@EventHandler(priority = EventPriority.LOWEST)
 		public void crashBugFix(InventoryDragEvent e) {
-			if (e.isCancelled())
-				return;
-
-			if (e.getInventory() instanceof AnvilInventory)
+			if (e.getInventory() instanceof AnvilInventory
+					&& (e.getRawSlots().contains(0) || e.getRawSlots().contains(1))) {
 				e.setCancelled(true);
+				e.getWhoClicked().sendMessage(ChatColor.RED + "You cannot repair this item on an anvil");
+			}
 		}
-		
+
 		@EventHandler(priority = EventPriority.LOWEST)
-		public void crashBugFix(InventoryMoveItemEvent e) {
-			if (e.isCancelled())
+		public void crashBugFixShiftClick(InventoryClickEvent e) {
+			if (!e.isShiftClick())
 				return;
 
-			if (!(e.getDestination() instanceof AnvilInventory))
+			if (!(e.getView().getTopInventory() instanceof AnvilInventory))
 				return;
-			
-			if (!ItemUtils.getCustomEnchants(e.getItem()).isEmpty())
+
+			int rawSlot = e.getRawSlot();
+
+			if (!ItemUtils.getCustomEnchants(e.getView().getItem(rawSlot)).isEmpty()) {
 				e.setCancelled(true);
+				e.getWhoClicked().sendMessage(ChatColor.RED + "You cannot repair this item on an anvil");
+			}
 		}
 	}
 
@@ -183,12 +187,12 @@ public abstract class AnvilEvent extends Event implements Cancellable {
 			leftLore = leftLore == null ? new ArrayList<String>() : leftLore;
 
 			List<String> newLore = ItemUtils.getCustomEnchantsLore(event.getResult());
-			for (int i=customsLeft.size(); i<leftLore.size(); i++)
+			for (int i = customsLeft.size(); i < leftLore.size(); i++)
 				newLore.add(leftLore.get(i));
 
 			ItemMeta im = event.getResult().getItemMeta();
 			im.setLore(newLore);
-			
+
 			event.getResult().setItemMeta(im);
 		}
 
