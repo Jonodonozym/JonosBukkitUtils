@@ -37,8 +37,11 @@ public final class JonosBukkitUtils extends JavaPlugin{
 	@Override
 	public void onEnable() {
 		instance = this;
-		
+
 		new JarUtils(this).extractLibs("libs/lombok.jar");
+		new JarUtils(this).extractLibs("libs/JavaPoet.jar");
+		new JarUtils(this).extractLibs("libs/poetry.jar");
+		new JarUtils(this).extractLibs("libs/mangoSPI.jar");
 		
 		FileConfiguration config = Config.getConfig(this);
 		if (config.getBoolean("autoUpdate"))

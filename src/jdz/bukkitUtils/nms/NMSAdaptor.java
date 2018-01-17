@@ -29,3 +29,4 @@ public abstract class NMSAdaptor {
 	
 	public abstract boolean isBestTool(Material toolType, Block block);
 }
+ 

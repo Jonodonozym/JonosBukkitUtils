@@ -23,6 +23,7 @@ public enum SqlColumnType{
 	LONG,
 	INT,
 	DOUBLE,
+	BOOLEAN,
 	STRING_32,
 	STRING_64,
 	STRING_128,
@@ -41,8 +42,27 @@ public enum SqlColumnType{
 			case INT: return "int";
 			case LONG: return "bigint";
 			case DOUBLE: return "double";
+			case BOOLEAN: return "boolean";
 		}
 		
 		return "varchar("+name().substring(name().indexOf("_")).replace("_", "")+")";
+	}
+	
+	public boolean isString() {
+		return name().startsWith("STRING");
+	}
+	
+	public Class<?> getJavaClass(){
+		switch(this) {
+		case DOUBLE: return Double.class;
+		case INT: return Integer.class;
+		case INT_1_BYTE: return Byte.class;
+		case INT_2_BYTE: return Short.class;
+		case INT_3_BYTE: return Integer.class;
+		case INT_4_BYTE: return Integer.class;
+		case LONG:	return Long.class;
+		case BOOLEAN: return Boolean.class;
+		default: return String.class;
+		}
 	}
 }

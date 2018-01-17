@@ -126,7 +126,7 @@ public final class SqlMessageQueue implements Listener {
 		if (MessageQueueTable == null)
 			throw new RuntimeException("Must call MessageQueue.init() in this plugin's code somewhere, preferably before calling any MessageQueue methods");
 
-		if (sqlApi.autoReconnect())
+		if (!sqlApi.isConnected())
 			return false;
 		return true;
 	}

@@ -21,6 +21,7 @@ public final class RomanNumber {
 
 	private static final TreeMap<String, Integer> StringToInt = new TreeMap<String, Integer>();
 	private static final TreeMap<Integer, String> IntToString = new TreeMap<Integer, String>();
+	
     
    static {
 	    StringToInt.put("IV", 4);
