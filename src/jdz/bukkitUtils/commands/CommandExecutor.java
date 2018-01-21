@@ -63,8 +63,8 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 		this.plugin = plugin;
 
-		this.helpCommand = new HelpCommand(this);
-		setDefaultCommand(helpCommand);
+		helpCommand = new HelpCommand(this);
+		defaultCommand = helpCommand;
 
 		if (plugin != null) {
 			if (!loggers.containsKey(plugin))
@@ -193,6 +193,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 	public void setDefaultCommand(SubCommand c) {
 		defaultCommand = c;
+		helpCommand.reload();
 	}
 
 	public SubCommand getDefaultCommand() {
@@ -207,5 +208,6 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 	public void addCommand(SubCommand c, JavaPlugin plugin) {
 		extraCommands.put(c, plugin);
+		helpCommand.reload();
 	}
 }

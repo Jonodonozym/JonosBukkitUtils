@@ -10,6 +10,7 @@ import org.bukkit.command.CommandSender;
 
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandNoHelp;
+import jdz.bukkitUtils.commands.annotations.CommandUsage;
 import jdz.bukkitUtils.misc.StringUtils;
 
 @CommandLabel("help")
@@ -90,21 +91,24 @@ public final class HelpCommand extends SubCommand {
 		}
 	}
 
-	private void reload() {
+	public void reload() {
 		if (messages == null)
 			messages = new ArrayList<String>();
 		messages.clear();
+
+		CommandUsage usage = executor.getDefaultCommand().getClass().getAnnotation(CommandUsage.class);
+		if (usage != null && executor.getDefaultCommand().getClass().getAnnotation(CommandNoHelp.class) == null)
+			messages.add(getCommandDesc(executor.getDefaultCommand(), true));
 		
 		for (SubCommand command : executor.getSubCommands()) {
 			Class<? extends SubCommand> c = command.getClass();
 
-			if (c.equals(getClass()))
-				continue;
 			if (c.getAnnotation(CommandNoHelp.class) != null)
 				continue;
 
 			messages.add(getCommandDesc(command, true));
 		}
+
 
 		numPages = (extraMessages.size() + messages.size() + linesPerPage - 1) / linesPerPage;
 	}

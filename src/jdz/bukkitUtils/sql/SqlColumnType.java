@@ -30,7 +30,8 @@ public enum SqlColumnType{
 	STRING_256,
 	STRING_512,
 	STRING_1024,
-	STRING_2048;
+	STRING_2048,
+	STRING_65536;
 	
 	@SuppressWarnings("incomplete-switch")
 	String getSqlSyntax(){
