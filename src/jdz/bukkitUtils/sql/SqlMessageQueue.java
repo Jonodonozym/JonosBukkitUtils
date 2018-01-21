@@ -20,6 +20,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.plugin.Plugin;
 
+import jdz.bukkitUtils.JonosBukkitUtils;
+
 /**
  * Allows you to queue messages for players who may or may not be online
  * Requires an sql database, hence requires an SqlApi instance
@@ -73,7 +75,7 @@ public final class SqlMessageQueue implements Listener {
 		String update = "INSERT INTO " + MessageQueueTable + " (player, message, priority) VALUES('" + offlinePlayer.getName()
 				+ "','" + message + "'," + priority + ");";
 		System.out.println(update+" :: "+message);
-		sqlApi.executeUpdate(update);
+		sqlApi.executeUpdateAsync(update);
 	}
 
 	public void setQueuedMessages(OfflinePlayer offlinePlayer, List<String> messages) {
@@ -86,7 +88,7 @@ public final class SqlMessageQueue implements Listener {
 		for (String s : messages){
 			if (s == "")
 				continue;
-			sqlApi.executeUpdate(update.replace("{m}", s).replace("{p}", "" + i++));
+			sqlApi.executeUpdateAsync(update.replace("{m}", s).replace("{p}", "" + i++));
 		}
 	}
 
@@ -95,10 +97,10 @@ public final class SqlMessageQueue implements Listener {
 			return;
 
 		String update = "DELETE FROM " + MessageQueueTable + " WHERE player = '" + offlinePlayer.getName() + "';";
-		sqlApi.executeUpdate(update);
+		sqlApi.executeUpdateAsync(update);
 	}
 
-	public List<String> getQueuedMessages(OfflinePlayer offlinePlayer) {
+	private List<String> getQueuedMessages(OfflinePlayer offlinePlayer) {
 		if (!checkPreconditions())
 			return new ArrayList<String>();
 
@@ -133,11 +135,13 @@ public final class SqlMessageQueue implements Listener {
 
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		List<String> messages = getQueuedMessages(event.getPlayer());
-		if (!messages.isEmpty()) {
-			for (String s : messages)
-				event.getPlayer().sendMessage(s);
-			clearQueuedMessages(event.getPlayer());
-		}
+		Bukkit.getScheduler().runTaskAsynchronously(JonosBukkitUtils.instance, ()->{
+			List<String> messages = getQueuedMessages(event.getPlayer());
+			if (!messages.isEmpty()) {
+				for (String s : messages)
+					event.getPlayer().sendMessage(s);
+				clearQueuedMessages(event.getPlayer());
+			}
+		});
 	}
 }
