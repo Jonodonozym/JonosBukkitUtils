@@ -16,6 +16,7 @@ import org.bukkit.entity.Player;
 
 import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
 import jdz.bukkitUtils.JonosBukkitUtils;
+import jdz.bukkitUtils.commands.annotations.CommandAsync;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandLabels;
 import jdz.bukkitUtils.commands.annotations.CommandLongDescription;
@@ -50,6 +51,10 @@ public abstract class SubCommand {
 			if (s.equalsIgnoreCase(label))
 				return true;
 		return false;
+	}
+	
+	public boolean isAsync() {
+		return getClass().getAnnotation(CommandAsync.class)!=null;
 	}
 
 	public boolean hasRequiredPermissions(CommandSender sender) {

@@ -179,8 +179,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 	private final void executeIfHasPerms(SubCommand command, CommandSender sender, Set<String> flags, String... args) {
 		logCommand(sender, command.getLabel(), args);
-		if (command.hasRequiredPermissions(sender))
-			command.execute(sender, flags, args);
+		if (command.hasRequiredPermissions(sender)) {
+			if (command.isAsync())
+				Bukkit.getScheduler().runTaskAsynchronously(plugin, ()->{command.execute(sender, flags, args);});
+			else
+				command.execute(sender, flags, args);
+		}
 		else
 			sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that");
 	}
