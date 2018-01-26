@@ -62,6 +62,11 @@ public final class HelpCommand extends SubCommand {
 		extraMessages.add(message);
 		reload();
 	}
+	
+	public void addExtraCommand(SubCommand command) {
+		extraMessages.add(getCommandDesc(command, true));
+		reload();
+	}
 
 	@Override
 	public void execute(CommandSender sender, Set<String> flags, String... args) {
