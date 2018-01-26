@@ -24,4 +24,12 @@ public class ColorUtils {
     public static List<String> translate(List<String> string) {
         return string.stream().map(ColorUtils::translate).collect(Collectors.toCollection(ArrayList::new));
     }
+
+    public static String[] translate(String[] strings) {
+    	String[] retString = new String[strings.length];
+    	int i=0;
+    	for (String s: strings)
+    		retString[i++] = translate(s);
+    	return retString;
+    }
 }
