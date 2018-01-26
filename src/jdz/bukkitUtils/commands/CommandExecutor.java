@@ -170,7 +170,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		if (command.requiredArgs() > args.length) {
 			sender.sendMessage(ChatColor.RED + "Insufficient arguments");
 			if (!command.getUsage().equals(""))
-				sender.sendMessage(ChatColor.RED + "Usage: " + command.getUsage());
+				sender.sendMessage(ChatColor.RED + "Usage: /" + label+" "+command.getUsage());
 		} else if (command.isPlayerOnly() && !(sender instanceof Player))
 			sender.sendMessage(ChatColor.RED + "You must be a player to do that!");
 		else
