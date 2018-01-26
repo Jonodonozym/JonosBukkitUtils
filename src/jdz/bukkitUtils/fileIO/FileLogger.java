@@ -124,7 +124,7 @@ public final class FileLogger {
 	 * @param exception
 	 */
 	public void createErrorLog(String fileDir, String error) {
-		Bukkit.getLogger().info("["+plugin.getName()+"] An error occurred. Check the Error log file for details.");
+		Bukkit.getLogger().severe("["+plugin.getName()+"] An error occurred. Check the Error log file for details.");
 
 		File file = new File(fileDir);
 		if (!file.getParentFile().exists())
