@@ -30,8 +30,8 @@ public enum SqlColumnType{
 	STRING_256,
 	STRING_512,
 	STRING_1024,
-	STRING_2048,
-	STRING_65536;
+	STRING,
+	STRING_LARGE;
 	
 	@SuppressWarnings("incomplete-switch")
 	String getSqlSyntax(){
@@ -44,6 +44,9 @@ public enum SqlColumnType{
 			case LONG: return "bigint";
 			case DOUBLE: return "double";
 			case BOOLEAN: return "boolean";
+
+			case STRING: return "text";
+			case STRING_LARGE: return "mediumtext";
 		}
 		
 		return "varchar("+name().substring(name().indexOf("_")).replace("_", "")+")";
