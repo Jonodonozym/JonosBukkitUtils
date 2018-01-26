@@ -52,6 +52,12 @@ public enum SqlColumnType{
 		return "varchar("+name().substring(name().indexOf("_")).replace("_", "")+")";
 	}
 	
+	String getDefault() {
+		if (this.name().startsWith("STRING"))
+			return "''";
+		return 0+"";
+	}
+	
 	public boolean isString() {
 		return name().startsWith("STRING");
 	}

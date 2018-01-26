@@ -354,7 +354,7 @@ public final class SqlApi {
 		List<String> existingColumns = getColumns(tableName);
 		for (SqlColumn c : columns)
 			if (!existingColumns.contains(c.name()))
-				update += "ADD COLUMN " + c.name() + " " + c.type().getSqlSyntax() + " NOT NULL, ";
+				update += "ADD COLUMN " + c.name() + " " + c.type().getSqlSyntax() + " NOT NULL DEFAULT "+c.type().getDefault()+", ";
 
 		if (update.contains(",")) {
 			update = update.substring(0, update.length() - 2);
