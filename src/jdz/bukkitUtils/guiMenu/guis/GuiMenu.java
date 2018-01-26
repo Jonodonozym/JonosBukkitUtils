@@ -46,7 +46,8 @@ public abstract class GuiMenu implements Listener{
 	}
 	
 	protected void clear(Inventory inv) {
-		pages.get(inv.getName()).clear();
+		if (pages.containsKey(inv.getName()))
+			pages.get(inv.getName()).clear();
 		inv.clear();
 	}
 	
