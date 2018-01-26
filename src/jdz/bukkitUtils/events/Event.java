@@ -22,8 +22,6 @@ public abstract class Event extends org.bukkit.event.Event{
 		return handlers.get(className);
 	}
 	
-	// TODO static magic for fetching handlers
-	
 	private boolean isCalled = false;
 	
 	public void call() {

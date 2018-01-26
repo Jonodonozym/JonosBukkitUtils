@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 public abstract class Database {
 	private static Map<Class<? extends Database>,Database> instances = new HashMap<Class<? extends Database>, Database>();
 	
-	public static Database getInstance(Class<? extends Database> c) {
+	protected static Database getInstance(Class<? extends Database> c) {
 		return instances.get(c);
 	}
 
