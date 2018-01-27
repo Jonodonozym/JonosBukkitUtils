@@ -25,7 +25,7 @@ public class ClickableStackCommands extends ClickableStack{
 	}
 	
 	@Override
-	public void onClick(GuiMenu menu, InventoryClickEvent event) {
+	public void onClick(GuiMenu menu, InventoryClickEvent event) {		
 		if (isConsole)
 			for (String command: commands)
 				Bukkit.getServer().dispatchCommand(event.getWhoClicked(), command);
@@ -33,9 +33,6 @@ public class ClickableStackCommands extends ClickableStack{
 		else
 			for (String command: commands)
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), insertPlayerName(command, event.getWhoClicked().getName()));
-		
-		if (closeOnClick)
-			event.getWhoClicked().closeInventory();
 	}
 	
 	private final String insertPlayerName(String string, String name) {

@@ -10,9 +10,10 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import jdz.bukkitUtils.guiMenu.guis.GuiMenu;
+import lombok.Getter;
 
 public abstract class ClickableStack{	
-	protected boolean closeOnClick = false;
+	@Getter private boolean closeOnClick = false;
 	private final ItemStack stack;
 
 	public ClickableStack(Material material, String name) {
