@@ -320,7 +320,7 @@ public final class SqlApi {
 	public void addTable(String tableName, SqlColumn... columns) {
 		String update = "CREATE TABLE IF NOT EXISTS " + tableName + " (";
 		for (SqlColumn c : columns)
-			update += c.name() + " " + c.type().getSqlSyntax() + ", ";
+			update += c.name() + " " + c.type().getSqlSyntax() + " NOT NULL"+c.type().getDefault()+", ";
 		if (columns.length != 0)
 			update = update.substring(0, update.length() - 2);
 		update += ");";
@@ -354,7 +354,7 @@ public final class SqlApi {
 		List<String> existingColumns = getColumns(tableName);
 		for (SqlColumn c : columns)
 			if (!existingColumns.contains(c.name()))
-				update += "ADD COLUMN " + c.name() + " " + c.type().getSqlSyntax() + " NOT NULL DEFAULT "+c.type().getDefault()+", ";
+				update += "ADD COLUMN " + c.name() + " " + c.type().getSqlSyntax() + " NOT NULL"+c.type().getDefault()+", ";
 
 		if (update.contains(",")) {
 			update = update.substring(0, update.length() - 2);

@@ -53,9 +53,11 @@ public enum SqlColumnType{
 	}
 	
 	String getDefault() {
+		if (this == STRING || this == STRING_LARGE)
+			return "";
 		if (this.name().startsWith("STRING"))
-			return "''";
-		return 0+"";
+			return " DEFAULT ''";
+		return " DEFAULT 0";
 	}
 	
 	public boolean isString() {
