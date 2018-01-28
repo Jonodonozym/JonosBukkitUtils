@@ -192,7 +192,7 @@ public abstract class SubCommand {
 
 				else if (parameterTypes[i].equals(Player.class)) {
 					OfflinePlayer player = Bukkit.getOfflinePlayer(args[i - startIndex]);
-					if (!player.hasPlayedBefore()) {
+					if (!(player.hasPlayedBefore() || player.isOnline())) {
 						sender.sendMessage(
 								ChatColor.RED + "'" + args[i - startIndex] + "' has never logged in before!");
 						return false;
@@ -206,7 +206,7 @@ public abstract class SubCommand {
 
 				else if (parameterTypes[i].equals(OfflinePlayer.class)) {
 					OfflinePlayer player = Bukkit.getOfflinePlayer(args[i - startIndex]);
-					if (!player.hasPlayedBefore()) {
+					if (!(player.hasPlayedBefore() || player.isOnline())) {
 						sender.sendMessage(
 								ChatColor.RED + "'" + args[i - startIndex] + "' has never logged in before!");
 						return false;
