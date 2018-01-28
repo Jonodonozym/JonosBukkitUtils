@@ -28,21 +28,23 @@ public class ClickableStackCommands extends ClickableStack{
 	public void onClick(GuiMenu menu, InventoryClickEvent event) {		
 		if (isConsole)
 			for (String command: commands)
-				Bukkit.getServer().dispatchCommand(event.getWhoClicked(), command);
+				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), insertPlayerName(command, event.getWhoClicked().getName()));
 		
 		else
 			for (String command: commands)
-				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(), insertPlayerName(command, event.getWhoClicked().getName()));
+				Bukkit.getServer().dispatchCommand(event.getWhoClicked(), insertPlayerName(command, event.getWhoClicked().getName()));
 	}
 	
-	private final String insertPlayerName(String string, String name) {
+	private static final String insertPlayerName(String string, String name) {
 		String newString = string.toLowerCase().replaceAll("\\{player\\}", name);
 		newString = newString.replaceAll("\\{playername\\}", name);
 		newString = newString.replaceAll("%player%", name);
 		newString = newString.replaceAll("%playername%", name);
-		newString = newString.replaceAll("[player]", name);
-		newString = newString.replaceAll("[playername]", name);
 		return newString;
 	}
 
+	public static void main(String[] args) {
+		System.out.println(insertPlayerName("cc open menu", "aXed"));
+	}
+	
 }
