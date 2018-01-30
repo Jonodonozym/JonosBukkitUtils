@@ -86,7 +86,7 @@ public final class SqlApi {
 			}
 
 			String url = "jdbc:mysql://" + config.dbURL + ":" + config.dbPort + "/" + config.dbName + "?user="
-					+ config.dbUsername + "&password=" + config.dbPassword + "&loginTimeout=1000&useSSL=false";
+					+ config.dbUsername + "&password=" + config.dbPassword + "&loginTimeout=1000&useSSL=false&autoReconnect=true";
 
 			dbConnection = DriverManager.getConnection(url, config.dbUsername, config.dbPassword);
 
@@ -132,8 +132,9 @@ public final class SqlApi {
 
 	public boolean isConnected() {
 		try {
-			if (dbConnection != null && !dbConnection.isClosed())
+			if (dbConnection != null && !dbConnection.isClosed() &&!dbConnection.isValid(5)) {
 				return true;
+			} 
 		} catch (SQLException e) {
 		}
 		autoReconnect();

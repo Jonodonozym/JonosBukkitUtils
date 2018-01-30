@@ -10,8 +10,10 @@
 package jdz.bukkitUtils.vault;
 
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
+import jdz.bukkitUtils.misc.utils.ColorUtils;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
@@ -66,4 +68,17 @@ public final class VaultLoader {
 	public static Permission getPermission() {
 		return perms;
 	}
+	
+    public static String getGroup(Player player) {
+        if (chat == null || perms == null)
+            return "";
+
+        String prefix = chat.getPlayerPrefix(player);
+        String group = perms.getPrimaryGroup(player);
+
+        if (prefix == null || prefix == "") 
+            prefix = chat.getGroupPrefix(player.getWorld(), group);
+
+        return ColorUtils.translate(prefix);
+    }
 }
