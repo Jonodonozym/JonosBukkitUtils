@@ -20,6 +20,7 @@ import jdz.bukkitUtils.commands.annotations.CommandAsync;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandLabels;
 import jdz.bukkitUtils.commands.annotations.CommandLongDescription;
+import jdz.bukkitUtils.commands.annotations.CommandOpOnly;
 import jdz.bukkitUtils.commands.annotations.CommandPermission;
 import jdz.bukkitUtils.commands.annotations.CommandPermissions;
 import jdz.bukkitUtils.commands.annotations.CommandPlayerOnly;
@@ -98,7 +99,12 @@ public abstract class SubCommand {
 	}
 
 	public boolean isPlayerOnly() {
-		return (this.getClass().getAnnotation(CommandPlayerOnly.class) != null);
+		return getClass().getAnnotation(CommandPlayerOnly.class) != null;
+	}
+
+
+	public boolean isOPOnly() {
+		return getClass().getAnnotation(CommandOpOnly.class) != null;
 	}
 
 	public abstract void execute(CommandSender sender, Set<String> flags, String... args);

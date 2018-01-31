@@ -18,6 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.commands.annotations.CommandExecutorAlias;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorAliases;
+import jdz.bukkitUtils.commands.annotations.CommandExecutorOpOnly;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPermission;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPermissions;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPlayerOnly;
@@ -125,6 +126,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			return true;
 		}
 
+		CommandExecutorOpOnly ceopo = this.getClass().getAnnotation(CommandExecutorOpOnly.class);
+		if (ceopo != null && !sender.isOp()) {
+			sender.sendMessage(ChatColor.RED + "You don't have enough permissions to do that!");
+			return true;
+		}
+		
 		for (String s : permissions) {
 			if (!sender.hasPermission(s)) {
 				sender.sendMessage(ChatColor.RED + "You are missing the permission node " + s);
@@ -196,8 +203,9 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 				sender.sendMessage(ChatColor.RED + "Usage: /" + label + " " + command.getUsage());
 		} else if (command.isPlayerOnly() && !(sender instanceof Player))
 			sender.sendMessage(ChatColor.RED + "You must be a player to do that!");
-		else
-			executeIfHasPerms(command, sender, flags, args);
+		else if (command.isOPOnly() && !sender.isOp())
+			sender.sendMessage(ChatColor.RED + "You don't have enough permissions to do that!");
+		else executeIfHasPerms(command, sender, flags, args);
 	}
 
 	private final void executeIfHasPerms(SubCommand command, CommandSender sender, Set<String> flags, String... args) {
