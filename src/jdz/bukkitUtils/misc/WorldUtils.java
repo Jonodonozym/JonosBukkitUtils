@@ -130,18 +130,20 @@ public final class WorldUtils {
 		return nearbyPlayers;
 	}
 
-	public static Vector calculateVelocityParabola(Location from, Location to, int heightGain) {
-		return calculateVelocityParabola(from.toVector(), to.toVector(), heightGain);
+	public static void flingPlayer(Player player, Location destination, int heightGain) {
+		flingPlayer(player, destination.toVector(), heightGain);
 	}
 	
-	public static Vector calculateVelocityParabola(Vector from, Vector to, int heightGain)
-    {
-        // Gravity of a potion
-        double gravity = 0.115;
+	public static Vector flingPlayer(Player player, Vector destination, int heightGain) {
+		Vector from = player.getLocation().toVector();
+		
+        // Gravity of a player
+        double gravity = 0.306;
  
         // Block locations
-        int endGain = to.getBlockY() - from.getBlockY();
-        double horizDist = Math.sqrt(distanceSquared(from, to));
+        int endGain = destination.getBlockY() - from.getBlockY();
+        double horizDist = Math.sqrt(distanceSquared(from, destination));
+        
  
         // Height gain
         int gain = heightGain;
@@ -153,7 +155,7 @@ public final class WorldUtils {
         double b = horizDist;
         double c = -endGain;
  
-        double slope = -b / (2 * a) - Math.sqrt(b * b - 4 * a * c) / (2 * a);
+        double slope = (-b - Math.sqrt(b * b - 4 * a * c)) / (2 * a);
  
         // Vertical velocity
         double vy = Math.sqrt(maxGain * gravity);
@@ -162,8 +164,8 @@ public final class WorldUtils {
         double vh = vy / slope;
  
         // Calculate horizontal direction
-        int dx = to.getBlockX() - from.getBlockX();
-        int dz = to.getBlockZ() - from.getBlockZ();
+        int dx = destination.getBlockX() - from.getBlockX();
+        int dz = destination.getBlockZ() - from.getBlockZ();
         double mag = Math.sqrt(dx * dx + dz * dz);
         double dirx = dx / mag;
         double dirz = dz / mag;
