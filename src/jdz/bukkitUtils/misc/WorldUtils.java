@@ -130,11 +130,11 @@ public final class WorldUtils {
 		return nearbyPlayers;
 	}
 
-	public static void flingPlayer(Player player, Location destination, int heightGain) {
+	public static void flingPlayer(Player player, Location destination, double heightGain) {
 		flingPlayer(player, destination.toVector(), heightGain);
 	}
 	
-	public static Vector flingPlayer(Player player, Vector destination, int heightGain) {
+	public static Vector flingPlayer(Player player, Vector destination, double heightGain) {
 		Vector from = player.getLocation().toVector();
 		
         // Gravity of a player
@@ -146,7 +146,7 @@ public final class WorldUtils {
         
  
         // Height gain
-        int gain = heightGain;
+        double gain = heightGain;
  
         double maxGain = gain > (endGain + gain) ? gain : (endGain + gain);
  
