@@ -18,6 +18,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.commands.annotations.CommandExecutorAlias;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorAliases;
+import jdz.bukkitUtils.commands.annotations.CommandExecutorPermission;
+import jdz.bukkitUtils.commands.annotations.CommandExecutorPermissions;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPlayerOnly;
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.StringUtils;
@@ -30,6 +32,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	protected final boolean logCommands;
 	protected final String label;
 	protected final List<String> aliases;
+	protected final List<String> permissions;
 	protected final FileLogger fileLogger;
 
 	protected final HelpCommand helpCommand;
@@ -60,6 +63,19 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		aliases.add(label);
 
 		this.aliases = Collections.unmodifiableList(aliases);
+
+		CommandExecutorPermissions commandPerms = this.getClass().getAnnotation(CommandExecutorPermissions.class);
+		CommandExecutorPermission perm = this.getClass().getAnnotation(CommandExecutorPermission.class);
+
+		List<String> perms = new ArrayList<String>(commandPerms == null ? 1 : commandPerms.value().length);
+
+		if (commandAliases != null)
+			for (CommandExecutorPermission l : commandPerms.value())
+				perms.add(l.value());
+		else if (alias != null)
+			perms.add(perm.value());
+
+		this.permissions = Collections.unmodifiableList(perms);
 
 		this.plugin = plugin;
 
@@ -107,6 +123,13 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		if (cepo != null && !(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + "You must be a player to do that!");
 			return true;
+		}
+
+		for (String s : permissions) {
+			if (!sender.hasPermission(s)) {
+				sender.sendMessage(ChatColor.RED + "You are missing the permission node " + s);
+				return true;
+			}
 		}
 
 		if (args.length == 0) {
@@ -170,7 +193,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		if (command.requiredArgs() > args.length) {
 			sender.sendMessage(ChatColor.RED + "Insufficient arguments");
 			if (!command.getUsage().equals(""))
-				sender.sendMessage(ChatColor.RED + "Usage: /" + label+" "+command.getUsage());
+				sender.sendMessage(ChatColor.RED + "Usage: /" + label + " " + command.getUsage());
 		} else if (command.isPlayerOnly() && !(sender instanceof Player))
 			sender.sendMessage(ChatColor.RED + "You must be a player to do that!");
 		else
@@ -181,11 +204,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		logCommand(sender, command.getLabel(), args);
 		if (command.hasRequiredPermissions(sender)) {
 			if (command.isAsync())
-				Bukkit.getScheduler().runTaskAsynchronously(plugin, ()->{command.execute(sender, flags, args);});
+				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+					command.execute(sender, flags, args);
+				});
 			else
 				command.execute(sender, flags, args);
-		}
-		else
+		} else
 			sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that");
 	}
 
