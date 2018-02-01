@@ -6,12 +6,19 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.inventory.ItemStack;
 
 import jdz.bukkitUtils.guiMenu.guis.GuiMenu;
 
 public class ClickableStackCommands extends ClickableStack{
 	private final List<String> commands;
 	private final boolean isConsole;
+	
+	public ClickableStackCommands(ItemStack stack, boolean isConsole, List<String> commands) {
+		super(stack);
+		this.isConsole = isConsole;
+		this.commands = commands;
+	}
 	
 	public ClickableStackCommands(Material material, String name, boolean isConsole, List<String> commands) {
 		super(material, name);

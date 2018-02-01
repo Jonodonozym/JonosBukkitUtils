@@ -48,6 +48,14 @@ public abstract class GuiMenu implements Listener{
         clickable.onClick(this, e);
 	}
 	
+	protected void update(Inventory inv) {
+		if (!pages.containsKey(inv))
+			return;
+		
+		for (Integer i: pages.get(inv).keySet())
+			inv.setItem(i, pages.get(inv).get(i).getStack());
+	}
+	
 	protected void clear(Inventory inv) {
 		if (pages.containsKey(inv))
 			pages.get(inv).clear();

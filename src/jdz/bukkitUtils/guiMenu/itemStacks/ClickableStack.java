@@ -15,6 +15,10 @@ import lombok.Getter;
 public abstract class ClickableStack{	
 	@Getter private boolean closeOnClick = false;
 	private final ItemStack stack;
+	
+	public ClickableStack(ItemStack stack) {
+		this.stack = stack;
+	}
 
 	public ClickableStack(Material material, String name) {
 		this(material, name, new ArrayList<String>());
