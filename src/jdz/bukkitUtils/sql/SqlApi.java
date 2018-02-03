@@ -94,10 +94,12 @@ public final class SqlApi {
 				Bukkit.getLogger().info(
 						"Successfully connected to the " + config.dbName + " database at the host " + config.dbURL);
 
+			
 			Bukkit.getScheduler().runTaskAsynchronously(plugin, ()->{
-				for (Runnable r : connectHooks)
+				for (Runnable r : new ArrayList<Runnable>(connectHooks))
 					r.run();
 			});
+			connectHooks.clear();
 
 			return dbConnection;
 		}
@@ -132,7 +134,7 @@ public final class SqlApi {
 
 	public boolean isConnected() {
 		try {
-			if (dbConnection != null && !dbConnection.isClosed() &&!dbConnection.isValid(5)) {
+			if (dbConnection != null && !dbConnection.isClosed() && dbConnection.isValid(5)) {
 				return true;
 			} 
 		} catch (SQLException e) {
