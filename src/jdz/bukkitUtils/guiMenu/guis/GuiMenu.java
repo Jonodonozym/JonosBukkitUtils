@@ -62,6 +62,10 @@ public abstract class GuiMenu implements Listener{
 		inv.clear();
 	}
 	
+	protected boolean setItem(ClickableStack item, Inventory inv, int row, int column) {
+		return setItem(item, row*9+column, inv);
+	}
+	
 	protected boolean setItem(ClickableStack item, int slot, Inventory inv) {
 		if (slot < 0 || slot >= inv.getSize()) return false;
 
