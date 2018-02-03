@@ -70,10 +70,10 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 		List<String> perms = new ArrayList<String>(commandPerms == null ? 1 : commandPerms.value().length);
 
-		if (commandAliases != null)
+		if (commandPerms != null)
 			for (CommandExecutorPermission l : commandPerms.value())
 				perms.add(l.value());
-		else if (alias != null)
+		else if (perm != null)
 			perms.add(perm.value());
 
 		this.permissions = Collections.unmodifiableList(perms);
