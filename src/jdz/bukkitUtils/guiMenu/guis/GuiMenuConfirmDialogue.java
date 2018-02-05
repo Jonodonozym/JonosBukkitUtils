@@ -26,7 +26,7 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 		confirmStack = new ClickableStack(Material.WOOL, ChatColor.GREEN+"Confim") {
 			@Override
 			public void onClick(GuiMenu menu, InventoryClickEvent event) {
-				onConfirm();
+				onConfirm((Player)event.getWhoClicked());
 			}
 		};
 		confirmStack.getStack().setDurability(DyeColor.LIME.getWoolData());
@@ -34,7 +34,7 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 		cancelStack = new ClickableStack(Material.WOOL, ChatColor.RED + "Cancel") {
 			@Override
 			public void onClick(GuiMenu menu, InventoryClickEvent event) {
-				onCancel();
+				onCancel((Player)event.getWhoClicked());
 			}
 		};
 		cancelStack.getStack().setDurability(DyeColor.RED.getWoolData());
@@ -56,8 +56,8 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 		return cancelStack;
 	}
 
-	public abstract void onConfirm();
+	public abstract void onConfirm(Player player);
 
-	public abstract void onCancel();
+	public abstract void onCancel(Player player);
 
 }
