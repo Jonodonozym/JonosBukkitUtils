@@ -39,9 +39,7 @@ public final class JonosBukkitUtils extends JavaPlugin{
 		instance = this;
 
 		new JarUtils(this).extractLibs("libs/lombok.jar");
-		new JarUtils(this).extractLibs("libs/JavaPoet.jar");
-		new JarUtils(this).extractLibs("libs/poetry.jar");
-		new JarUtils(this).extractLibs("libs/mangoSPI.jar");
+		new JarUtils(this).extractLibs("libs/exp4j.jar");
 		
 		FileConfiguration config = Config.getConfig(this);
 		if (config.getBoolean("autoUpdate"))
