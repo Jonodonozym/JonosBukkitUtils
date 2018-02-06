@@ -1,6 +1,7 @@
 
 package jdz.bukkitUtils.misc;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,5 +49,19 @@ public final class StringUtils {
 		for (String word: wordArray)
 			combined += " "+capitalizeWord(word);
 		return combined.replaceFirst(" ", "");
+	}
+	
+	public String[] splitIntoLines(String s, int charsPerLine) {
+		List<String> lines = new ArrayList<String>();
+		String buffer = "";
+		for (String word: s.split(" ")) {
+			if (buffer.length() > charsPerLine) {
+				lines.add(buffer);
+				buffer = "";
+			}
+			buffer += word;
+		}
+		lines.add(buffer);
+		return lines.toArray(new String[lines.size()]);
 	}
 }
