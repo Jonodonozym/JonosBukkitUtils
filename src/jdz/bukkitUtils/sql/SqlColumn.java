@@ -17,10 +17,18 @@ package jdz.bukkitUtils.sql;
 public final class SqlColumn{
 	private final String name;
 	private final SqlColumnType type;
-	
+	private final String Default;
+
 	public SqlColumn(String name, SqlColumnType type){
 		this.name = name;
 		this.type = type;
+		this.Default = type.getDefaultStatement();
+	}
+	
+	public SqlColumn(String name, SqlColumnType type, String Default){
+		this.name = name;
+		this.type = type;
+		this.Default = " DEFAULT "+Default;
 	}
 	
 	public String name(){
@@ -29,5 +37,9 @@ public final class SqlColumn{
 	
 	public SqlColumnType type(){
 		return type;
+	}
+	
+	public String getDefault() {
+		return Default;
 	}
 }

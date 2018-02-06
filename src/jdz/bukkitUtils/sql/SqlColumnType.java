@@ -52,7 +52,7 @@ public enum SqlColumnType{
 		return "varchar("+name().substring(name().indexOf("_")).replace("_", "")+")";
 	}
 	
-	String getDefault() {
+	String getDefaultStatement() {
 		if (this == STRING || this == STRING_LARGE)
 			return "";
 		if (this.name().startsWith("STRING"))
