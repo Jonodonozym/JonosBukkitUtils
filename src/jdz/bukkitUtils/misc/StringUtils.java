@@ -51,7 +51,7 @@ public final class StringUtils {
 		return combined.replaceFirst(" ", "");
 	}
 	
-	public String[] splitIntoLines(String s, int charsPerLine) {
+	public static String[] splitIntoLines(String s, int charsPerLine) {
 		List<String> lines = new ArrayList<String>();
 		for (String line: s.split("\n")) {
 			String buffer = "";
