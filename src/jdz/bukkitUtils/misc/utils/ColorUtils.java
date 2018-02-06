@@ -1,8 +1,11 @@
 package jdz.bukkitUtils.misc.utils;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.bukkit.ChatColor;
 
 public class ColorUtils {
 	
@@ -31,5 +34,20 @@ public class ColorUtils {
     	for (String s: strings)
     		retString[i++] = translate(s);
     	return retString;
+    }
+    
+    public static String[] colorizeLines(ChatColor color, String... lines) {
+    	String[] retLines = new String[lines.length];
+    	int i=0;
+    	for (String s: lines)
+    		retLines[i++] = color+s;
+    	return retLines;
+    }
+    
+    public static List<String> colorizeLines(ChatColor color, List<String> lines) {
+    	List<String> retLines = new ArrayList<String>();
+    	for (String s: lines)
+    		retLines.add(color+s);
+    	return retLines;
     }
 }
