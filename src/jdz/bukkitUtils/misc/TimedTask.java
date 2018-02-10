@@ -9,8 +9,10 @@
 
 package jdz.bukkitUtils.misc;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scheduler.BukkitScheduler;
 
 /**
  * Asynchronosly runs a task on a loop for you
@@ -25,26 +27,23 @@ import org.bukkit.scheduler.BukkitRunnable;
  */
 public final class TimedTask {
 	private boolean isRunning = false;
-	private final BukkitRunnable runnable;
+	private final Runnable runnable;
 	private final int tickInterval;
 	private final JavaPlugin plugin;
+	
+	private int taskID = -1;
 	
 	public TimedTask(JavaPlugin plugin, int tickInterval, Runnable r){
 		this.tickInterval = tickInterval;
 		this.plugin = plugin;
-		runnable = new BukkitRunnable() {
-			@Override
-			public void run() {
-				r.run();
-			}
-		};
+		runnable = r;
 	}
 	
 	/**
 	 * Runs the task a single time
 	 */
 	public void run(){
-		runnable.runTaskAsynchronously(plugin);
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
 	}
 	
 	/**
@@ -52,7 +51,7 @@ public final class TimedTask {
 	 */
 	public void start() {
 		if (!isRunning) {
-			runnable.runTaskTimer(plugin, tickInterval, tickInterval);
+			taskID = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, tickInterval, tickInterval).getTaskId();
 			isRunning = true;
 		}
 	}
@@ -62,7 +61,7 @@ public final class TimedTask {
 	 */
 	public void stop() {
 		if (isRunning) {
-			runnable.cancel();
+			Bukkit.getScheduler().cancelTask(taskID);
 			isRunning = false;
 		}
 	}
