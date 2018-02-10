@@ -207,7 +207,7 @@ public abstract class SubCommand {
 						sender.sendMessage(ChatColor.RED + "'" + args[i - startIndex] + "' is not online!");
 						return false;
 					}
-					newArgs[i] = (Player) player;
+					newArgs[i] = player;
 				}
 
 				else if (parameterTypes[i].equals(OfflinePlayer.class)) {

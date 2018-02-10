@@ -35,12 +35,12 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 			Field f = org.bukkit.enchantments.Enchantment.class.getDeclaredField("acceptingNew");
 			f.setAccessible(true);
 			f.set(null, true);
-			Enchantment.registerEnchantment(this);
+			org.bukkit.enchantments.Enchantment.registerEnchantment(this);
 		} catch (IllegalArgumentException e) {
-			if (Enchantment.getById(getId()).equals(this))
+			if (org.bukkit.enchantments.Enchantment.getById(getId()).equals(this))
 				return;
 			plugin.getLogger().severe(
-					"Enchantment " + getName() + "'s ID Conflicts with " + Enchantment.getById(getId()).getName());
+					"Enchantment " + getName() + "'s ID Conflicts with " + org.bukkit.enchantments.Enchantment.getById(getId()).getName());
 		} catch (Exception e) {
 			new FileLogger(plugin).createErrorLog(e);
 		}
