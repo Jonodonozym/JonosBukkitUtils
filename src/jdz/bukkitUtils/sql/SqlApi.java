@@ -48,7 +48,8 @@ public final class SqlApi {
 		this.config = config;
 		this.plugin = plugin;
 		fileLogger = new FileLogger(plugin);
-		openConnection(true);
+		if (config.isValid())
+			openConnection(true);
 	}
 
 	public void runOnConnect(Runnable r) {
@@ -63,7 +64,8 @@ public final class SqlApi {
 		if (newConfig.equals(config))
 			return;
 		config = newConfig;
-		openConnection(true);
+		if (config.isValid())
+			openConnection(true);
 	}
 
 	/**
@@ -74,46 +76,44 @@ public final class SqlApi {
 	 *            the logger to record success / fail messages to
 	 * @return the opened connection, or null if one couldn't be created
 	 */
-	public Connection openConnection(boolean doLogging) {
-		if (dbConnection != null)
-			close(dbConnection);
-		try {
+	public void openConnection(boolean doLogging) {
+		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+			if (dbConnection != null)
+				close(dbConnection);
 			try {
-				Class.forName(driver).newInstance();
-			} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-				if (Bukkit.getLogger() != null)
+				try {
+					Class.forName(driver).newInstance();
+				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+					if (Bukkit.getLogger() != null)
+						fileLogger.createErrorLog(e);
+					return;
+				}
+				
+				String url = "jdbc:mysql://" + config.dbURL + ":" + config.dbPort + "/" + config.dbName + "?user="
+						+ config.dbUsername + "&password=" + config.dbPassword + "&loginTimeout=1000&useSSL=false&autoReconnect=true";
+
+				dbConnection = DriverManager.getConnection(url, config.dbUsername, config.dbPassword);
+
+				if (doLogging)
+					Bukkit.getLogger().info("Successfully connected to the " + config.dbName
+							+ " SQL database at the host " + config.dbURL);
+
+				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+					for (Runnable r : new ArrayList<Runnable>(connectHooks))
+						r.run();
+				});
+				connectHooks.clear();
+				return;
+			} catch (Exception e) {
+				if (doLogging) {
+					Bukkit.getLogger().info(
+							"Failed to connect to the database. Refer to the error log file in the plugin's directory"
+									+ " and contact the database host / plugin developer to help resolve the issue.");
 					fileLogger.createErrorLog(e);
+				}
+				autoReconnect();
 			}
-
-			String url = "jdbc:mysql://" + config.dbURL + ":" + config.dbPort + "/" + config.dbName + "?user="
-					+ config.dbUsername + "&password=" + config.dbPassword + "&loginTimeout=1000&useSSL=false&autoReconnect=true";
-
-			dbConnection = DriverManager.getConnection(url, config.dbUsername, config.dbPassword);
-
-			if (doLogging)
-				Bukkit.getLogger().info(
-						"Successfully connected to the " + config.dbName + " database at the host " + config.dbURL);
-
-			
-			Bukkit.getScheduler().runTaskAsynchronously(plugin, ()->{
-				for (Runnable r : new ArrayList<Runnable>(connectHooks))
-					r.run();
-			});
-			connectHooks.clear();
-
-			return dbConnection;
-		}
-
-		catch (SQLException e) {
-			if (doLogging) {
-				Bukkit.getLogger()
-						.info("Failed to connect to the database. Refer to the error log file in the plugin's directory"
-								+ " and contact the database host / plugin developer to help resolve the issue.");
-				fileLogger.createErrorLog(e);
-			}
-			autoReconnect();
-		}
-		return null;
+		});
 	}
 
 	/**
@@ -134,12 +134,13 @@ public final class SqlApi {
 
 	public boolean isConnected() {
 		try {
-			if (dbConnection != null && !dbConnection.isClosed() && dbConnection.isValid(5)) {
+			if (dbConnection != null && !dbConnection.isClosed() && dbConnection.isValid(0)) {
 				return true;
-			} 
+			}
 		} catch (SQLException e) {
 		}
-		autoReconnect();
+		if (dbConnection != null && config.isValid())
+			autoReconnect();
 		return false;
 	}
 
@@ -147,10 +148,9 @@ public final class SqlApi {
 		if (autoReconnectTask == null) {
 			plugin.getLogger().info("SQL database '" + config.dbName + "' recently went offline, will auto-reconnect.");
 			autoReconnectTask = new TimedTask(plugin, config.dbReconnectTime, () -> {
-				Connection con = openConnection(false);
-				if (con != null) {
+				openConnection(false);
+				if (dbConnection != null) {
 					Bukkit.getLogger().info("Successfully re-connected to the database");
-					dbConnection = con;
 					if (autoReconnectTask != null)
 						autoReconnectTask.stop();
 					autoReconnectTask = null;
@@ -321,11 +321,14 @@ public final class SqlApi {
 	 * @param columns
 	 */
 	public void addTable(String tableName, SqlColumn... columns) {
-		String update = "CREATE TABLE IF NOT EXISTS " + tableName + " (";
-		for (SqlColumn c : columns)
-			update += c.name() + " " + c.type().getSqlSyntax() + " NOT NULL"+c.type().getDefaultStatement()+", ";
-		if (columns.length != 0)
-			update = update.substring(0, update.length() - 2);
+		String update = "CREATE TABLE IF NOT EXISTS " + tableName;
+		if (columns != null && columns.length > 0) {
+			update = update + " (";
+			for (SqlColumn c : columns)
+				update += c.name() + " " + c.type().getSqlSyntax() + " NOT NULL" + c.type().getDefaultStatement() + ", ";
+			if (columns.length != 0)
+				update = update.substring(0, update.length() - 2);
+		}
 		update += ");";
 
 		executeUpdate(update);
@@ -353,11 +356,15 @@ public final class SqlApi {
 	 * @param columns
 	 */
 	public void addColumns(String tableName, SqlColumn... columns) {
+		if (columns == null || columns.length == 0)
+			return;
+		
 		String update = "ALTER TABLE " + tableName + " ";
 		List<String> existingColumns = getColumns(tableName);
 		for (SqlColumn c : columns)
 			if (!existingColumns.contains(c.name()))
-				update += "ADD COLUMN " + c.name() + " " + c.type().getSqlSyntax() + " NOT NULL"+c.getDefault()+", ";
+				update += "ADD COLUMN " + c.name() + " " + c.type().getSqlSyntax() + " NOT NULL" + c.getDefault()
+						+ ", ";
 
 		if (update.contains(",")) {
 			update = update.substring(0, update.length() - 2);
@@ -370,22 +377,25 @@ public final class SqlApi {
 	 * drops a column from a table
 	 * 
 	 * @param tableName
-	 * @param columnName
+	 * @param column
 	 */
-	public void removeColumn(String tableName, String columnName) {
-		removeColumns(tableName, columnName);
+	public void removeColumn(String tableName, String column) {
+		removeColumns(tableName, column);
 	}
 
 	/**
 	 * drops multiple columns from a table
 	 * 
 	 * @param tableName
-	 * @param columnNames
+	 * @param columns
 	 */
-	public void removeColumns(String tableName, String... columnNames) {
+	public void removeColumns(String tableName, String... columns) {
+		if (columns == null || columns.length == 0)
+			return;
+		
 		String update = "ALTER TABLE " + tableName + " ";
 		List<String> existingColumns = getColumns(tableName);
-		for (String c : columnNames)
+		for (String c : columns)
 			if (!existingColumns.contains(c))
 				update += "DROP COLUMN " + c + ", ";
 

@@ -13,6 +13,9 @@ import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.Config;
 
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
 class SqlConfig {
 	String dbURL = "";
 	String dbPort = "";
@@ -34,6 +37,12 @@ class SqlConfig {
 		if (!config.exists())
 			config = Config.getDefaultSqlFile(plugin);
 		return reload(config);
+	}
+	
+	public boolean isValid() {
+		return !(dbURL == null || dbPort == null || dbName == null || dbUsername == null || dbPassword == null
+				|| dbURL.equals("") || dbPort.equals("") || dbName.equals("") || dbUsername.equals("")
+				|| dbPassword.equals(""));
 	}
 
 	private boolean reload(File configFile) {
@@ -81,21 +90,5 @@ class SqlConfig {
 			return false;
 		}
 		return true;
-	}
-
-	@Override
-	public boolean equals(Object other) {
-		if (!(other instanceof SqlConfig))
-			return false;
-
-		SqlConfig otherConfig = (SqlConfig) other;
-		return dbURL.equals(otherConfig.dbURL) && dbName.equals(otherConfig.dbName)
-				&& dbUsername.equals(otherConfig.dbUsername) && dbPassword.equals(otherConfig.dbPassword)
-				&& dbPort.equals(otherConfig.dbPort) && dbReconnectTime == otherConfig.dbReconnectTime;
-	}
-	
-	@Override
-	public int hashCode() {
-		return dbURL.hashCode()*dbName.hashCode()*dbUsername.hashCode()*dbPassword.hashCode()*dbPort.hashCode()*dbReconnectTime;
 	}
 }
