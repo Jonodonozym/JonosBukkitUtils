@@ -15,6 +15,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -83,14 +84,16 @@ public final class SqlApi {
 			try {
 				try {
 					Class.forName(driver).newInstance();
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+				}
+				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
 					if (Bukkit.getLogger() != null)
 						fileLogger.createErrorLog(e);
 					return;
 				}
-				
+
 				String url = "jdbc:mysql://" + config.dbURL + ":" + config.dbPort + "/" + config.dbName + "?user="
-						+ config.dbUsername + "&password=" + config.dbPassword + "&loginTimeout=1000&useSSL=false&autoReconnect=true";
+						+ config.dbUsername + "&password=" + config.dbPassword
+						+ "&loginTimeout=1000&useSSL=false&autoReconnect=true";
 
 				dbConnection = DriverManager.getConnection(url, config.dbUsername, config.dbPassword);
 
@@ -98,13 +101,12 @@ public final class SqlApi {
 					Bukkit.getLogger().info("Successfully connected to the " + config.dbName
 							+ " SQL database at the host " + config.dbURL);
 
-				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-					for (Runnable r : new ArrayList<Runnable>(connectHooks))
-						r.run();
-				});
+				for (Runnable r : new ArrayList<Runnable>(connectHooks))
+					r.run();
 				connectHooks.clear();
 				return;
-			} catch (Exception e) {
+			}
+			catch (Exception e) {
 				if (doLogging) {
 					Bukkit.getLogger().info(
 							"Failed to connect to the database. Refer to the error log file in the plugin's directory"
@@ -126,19 +128,18 @@ public final class SqlApi {
 			try {
 				connection.close();
 				return true;
-			} catch (SQLException e) {
 			}
+			catch (SQLException e) {}
 		}
 		return false;
 	}
 
 	public boolean isConnected() {
 		try {
-			if (dbConnection != null && !dbConnection.isClosed() && dbConnection.isValid(0)) {
+			if (dbConnection != null && !dbConnection.isClosed())
 				return true;
-			}
-		} catch (SQLException e) {
 		}
+		catch (SQLException e) {}
 		if (dbConnection != null && config.isValid())
 			autoReconnect();
 		return false;
@@ -186,14 +187,17 @@ public final class SqlApi {
 				if (row.length > 0)
 					rows.add(row);
 			}
-		} catch (SQLException e) {
-			fileLogger.createErrorLog(e);
-		} finally {
+		}
+		catch (SQLException e) {
+			fileLogger.createErrorLog(e, "Using query: " + query);
+		}
+		finally {
 			if (stmt != null) {
 				try {
 					stmt.close();
-				} catch (SQLException e) {
-					fileLogger.createErrorLog(e);
+				}
+				catch (SQLException e) {
+					fileLogger.createErrorLog(e, "Using query: " + query);
 				}
 			}
 		}
@@ -204,7 +208,7 @@ public final class SqlApi {
 		List<String> columns = new ArrayList<String>();
 		if (!isConnected())
 			return columns;
-
+			
 		String query = "SHOW columns FROM " + table + ";";
 		Statement stmt = null;
 		try {
@@ -212,14 +216,17 @@ public final class SqlApi {
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next())
 				columns.add(rs.getString("Field"));
-		} catch (SQLException e) {
-			fileLogger.createErrorLog(e);
-		} finally {
+		}
+		catch (SQLException e) {
+			fileLogger.createErrorLog(e, "Using query: " + query);
+		}
+		finally {
 			if (stmt != null) {
 				try {
 					stmt.close();
-				} catch (SQLException e) {
-					fileLogger.createErrorLog(e);
+				}
+				catch (SQLException e) {
+					fileLogger.createErrorLog(e, "Using query: " + query);
 				}
 			}
 		}
@@ -254,14 +261,17 @@ public final class SqlApi {
 		try {
 			stmt = dbConnection.createStatement();
 			stmt.executeUpdate(update);
-		} catch (SQLException e) {
-			logger.createErrorLog(e);
-		} finally {
+		}
+		catch (SQLException e) {
+			fileLogger.createErrorLog(e, "Using update: " + update);
+		}
+		finally {
 			if (stmt != null) {
 				try {
 					stmt.close();
-				} catch (SQLException e) {
-					logger.createErrorLog(e);
+				}
+				catch (SQLException e) {
+					fileLogger.createErrorLog(e, "Using update: " + update);
 				}
 			}
 		}
@@ -300,14 +310,17 @@ public final class SqlApi {
 			ResultSet rs = stmt.executeQuery(query);
 			while (rs.next())
 				return true;
-		} catch (SQLException e) {
-			fileLogger.createErrorLog(e);
-		} finally {
+		}
+		catch (SQLException e) {
+			fileLogger.createErrorLog(e, "Using query: " + query);
+		}
+		finally {
 			if (stmt != null) {
 				try {
 					stmt.close();
-				} catch (SQLException e) {
-					fileLogger.createErrorLog(e);
+				}
+				catch (SQLException e) {
+					fileLogger.createErrorLog(e, "Using query: " + query);
 				}
 			}
 		}
@@ -321,18 +334,32 @@ public final class SqlApi {
 	 * @param columns
 	 */
 	public void addTable(String tableName, SqlColumn... columns) {
-		String update = "CREATE TABLE IF NOT EXISTS " + tableName;
-		if (columns != null && columns.length > 0) {
-			update = update + " (";
-			for (SqlColumn c : columns)
-				update += c.name() + " " + c.getType().getSqlSyntax() + " NOT NULL" + c.getType().getDefaultStatement() + ", ";
-			if (columns.length != 0)
-				update = update.substring(0, update.length() - 2);
+		if (!isConnected()) {
+			runOnConnect(()->{
+				addTable(tableName, columns);
+			});
+			return;
 		}
-		update += ");";
+		
+		if (!hasTable(tableName)) {
+			String update = "CREATE TABLE IF NOT EXISTS " + tableName;
+			if (columns != null && columns.length > 0) {
+				update = update + " (";
+				for (SqlColumn c : columns)
+					update += c.name() + " " + c.getType().getSqlSyntax() + " NOT NULL"
+							+ c.getType().getDefaultStatement() + ", ";
+				if (columns.length != 0)
+					update = update.substring(0, update.length() - 2);
+			}
+			update += ");";
 
-		executeUpdate(update);
-		updatePrimaryKeys(tableName, columns);
+			executeUpdate(update);
+		}
+		else {
+			if (columns != null && columns.length > 0)
+				addColumns(tableName, columns);
+			updatePrimaryKeys(tableName, columns);
+		}
 	}
 
 	public void removeTable(String tableName) {
@@ -356,20 +383,28 @@ public final class SqlApi {
 	 * @param tableName
 	 * @param columns
 	 */
-	public void addColumns(String tableName, SqlColumn... columns) {
+	public void addColumns(String tableName, SqlColumn... columns) {		
 		if (columns == null || columns.length == 0)
 			return;
-		
+
+		if (!isConnected()) {
+			runOnConnect(()->{
+				addColumns(tableName, columns);
+			});
+			return;
+		}
+
 		String update = "ALTER TABLE " + tableName + " ";
 		List<String> existingColumns = getColumns(tableName);
 		List<String> primaryKeys = getPrimaryKeys(tableName);
-		for (SqlColumn c : columns)
+		for (SqlColumn c : columns) {
 			if (!existingColumns.contains(c.name())) {
 				update += "ADD COLUMN " + c.name() + " " + c.getType().getSqlSyntax() + " NOT NULL" + c.getDefault()
 						+ ", ";
 				if (c.isPrimary())
 					primaryKeys.add(c.name());
 			}
+		}
 
 		if (update.contains(",")) {
 			update = update.substring(0, update.length() - 2);
@@ -398,7 +433,14 @@ public final class SqlApi {
 	public void removeColumns(String tableName, String... columns) {
 		if (columns == null || columns.length == 0)
 			return;
-		
+
+		if (!isConnected()) {
+			runOnConnect(()->{
+				removeColumns(tableName, columns);
+			});
+			return;
+		}
+
 		String update = "ALTER TABLE " + tableName + " ";
 		List<String> existingColumns = getColumns(tableName);
 		for (String c : columns)
@@ -412,34 +454,43 @@ public final class SqlApi {
 		}
 	}
 
-	public List<String> getPrimaryKeys(String table){
-		String query = "SHOW Column_name FROM "+table+" WHERE Key_name = 'PRIMARY'";
+	public List<String> getPrimaryKeys(String table) {
+		if (!isConnected())
+			return new ArrayList<String>();
+		
+		String query = "SHOW KEYS FROM " + table + " WHERE Key_name = 'PRIMARY'";
 		List<String[]> result = getRows(query);
 		List<String> keys = new ArrayList<String>();
-		for (String[] row: result)
+		for (String[] row : result)
 			keys.add(row[0]);
 		return keys;
 	}
-	
+
 	public void updatePrimaryKeys(String table, SqlColumn... columns) {
 		List<String> keys = new ArrayList<String>();
-		for (SqlColumn c: columns)
+		for (SqlColumn c : columns)
 			if (c.isPrimary())
 				keys.add(c.name());
 		setPrimaryKeys(table, keys.toArray(new String[keys.size()]));
 	}
-	
+
 	public void setPrimaryKeys(String table, String... keys) {
-		String update = "ALTER TABLE "+table+" DROP PRIMARY KEY";
-		
-		if (keys != null && keys.length != 0){
-			String addition = ", ADD PRIMARY KEY (";
-			for (String s: keys)
-				addition = addition + s+", ";
-			addition = addition.substring(0, addition.length()-2);
-			update = update + addition;
+		if (!isConnected()) {
+			runOnConnect(()->{
+				setPrimaryKeys(table, keys);
+			});
+			return;
 		}
-		update = update + ";";
-		executeUpdate(update);
+		
+		if (!getPrimaryKeys(table).isEmpty())
+			executeUpdate("ALTER TABLE " + table + " DROP PRIMARY KEY;");
+
+		if (keys != null && keys.length != 0) {
+			String update = "ALTER TABLE " + table + " ADD PRIMARY KEY (";
+			for (String s : keys)
+				update = update + s + ", ";
+			update = update.substring(0, update.length() - 2) + ");";
+			executeUpdate(update);
+		}
 	}
 }
