@@ -325,13 +325,14 @@ public final class SqlApi {
 		if (columns != null && columns.length > 0) {
 			update = update + " (";
 			for (SqlColumn c : columns)
-				update += c.name() + " " + c.type().getSqlSyntax() + " NOT NULL" + c.type().getDefaultStatement() + ", ";
+				update += c.name() + " " + c.getType().getSqlSyntax() + " NOT NULL" + c.getType().getDefaultStatement() + ", ";
 			if (columns.length != 0)
 				update = update.substring(0, update.length() - 2);
 		}
 		update += ");";
 
 		executeUpdate(update);
+		updatePrimaryKeys(tableName, columns);
 	}
 
 	public void removeTable(String tableName) {
@@ -361,15 +362,20 @@ public final class SqlApi {
 		
 		String update = "ALTER TABLE " + tableName + " ";
 		List<String> existingColumns = getColumns(tableName);
+		List<String> primaryKeys = getPrimaryKeys(tableName);
 		for (SqlColumn c : columns)
-			if (!existingColumns.contains(c.name()))
-				update += "ADD COLUMN " + c.name() + " " + c.type().getSqlSyntax() + " NOT NULL" + c.getDefault()
+			if (!existingColumns.contains(c.name())) {
+				update += "ADD COLUMN " + c.name() + " " + c.getType().getSqlSyntax() + " NOT NULL" + c.getDefault()
 						+ ", ";
+				if (c.isPrimary())
+					primaryKeys.add(c.name());
+			}
 
 		if (update.contains(",")) {
 			update = update.substring(0, update.length() - 2);
 			update += ";";
 			executeUpdate(update);
+			setPrimaryKeys(tableName, primaryKeys.toArray(new String[primaryKeys.size()]));
 		}
 	}
 
@@ -405,14 +411,31 @@ public final class SqlApi {
 			executeUpdate(update);
 		}
 	}
+
+	public List<String> getPrimaryKeys(String table){
+		String query = "SHOW Column_name FROM "+table+" WHERE Key_name = 'PRIMARY'";
+		List<String[]> result = getRows(query);
+		List<String> keys = new ArrayList<String>();
+		for (String[] row: result)
+			keys.add(row[0]);
+		return keys;
+	}
 	
-	public void setPrimaryKeys(String table, SqlColumn... keys) {
+	public void updatePrimaryKeys(String table, SqlColumn... columns) {
+		List<String> keys = new ArrayList<String>();
+		for (SqlColumn c: columns)
+			if (c.isPrimary())
+				keys.add(c.name());
+		setPrimaryKeys(table, keys.toArray(new String[keys.size()]));
+	}
+	
+	public void setPrimaryKeys(String table, String... keys) {
 		String update = "ALTER TABLE "+table+" DROP PRIMARY KEY";
 		
 		if (keys != null && keys.length != 0){
 			String addition = ", ADD PRIMARY KEY (";
-			for (SqlColumn c: keys)
-				addition = addition + c.name()+", ";
+			for (String s: keys)
+				addition = addition + s+", ";
 			addition = addition.substring(0, addition.length()-2);
 			update = update + addition;
 		}
