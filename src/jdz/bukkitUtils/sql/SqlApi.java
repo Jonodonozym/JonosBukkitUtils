@@ -405,4 +405,18 @@ public final class SqlApi {
 			executeUpdate(update);
 		}
 	}
+	
+	public void setPrimaryKeys(String table, SqlColumn... keys) {
+		String update = "ALTER TABLE "+table+" DROP PRIMARY KEY";
+		
+		if (keys != null && keys.length != 0){
+			String addition = ", ADD PRIMARY KEY (";
+			for (SqlColumn c: keys)
+				addition = addition + c.name()+", ";
+			addition = addition.substring(0, addition.length()-2);
+			update = update + addition;
+		}
+		update = update + ";";
+		executeUpdate(update);
+	}
 }
