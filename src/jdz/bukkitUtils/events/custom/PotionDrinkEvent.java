@@ -12,21 +12,20 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
-import com.sun.xml.internal.ws.api.Cancelable;
-
+import jdz.bukkitUtils.events.Cancellable;
 import jdz.bukkitUtils.events.Event;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @SuppressWarnings("deprecation")
 @AllArgsConstructor
-public class PotionDrinkEvent extends Event implements Cancelable{
+public class PotionDrinkEvent extends Event implements Cancellable{
 	@Getter private final Collection<PotionEffect> effects;
 	@Getter private final Player player;
 	private final PlayerItemConsumeEvent parent;
 	
 	@Override
-	public void cancel(boolean cancel) {
+	public void setCancelled(boolean cancel) {
 		parent.setCancelled(cancel);
 	}
 	
