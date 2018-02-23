@@ -12,5 +12,6 @@ public class JBUEvents {
 		Bukkit.getPluginManager().registerEvents(new AnvilRenameEvent.AnvilRenameListener(), plugin);
 		Bukkit.getPluginManager().registerEvents(new AnvilRepairEvent.AnvilRepairListener(), plugin);
 		Bukkit.getPluginManager().registerEvents(new AnvilEvent.CustomEnchantAnvilCrashPreventer(), plugin);
+		Bukkit.getPluginManager().registerEvents(new PotionDrinkEvent.PotionDrinkEventListener(), plugin);
 	}
 }

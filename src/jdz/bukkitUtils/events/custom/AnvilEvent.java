@@ -27,39 +27,14 @@ import jdz.bukkitUtils.events.Cancellable;
 import jdz.bukkitUtils.events.Event;
 import jdz.bukkitUtils.misc.utils.ColorUtils;
 import jdz.bukkitUtils.misc.utils.ItemUtils;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
+@AllArgsConstructor
 public abstract class AnvilEvent extends Event implements Cancellable {
-	private final Player player;
-	private final ItemStack leftItem, rightItem, resultItem;
-	private final int cost;
-
-	public AnvilEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem, int cost) {
-		this.player = player;
-		this.leftItem = leftItem;
-		this.rightItem = rightItem;
-		this.resultItem = resultItem;
-		this.cost = cost;
-	}
-
-	public Player getPlayer() {
-		return player;
-	}
-
-	public ItemStack getLeftItem() {
-		return leftItem;
-	}
-
-	public ItemStack getRightItem() {
-		return rightItem;
-	}
-
-	public ItemStack getResult() {
-		return resultItem;
-	}
-
-	public int getLevelCost() {
-		return cost;
-	}
+	@Getter private final Player player;
+	@Getter private final ItemStack leftItem, rightItem, result;
+	@Getter private final int levelCost;
 
 	public static class CustomEnchantAnvilCrashPreventer implements Listener {
 
@@ -108,7 +83,7 @@ public abstract class AnvilEvent extends Event implements Cancellable {
 
 	static abstract class AnvilEventListener implements Listener {
 
-		@EventHandler
+		@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 		public void onInventoryClick(InventoryClickEvent e) {
 			if (e.isCancelled())
 				return;
