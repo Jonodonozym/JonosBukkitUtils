@@ -9,15 +9,45 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 
 import jdz.bukkitUtils.misc.RomanNumber;
 
 public class ItemUtils {
+    public static boolean itemHasName(ItemStack stack, String name) {
+        if (stack == null)
+            return false;
+        ItemMeta meta = stack.getItemMeta();
+        if (meta == null)
+            return false;
+        if (!meta.hasDisplayName())
+            return false;
+        return meta.getDisplayName().equalsIgnoreCase(name);
+    }
+
+    public static ItemStack setName(ItemStack itemStack, String name) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null)
+            meta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
+        meta.setDisplayName(name);
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
+    public static ItemStack setLore(ItemStack itemStack, List<String> lore) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null)
+            meta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
+        meta.setLore(lore);
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
 
 	public static void give(Player player, ItemStack item, int amount) {
 		ItemStack newStack = new ItemStack(item);
