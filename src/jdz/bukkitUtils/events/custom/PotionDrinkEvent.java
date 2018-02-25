@@ -7,6 +7,7 @@ import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerItemConsumeEvent;
 import org.bukkit.potion.Potion;
@@ -27,6 +28,10 @@ public class PotionDrinkEvent extends Event implements Cancellable{
 	@Override
 	public void setCancelled(boolean cancel) {
 		parent.setCancelled(cancel);
+	}
+
+	public static HandlerList getHandlerList() {
+		return getHandlers(PotionDrinkEvent.class);
 	}
 	
 	static class PotionDrinkEventListener implements Listener {
