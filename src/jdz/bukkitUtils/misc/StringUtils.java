@@ -2,10 +2,11 @@
 package jdz.bukkitUtils.misc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-public final class StringUtils {
+public final class StringUtils {	
 	public static String collectionToString(Collection<? extends Object> list, String separator) {
 		String returnString = "";
 		for (Object s : list)
@@ -57,12 +58,12 @@ public final class StringUtils {
 			String buffer = "";
 			for (String word: line.split(" ")) {
 				if (buffer.length() > charsPerLine) {
-					lines.add(buffer);
+					lines.add(buffer.trim());
 					buffer = "";
 				}
-				buffer += word;
+				buffer += " "+word;
 			}
-			lines.add(buffer);
+			lines.add(buffer.trim());
 		}
 		return lines.toArray(new String[lines.size()]);
 	}
