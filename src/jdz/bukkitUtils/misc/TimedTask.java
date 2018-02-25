@@ -18,7 +18,7 @@ import org.bukkit.plugin.java.JavaPlugin;
  * 
  * can .start() and .stop() at will, or just .run() to run it once.
  * 
- * Though if all you're doing is .run() with this class, 
+ * Though if all you're doing is .run() with this class,
  * you're a special kind of retard.
  *
  * @author Jonodonozym
@@ -28,28 +28,29 @@ public final class TimedTask {
 	private final Runnable runnable;
 	private final int tickInterval;
 	private final JavaPlugin plugin;
-	
+
 	private int taskID = -1;
-	
-	public TimedTask(JavaPlugin plugin, int tickInterval, Runnable r){
+
+	public TimedTask(JavaPlugin plugin, int tickInterval, Runnable r) {
 		this.tickInterval = tickInterval;
 		this.plugin = plugin;
 		runnable = r;
 	}
-	
+
 	/**
 	 * Runs the task a single time
 	 */
-	public void run(){
+	public void run() {
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
 	}
-	
+
 	/**
 	 * Starts the task on a loop if it is not already running
 	 */
 	public void start() {
 		if (!isRunning) {
-			taskID = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, tickInterval, tickInterval).getTaskId();
+			taskID = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, tickInterval, tickInterval)
+					.getTaskId();
 			isRunning = true;
 		}
 	}
@@ -64,7 +65,7 @@ public final class TimedTask {
 		}
 	}
 
-	public boolean isRunning(){
+	public boolean isRunning() {
 		return isRunning;
 	}
 }

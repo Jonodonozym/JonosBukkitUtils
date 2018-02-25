@@ -20,11 +20,11 @@ import lombok.Getter;
 
 @SuppressWarnings("deprecation")
 @AllArgsConstructor
-public class PotionDrinkEvent extends Event implements Cancellable{
+public class PotionDrinkEvent extends Event implements Cancellable {
 	@Getter private final Collection<PotionEffect> effects;
 	@Getter private final Player player;
 	private final PlayerItemConsumeEvent parent;
-	
+
 	@Override
 	public void setCancelled(boolean cancel) {
 		parent.setCancelled(cancel);
@@ -33,7 +33,7 @@ public class PotionDrinkEvent extends Event implements Cancellable{
 	public static HandlerList getHandlerList() {
 		return getHandlers(PotionDrinkEvent.class);
 	}
-	
+
 	static class PotionDrinkEventListener implements Listener {
 		@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
 		public void onDrink(PlayerItemConsumeEvent event) {

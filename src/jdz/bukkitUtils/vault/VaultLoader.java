@@ -68,17 +68,17 @@ public final class VaultLoader {
 	public static Permission getPermission() {
 		return perms;
 	}
-	
-    public static String getGroup(Player player) {
-        if (chat == null || perms == null)
-            return "";
 
-        String prefix = chat.getPlayerPrefix(player);
-        String group = perms.getPrimaryGroup(player);
+	public static String getGroup(Player player) {
+		if (chat == null || perms == null)
+			return "";
 
-        if (prefix == null || prefix == "") 
-            prefix = chat.getGroupPrefix(player.getWorld(), group);
+		String prefix = chat.getPlayerPrefix(player);
+		String group = perms.getPrimaryGroup(player);
 
-        return ColorUtils.translate(prefix);
-    }
+		if (prefix == null || prefix == "")
+			prefix = chat.getGroupPrefix(player.getWorld(), group);
+
+		return ColorUtils.translate(prefix);
+	}
 }

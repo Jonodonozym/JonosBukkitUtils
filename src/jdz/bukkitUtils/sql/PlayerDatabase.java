@@ -11,12 +11,15 @@ public abstract class PlayerDatabase extends Database implements Listener {
 	public PlayerDatabase(JavaPlugin plugin) {
 		super(plugin);
 		plugin.getServer().getPluginManager().registerEvents(this, plugin);
-		api.runOnConnect(()->{setupTables();});
+		api.runOnConnect(() -> {
+			setupTables();
+		});
 	}
-	
+
 	public abstract void setupTables();
+
 	public abstract void addPlayer(Player player);
-	
+
 	@EventHandler
 	public void onPlayerJoin(PlayerJoinEvent event) {
 		addPlayer(event.getPlayer());

@@ -26,7 +26,7 @@ public final class HelpCommand extends SubCommand {
 
 	private List<String> extraMessages = new ArrayList<String>();
 	private List<String> messages = null;
-	
+
 	private int numPages = 1;
 
 	public HelpCommand(CommandExecutor executor) {
@@ -57,12 +57,12 @@ public final class HelpCommand extends SubCommand {
 		this.descColor = color;
 		reload();
 	}
-	
+
 	public void addExtraMessage(String message) {
 		extraMessages.add(message);
 		reload();
 	}
-	
+
 	public void addExtraCommand(SubCommand command) {
 		extraMessages.add(getCommandDesc(command, true));
 		reload();
@@ -72,7 +72,7 @@ public final class HelpCommand extends SubCommand {
 	public void execute(CommandSender sender, Set<String> flags, String... args) {
 		if (messages == null)
 			reload();
-		
+
 		for (String permission : permissions)
 			if (!sender.hasPermission(permission)) {
 				sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
@@ -80,18 +80,19 @@ public final class HelpCommand extends SubCommand {
 			}
 		try {
 			int i = Integer.parseInt(args[0]);
-			showPage(sender, i+1);
-		} catch (Exception e) {
-			
+			showPage(sender, i + 1);
+		}
+		catch (Exception e) {
+
 			if (args.length > 0)
-				for(SubCommand command: executor.getSubCommands())
+				for (SubCommand command : executor.getSubCommands())
 					if (command.getClass().getAnnotation(CommandNoHelp.class) == null)
-						if (command.labelMatches(args[0])) 
+						if (command.labelMatches(args[0]))
 							if (!command.getClass().equals(HelpCommand.class)) {
-							sender.sendMessage(getCommandDesc(command, false));
-							return;
-						}
-			
+								sender.sendMessage(getCommandDesc(command, false));
+								return;
+							}
+
 			showPage(sender, 0);
 		}
 	}
@@ -104,7 +105,7 @@ public final class HelpCommand extends SubCommand {
 		CommandUsage usage = executor.getDefaultCommand().getClass().getAnnotation(CommandUsage.class);
 		if (usage != null && executor.getDefaultCommand().getClass().getAnnotation(CommandNoHelp.class) == null)
 			messages.add(getCommandDesc(executor.getDefaultCommand(), true));
-		
+
 		for (SubCommand command : executor.getSubCommands()) {
 			Class<? extends SubCommand> c = command.getClass();
 
@@ -117,23 +118,23 @@ public final class HelpCommand extends SubCommand {
 
 		numPages = (extraMessages.size() + messages.size() + linesPerPage - 1) / linesPerPage;
 	}
-	
+
 	public String getCommandDesc(SubCommand command, boolean isShort) {
 		String usage = command.getUsage();
-		String description = isShort?command.getShortDescription():command.getLongDescription();
+		String description = isShort ? command.getShortDescription() : command.getLongDescription();
 		if (description.equals(""))
 			description = command.getShortDescription();
-		
-		String returnValue = usageColor + "/" + (executor.getLabel().equals("")?"":executor.getLabel() + " ");
+
+		String returnValue = usageColor + "/" + (executor.getLabel().equals("") ? "" : executor.getLabel() + " ");
 		if (usage.equals(""))
 			returnValue += command.getLabel();
 		else
 			returnValue += usage;
-		
+
 		returnValue += descColor;
 		if (!description.equals(""))
-			returnValue += " - "+description;
-		
+			returnValue += " - " + description;
+
 		return returnValue;
 	}
 
@@ -141,18 +142,18 @@ public final class HelpCommand extends SubCommand {
 		if (pageNumber < 0)
 			pageNumber = 0;
 		if (pageNumber >= numPages)
-			pageNumber = numPages-1;
+			pageNumber = numPages - 1;
 
-		int numLines = Math.min(linesPerPage, messages.size() - pageNumber*linesPerPage);
-		
+		int numLines = Math.min(linesPerPage, messages.size() - pageNumber * linesPerPage);
+
 		String[] lines = new String[numLines + 2];
 		lines[0] = ChatColor.GRAY + "============[ " + titleColor + executor.getLabel() + " Help"
-				+ (numPages <= 1 ? "" : (" " + (1+pageNumber) + "/" + numPages)) + ChatColor.GRAY + " ]============";
-		
+				+ (numPages <= 1 ? "" : (" " + (1 + pageNumber) + "/" + numPages)) + ChatColor.GRAY + " ]============";
+
 		lines[numLines + 1] = ChatColor.GRAY + StringUtils.repeat("=", lines[0].length() - 8);
-		
+
 		for (int i = 0; i < numLines; i++)
-			lines[i + 1] = messages.get(pageNumber*linesPerPage+i);
+			lines[i + 1] = messages.get(pageNumber * linesPerPage + i);
 
 		sender.sendMessage(lines);
 	}

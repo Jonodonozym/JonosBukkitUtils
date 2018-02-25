@@ -60,7 +60,8 @@ public final class WorldUtils {
 			World world = Bukkit.getWorld(args[0]);
 			return new Location(world, Integer.parseInt(args[1]) + 0.5, Integer.parseInt(args[2]),
 					Integer.parseInt(args[3]) + 0.5, Float.parseFloat(args[4]), Float.parseFloat(args[5]));
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			new FileLogger(JonosBukkitUtils.instance).createErrorLog(e, "Error parsing location with args: " + args);
 			return null;
 		}
@@ -159,8 +160,8 @@ public final class WorldUtils {
 		if (depth < 0) {
 			origin.setZ(origin.getZ() - depth);
 			depth *= -1;
-		}		
-		
+		}
+
 		Set<Player> nearbyPlayers = new HashSet<Player>();
 		World world = origin.getWorld();
 		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
@@ -240,7 +241,7 @@ public final class WorldUtils {
 		}
 		return locations;
 	}
-	
+
 	public static Vector getVector(double pitch, double yaw) {
 		double x = Math.sin(pitch) * Math.cos(yaw);
 		double y = Math.sin(pitch) * Math.sin(yaw);

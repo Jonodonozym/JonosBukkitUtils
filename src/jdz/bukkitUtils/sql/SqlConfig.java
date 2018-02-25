@@ -38,7 +38,7 @@ class SqlConfig {
 			config = Config.getDefaultSqlFile(plugin);
 		return reload(config);
 	}
-	
+
 	public boolean isValid() {
 		return !(dbURL == null || dbPort == null || dbName == null || dbUsername == null || dbPassword == null
 				|| dbURL.equals("") || dbPort.equals("") || dbName.equals("") || dbUsername.equals("")
@@ -82,7 +82,8 @@ class SqlConfig {
 
 			try {
 				config.save(configFile);
-			} catch (IOException e) {
+			}
+			catch (IOException e) {
 				new FileLogger(JonosBukkitUtils.instance).createErrorLog(e,
 						"An error occurred in the JonosBukkitUtils");
 			}

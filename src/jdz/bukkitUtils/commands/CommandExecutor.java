@@ -87,7 +87,8 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			if (!loggers.containsKey(plugin))
 				loggers.put(plugin, new FileLogger(plugin, "CommandLogs"));
 			fileLogger = loggers.get(plugin);
-		} else
+		}
+		else
 			fileLogger = null;
 	}
 
@@ -131,7 +132,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			sender.sendMessage(ChatColor.RED + "You don't have enough permissions to do that!");
 			return true;
 		}
-		
+
 		for (String s : permissions) {
 			if (!sender.hasPermission(s)) {
 				sender.sendMessage(ChatColor.RED + "You are missing the permission node " + s);
@@ -201,11 +202,13 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			sender.sendMessage(ChatColor.RED + "Insufficient arguments");
 			if (!command.getUsage().equals(""))
 				sender.sendMessage(ChatColor.RED + "Usage: /" + label + " " + command.getUsage());
-		} else if (command.isPlayerOnly() && !(sender instanceof Player))
+		}
+		else if (command.isPlayerOnly() && !(sender instanceof Player))
 			sender.sendMessage(ChatColor.RED + "You must be a player to do that!");
 		else if (command.isOPOnly() && !sender.isOp())
 			sender.sendMessage(ChatColor.RED + "You don't have enough permissions to do that!");
-		else executeIfHasPerms(command, sender, flags, args);
+		else
+			executeIfHasPerms(command, sender, flags, args);
 	}
 
 	private final void executeIfHasPerms(SubCommand command, CommandSender sender, Set<String> flags, String... args) {
@@ -217,7 +220,8 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 				});
 			else
 				command.execute(sender, flags, args);
-		} else
+		}
+		else
 			sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that");
 	}
 

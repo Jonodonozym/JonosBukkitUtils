@@ -30,7 +30,7 @@ import jdz.bukkitUtils.JonosBukkitUtils;
 public final class FileExporter {
 	static boolean RUNNING_FROM_JAR = false;
 	private final JavaPlugin plugin;
-	
+
 	public FileExporter(JavaPlugin plugin) {
 		this.plugin = plugin;
 	}
@@ -59,19 +59,21 @@ public final class FileExporter {
 			while ((readBytes = stream.read(buffer)) > 0) {
 				resStreamOut.write(buffer, 0, readBytes);
 			}
-		} catch (Exception ex) {
+		}
+		catch (Exception ex) {
 			if (!isSilent)
 				new FileLogger(JonosBukkitUtils.instance).createErrorLog(ex);
-		} finally {
+		}
+		finally {
 			try {
 				stream.close();
 				resStreamOut.close();
-			} catch (Exception ex2) {
 			}
+			catch (Exception ex2) {}
 		}
 	}
-	
-	public boolean hasResource(String fileName){
+
+	public boolean hasResource(String fileName) {
 		return (plugin.getClass().getResourceAsStream("/" + fileName) != null);
 	}
 

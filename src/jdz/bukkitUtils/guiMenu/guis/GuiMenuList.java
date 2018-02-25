@@ -11,30 +11,30 @@ import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 
 public class GuiMenuList extends GuiMenu {
 	private List<GuiMenuListPage> pages = new ArrayList<GuiMenuListPage>();
-	
+
 	private List<ClickableStack> items = new ArrayList<ClickableStack>();
-	
+
 	private final JavaPlugin plugin;
 	private final String name;
 	private final GuiMenu superMenu;
-	
+
 	public GuiMenuList(JavaPlugin plugin, String name, List<ClickableStack> items) {
 		this(plugin, name, items, null);
 	}
 
 	public GuiMenuList(JavaPlugin plugin, String name, List<ClickableStack> items, GuiMenu superMenu) {
 		super(plugin);
-		
+
 		this.plugin = plugin;
 		this.name = name;
 		this.superMenu = superMenu;
-		
+
 		setItems(new ArrayList<ClickableStack>(items));
 	}
-	
+
 	public void setItems(List<ClickableStack> items) {
 		this.items = items;
-		
+
 		pages.clear();
 		int numPages = items.size() <= 54 ? 1 : (items.size() + 44) / 45;
 		for (int i = 0; i < numPages; i++)
@@ -50,12 +50,12 @@ public class GuiMenuList extends GuiMenu {
 			pages.get(i).setup(items, previousPage, nextPage, superMenu);
 		}
 	}
-	
+
 	public void add(ClickableStack stack) {
 		items.add(stack);
 		setItems(items);
 	}
-	
+
 	public void remove(ClickableStack stack) {
 		items.remove(stack);
 		setItems(items);

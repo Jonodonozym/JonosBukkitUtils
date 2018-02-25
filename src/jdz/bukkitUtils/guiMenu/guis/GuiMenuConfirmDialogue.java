@@ -23,10 +23,10 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 		super(plugin);
 		inventory = Bukkit.createInventory(null, 27, name);
 
-		confirmStack = new ClickableStack(Material.WOOL, ChatColor.GREEN+"Confim") {
+		confirmStack = new ClickableStack(Material.WOOL, ChatColor.GREEN + "Confim") {
 			@Override
 			public void onClick(GuiMenu menu, InventoryClickEvent event) {
-				onConfirm((Player)event.getWhoClicked());
+				onConfirm((Player) event.getWhoClicked());
 			}
 		};
 		confirmStack.getStack().setDurability(DyeColor.LIME.getWoolData());
@@ -34,7 +34,7 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 		cancelStack = new ClickableStack(Material.WOOL, ChatColor.RED + "Cancel") {
 			@Override
 			public void onClick(GuiMenu menu, InventoryClickEvent event) {
-				onCancel((Player)event.getWhoClicked());
+				onCancel((Player) event.getWhoClicked());
 			}
 		};
 		cancelStack.getStack().setDurability(DyeColor.RED.getWoolData());

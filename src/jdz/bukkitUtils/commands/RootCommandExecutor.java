@@ -31,7 +31,7 @@ public abstract class RootCommandExecutor extends CommandExecutor {
 	public void register() {
 		register(getSubCommands());
 	}
-	
+
 	private void register(Collection<SubCommand> commands) {
 		for (SubCommand command : commands)
 			for (String label : command.getLabels()) {

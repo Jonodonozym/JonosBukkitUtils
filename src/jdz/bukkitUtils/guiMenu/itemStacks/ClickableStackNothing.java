@@ -9,23 +9,22 @@ import org.bukkit.inventory.ItemStack;
 
 import jdz.bukkitUtils.guiMenu.guis.GuiMenu;
 
-public class ClickableStackNothing extends ClickableStack{
-	
+public class ClickableStackNothing extends ClickableStack {
+
 	public ClickableStackNothing(ItemStack stack) {
 		super(stack);
 	}
-	
+
 	public ClickableStackNothing(Material material, String name) {
 		super(material, name);
 	}
-	
+
 	public ClickableStackNothing(Material material, String name, List<String> lore) {
 		super(material, name, lore);
 	}
-	
-	
+
+
 	@Override
-	public void onClick(GuiMenu menu, InventoryClickEvent event) {
-	}
+	public void onClick(GuiMenu menu, InventoryClickEvent event) {}
 
 }

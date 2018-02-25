@@ -23,28 +23,30 @@ import jdz.bukkitUtils.misc.Enchantment;
 import jdz.bukkitUtils.misc.PluginUpdater;
 
 /**
- * Jono's (or Java, I don't give a damn what you think) Utilities for Bukkit to make your coding life
+ * Jono's (or Java, I don't give a damn what you think) Utilities for Bukkit to
+ * make your coding life
  * easier and less copy-pasty copy-pasty from old projects and the internet
  *
  * @author Jonodonozym
  */
-public final class JonosBukkitUtils extends JavaPlugin{
+public final class JonosBukkitUtils extends JavaPlugin {
 	public static JonosBukkitUtils instance;
 	private final int bukkitID = 281287;
 
-	public final Set<org.bukkit.enchantments.Enchantment> defaultEnchantments = new HashSet<org.bukkit.enchantments.Enchantment>(Arrays.asList(Enchantment.values()));
-	
+	public final Set<org.bukkit.enchantments.Enchantment> defaultEnchantments = new HashSet<org.bukkit.enchantments.Enchantment>(
+			Arrays.asList(Enchantment.values()));
+
 	@Override
 	public void onEnable() {
 		instance = this;
 
 		new JarUtils(this).extractLibs("libs/lombok.jar");
 		new JarUtils(this).extractLibs("libs/exp4j.jar");
-		
+
 		FileConfiguration config = Config.getConfig(this);
 		if (config.getBoolean("autoUpdate"))
 			new PluginUpdater(this, bukkitID, this.getFile(), PluginUpdater.UpdateType.DEFAULT, false);
-		
+
 		JBUEvents.registerAll(this);
 	}
 }

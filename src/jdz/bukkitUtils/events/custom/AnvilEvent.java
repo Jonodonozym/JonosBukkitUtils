@@ -149,7 +149,8 @@ public abstract class AnvilEvent extends Event implements Cancellable {
 					else if (results.get(entry.getKey()) == entry.getValue()
 							&& entry.getValue() < entry.getKey().getMaxLevel())
 						results.put(entry.getKey(), entry.getValue() + 1);
-				} else
+				}
+				else
 					results.put(entry.getKey(), entry.getValue());
 			}
 

@@ -23,47 +23,50 @@ import jdz.bukkitUtils.fileIO.FileExporter;
  *
  * @author Jonodonozym
  */
-public final class Config {	
+public final class Config {
 	/**
 	 * Gets the config as a FileConfiguration
+	 * 
 	 * @return
 	 */
-	public static FileConfiguration getConfig(JavaPlugin plugin){
+	public static FileConfiguration getConfig(JavaPlugin plugin) {
 		return getConfig(plugin, "config.yml");
 	}
-	
+
 	/**
 	 * Goes back in time to assassinate Hitler
 	 * what do you think this method does?
+	 * 
 	 * @return
 	 */
-	public static File getConfigFile(JavaPlugin plugin){
+	public static File getConfigFile(JavaPlugin plugin) {
 		return getConfigFile(plugin, "config.yml");
 	}
-	
+
 	/**
 	 * Gets the config as a FileConfiguration
+	 * 
 	 * @return
 	 */
-	public static FileConfiguration getConfig(JavaPlugin plugin, String fileName){
+	public static FileConfiguration getConfig(JavaPlugin plugin, String fileName) {
 		return YamlConfiguration.loadConfiguration(getConfigFile(plugin, fileName));
 	}
-	
+
 	public static File getConfigFile(JavaPlugin plugin, String fileName) {
 		File file = new File(plugin.getDataFolder() + File.separator + fileName);
 		plugin.getDataFolder().mkdir();
 		FileExporter fe = new FileExporter(plugin);
 		if (!file.exists() && fe.hasResource(fileName))
-				fe.ExportResource(fileName, plugin.getDataFolder() + File.separator + fileName);
+			fe.ExportResource(fileName, plugin.getDataFolder() + File.separator + fileName);
 		return file;
 	}
-	
+
 	public static File getDefaultSqlFile(JavaPlugin targetPlugin) {
 		File file = new File(JonosBukkitUtils.instance.getDataFolder() + File.separator + "sqlConfig.yml");
 		targetPlugin.getDataFolder().mkdir();
 		FileExporter fe = new FileExporter(JonosBukkitUtils.instance);
 		if (!file.exists() && fe.hasResource("sqlConfig.yml"))
-				fe.ExportResource("sqlConfig.yml", targetPlugin.getDataFolder() + File.separator + "sqlConfig.yml");
+			fe.ExportResource("sqlConfig.yml", targetPlugin.getDataFolder() + File.separator + "sqlConfig.yml");
 		return file;
 	}
 }

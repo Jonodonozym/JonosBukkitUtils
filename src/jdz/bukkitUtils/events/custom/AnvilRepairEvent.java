@@ -14,16 +14,17 @@ public class AnvilRepairEvent extends AnvilEvent {
 	public static HandlerList getHandlerList() {
 		return getHandlers(AnvilRepairEvent.class);
 	}
-	
-	static final class AnvilRepairListener extends AnvilEventListener{
+
+	static final class AnvilRepairListener extends AnvilEventListener {
 
 		@Override
-		protected AnvilEvent onEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem, int cost) {
+		protected AnvilEvent onEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem,
+				int cost) {
 			if (resultItem.getDurability() > leftItem.getDurability())
 				return new AnvilRepairEvent(player, leftItem, rightItem, resultItem, cost);
 			return null;
 		}
-		
+
 	}
 
 }

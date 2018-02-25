@@ -29,14 +29,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import jdz.bukkitUtils.JonosBukkitUtils;
 
 /**
- * Class for extracting libs that your BukkitJUtils.plugin uses into the plugins directory
+ * Class for extracting libs that your BukkitJUtils.plugin uses into the plugins
+ * directory
  *
  * @author Jaiden Baker
  */
 public final class JarUtils {
 	private final JavaPlugin plugin;
 	private final FileExporter fileExporter;
-	
+
 	public JarUtils(JavaPlugin plugin) {
 		this.plugin = plugin;
 		fileExporter = new FileExporter(plugin);
@@ -52,8 +53,9 @@ public final class JarUtils {
 			for (final String libName : libNames) {
 				File lib = new File(plugin.getDataFolder(), libName);
 				if (!lib.exists()) {
-					String errorMessage = "There was a critical error loading " + plugin.getName() + "! Could not find lib: "
-							+ libName + ". If the problem persists, add it manually to your plugins directory";
+					String errorMessage = "There was a critical error loading " + plugin.getName()
+							+ "! Could not find lib: " + libName
+							+ ". If the problem persists, add it manually to your plugins directory";
 					Bukkit.getLogger().warning(errorMessage);
 					new FileLogger(JonosBukkitUtils.instance).createErrorLog(errorMessage);
 					Bukkit.getServer().getPluginManager().disablePlugin(plugin);
@@ -61,7 +63,8 @@ public final class JarUtils {
 				}
 				addClassPath(getJarUrl(lib));
 			}
-		} catch (final Exception e) {
+		}
+		catch (final Exception e) {
 			e.printStackTrace();
 		}
 	}
@@ -73,7 +76,8 @@ public final class JarUtils {
 			final Method method = sysclass.getDeclaredMethod("addURL", new Class[] { URL.class });
 			method.setAccessible(true);
 			method.invoke(sysloader, new Object[] { url });
-		} catch (final Throwable t) {
+		}
+		catch (final Throwable t) {
 			t.printStackTrace();
 			throw new IOException("Error adding " + url + " to system classloader");
 		}
@@ -120,7 +124,8 @@ public final class JarUtils {
 			while ((n = in.read(buff)) > 0) {
 				out.write(buff, 0, n);
 			}
-		} finally {
+		}
+		finally {
 			out.flush();
 			out.close();
 			in.close();

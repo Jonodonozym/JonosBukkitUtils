@@ -95,7 +95,7 @@ public final class SqlApi {
 						+ "&loginTimeout=1000&useSSL=false&autoReconnect=true";
 
 				dbConnection = DriverManager.getConnection(url, config.dbUsername, config.dbPassword);
-				
+
 				executeUpdateAsync("SET SESSION wait_timeout = 999999");
 
 				if (doLogging)
@@ -209,7 +209,7 @@ public final class SqlApi {
 		List<String> columns = new ArrayList<String>();
 		if (!isConnected())
 			return columns;
-			
+
 		String query = "SHOW columns FROM " + table + ";";
 		Statement stmt = null;
 		try {
@@ -336,12 +336,12 @@ public final class SqlApi {
 	 */
 	public void addTable(String tableName, SqlColumn... columns) {
 		if (!isConnected()) {
-			runOnConnect(()->{
+			runOnConnect(() -> {
 				addTable(tableName, columns);
 			});
 			return;
 		}
-		
+
 		if (!hasTable(tableName)) {
 			String update = "CREATE TABLE IF NOT EXISTS " + tableName;
 			if (columns != null && columns.length > 0) {
@@ -384,12 +384,12 @@ public final class SqlApi {
 	 * @param tableName
 	 * @param columns
 	 */
-	public void addColumns(String tableName, SqlColumn... columns) {		
+	public void addColumns(String tableName, SqlColumn... columns) {
 		if (columns == null || columns.length == 0)
 			return;
 
 		if (!isConnected()) {
-			runOnConnect(()->{
+			runOnConnect(() -> {
 				addColumns(tableName, columns);
 			});
 			return;
@@ -436,7 +436,7 @@ public final class SqlApi {
 			return;
 
 		if (!isConnected()) {
-			runOnConnect(()->{
+			runOnConnect(() -> {
 				removeColumns(tableName, columns);
 			});
 			return;
@@ -458,7 +458,7 @@ public final class SqlApi {
 	public List<String> getPrimaryKeys(String table) {
 		if (!isConnected())
 			return new ArrayList<String>();
-		
+
 		String query = "SHOW KEYS FROM " + table + " WHERE Key_name = 'PRIMARY'";
 		List<String[]> result = getRows(query);
 		List<String> keys = new ArrayList<String>();
@@ -477,12 +477,12 @@ public final class SqlApi {
 
 	public void setPrimaryKeys(String table, String... keys) {
 		if (!isConnected()) {
-			runOnConnect(()->{
+			runOnConnect(() -> {
 				setPrimaryKeys(table, keys);
 			});
 			return;
 		}
-		
+
 		if (!getPrimaryKeys(table).isEmpty())
 			executeUpdate("ALTER TABLE " + table + " DROP PRIMARY KEY;");
 

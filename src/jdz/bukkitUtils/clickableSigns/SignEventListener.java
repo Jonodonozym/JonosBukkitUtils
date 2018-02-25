@@ -23,15 +23,16 @@ public class SignEventListener implements Listener {
 		this.factory = new InteractableSignFactory(classes);
 		this.plugin = plugin;
 	}
-	
+
 	private boolean registered = false;
+
 	public void register() {
 		if (!registered) {
-			plugin.getServer().getPluginManager().registerEvents(this,  plugin);
+			plugin.getServer().getPluginManager().registerEvents(this, plugin);
 			registered = true;
 		}
 	}
-	
+
 	public boolean isRegistered() {
 		return registered;
 	}
@@ -40,11 +41,12 @@ public class SignEventListener implements Listener {
 	public void onSignClick(PlayerInteractEvent event) {
 		Player player = event.getPlayer();
 		Action action = event.getAction();
-		
+
 		if (!action.equals(Action.RIGHT_CLICK_BLOCK))
 			return;
 
-		if (event.getClickedBlock() == null || event.getClickedBlock().getState() == null || !(event.getClickedBlock().getState() instanceof Sign))
+		if (event.getClickedBlock() == null || event.getClickedBlock().getState() == null
+				|| !(event.getClickedBlock().getState() instanceof Sign))
 			return;
 
 		InteractableSign sign;
@@ -55,7 +57,8 @@ public class SignEventListener implements Listener {
 				return;
 
 			sign.onInteract(player);
-		} catch (InvalidSignException e) {
+		}
+		catch (InvalidSignException e) {
 			player.sendMessage(ChatColor.RED + "An error occurred trying to click this sign.");
 			new FileLogger(plugin).createErrorLog(e);
 		}
@@ -64,7 +67,7 @@ public class SignEventListener implements Listener {
 	@EventHandler
 	public void onSignPlace(SignChangeEvent event) {
 		Player player = event.getPlayer();
-		
+
 		try {
 			InteractableSign sign = factory.construct(event.getBlock(), event.getLines());
 
@@ -81,13 +84,14 @@ public class SignEventListener implements Listener {
 			}
 
 			sign.onCreate(player);
-			player.sendMessage(ChatColor.GREEN+sign.getType()+" sign created!");
-		} catch (InvalidSignException e) {
+			player.sendMessage(ChatColor.GREEN + sign.getType() + " sign created!");
+		}
+		catch (InvalidSignException e) {
 			event.getBlock().breakNaturally();
 			player.sendMessage(ChatColor.RED + e.getMessage());
 		}
 	}
-	
+
 	@EventHandler
 	public void onSignBreak(BlockBreakEvent event) {
 		Player player = event.getPlayer();
@@ -108,6 +112,7 @@ public class SignEventListener implements Listener {
 				player.sendMessage("You don't have the permissions to break that sign!");
 				return;
 			}
-		} catch (InvalidSignException e) { }
+		}
+		catch (InvalidSignException e) {}
 	}
 }

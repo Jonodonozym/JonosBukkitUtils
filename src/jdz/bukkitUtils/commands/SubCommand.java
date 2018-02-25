@@ -53,9 +53,9 @@ public abstract class SubCommand {
 				return true;
 		return false;
 	}
-	
+
 	public boolean isAsync() {
-		return getClass().getAnnotation(CommandAsync.class)!=null;
+		return getClass().getAnnotation(CommandAsync.class) != null;
 	}
 
 	public boolean hasRequiredPermissions(CommandSender sender) {
@@ -157,7 +157,8 @@ public abstract class SubCommand {
 				else if (parameterTypes[i].equals(Integer.class) || parameterTypes[i].equals(int.class)) {
 					try {
 						newArgs[i] = Integer.parseInt(args[i - startIndex]);
-					} catch (NumberFormatException e) {
+					}
+					catch (NumberFormatException e) {
 						if (showErrors) {
 							sender.sendMessage(
 									ChatColor.RED + "Argument #" + (i - startIndex + 1) + " must be an integer");
@@ -171,7 +172,8 @@ public abstract class SubCommand {
 				else if (parameterTypes[i].equals(Long.class) || parameterTypes[i].equals(long.class)) {
 					try {
 						newArgs[i] = Long.parseLong(args[i - startIndex]);
-					} catch (NumberFormatException e) {
+					}
+					catch (NumberFormatException e) {
 						if (showErrors) {
 							sender.sendMessage(
 									ChatColor.RED + "Argument #" + (i - startIndex + 1) + " must be an integer");
@@ -185,7 +187,8 @@ public abstract class SubCommand {
 				else if (parameterTypes[i].equals(Double.class) || parameterTypes[i].equals(double.class)) {
 					try {
 						newArgs[i] = Double.parseDouble(args[i - startIndex]);
-					} catch (NumberFormatException e) {
+					}
+					catch (NumberFormatException e) {
 						if (showErrors) {
 							sender.sendMessage(
 									ChatColor.RED + "Argument #" + (i - startIndex + 1) + " must be a number");
@@ -226,7 +229,8 @@ public abstract class SubCommand {
 						if (mat == null)
 							throw new Exception();
 						newArgs[i] = mat;
-					} catch (Exception e) {
+					}
+					catch (Exception e) {
 						sender.sendMessage(
 								ChatColor.RED + "'" + args[i - startIndex] + "' is not a valid material type");
 						return false;
@@ -234,7 +238,8 @@ public abstract class SubCommand {
 				}
 
 				else
-					throw new IllegalArgumentException("Cannot parse parameter type "+parameterTypes[i].getSimpleName());
+					throw new IllegalArgumentException(
+							"Cannot parse parameter type " + parameterTypes[i].getSimpleName());
 			}
 
 			try {
@@ -242,14 +247,17 @@ public abstract class SubCommand {
 				method.setAccessible(true);
 				method.invoke(this, newArgs);
 				method.setAccessible(isAccessible);
-			} catch (IllegalAccessException | IllegalArgumentException e) {
+			}
+			catch (IllegalAccessException | IllegalArgumentException e) {
 				new FileLogger(JonosBukkitUtils.instance).createErrorLog(e);
-			} catch (InvocationTargetException e) {
+			}
+			catch (InvocationTargetException e) {
 				throw new ExecuteException(e.getCause());
 			}
 
 			return true;
-		} catch (Exception e) {
+		}
+		catch (Exception e) {
 			if (e instanceof ExecuteException)
 				throw e;
 			return false;

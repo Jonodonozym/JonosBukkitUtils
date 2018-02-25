@@ -9,28 +9,29 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import jdz.bukkitUtils.guiMenu.guis.GuiMenu;
 
-public class ClickableStackReturnArrow extends ClickableStack{
+public class ClickableStackReturnArrow extends ClickableStack {
 	private final GuiMenu superMenu;
 	private final String returnCommand;
 
 	public ClickableStackReturnArrow() {
 		this(null, null);
 	}
-	
+
 	public ClickableStackReturnArrow(String returnCommand) {
 		this(null, returnCommand);
 	}
-	
+
 	public ClickableStackReturnArrow(GuiMenu superMenu) {
 		this(superMenu, "");
 	}
-	
+
 	public ClickableStackReturnArrow(GuiMenu superMenu, String returnCommand) {
-		super(Material.ARROW, ChatColor.AQUA+((superMenu == null && (returnCommand == null || returnCommand.equals("")))?"Exit":"Return"));
+		super(Material.ARROW, ChatColor.AQUA
+				+ ((superMenu == null && (returnCommand == null || returnCommand.equals(""))) ? "Exit" : "Return"));
 		this.superMenu = superMenu;
 		this.returnCommand = returnCommand;
 	}
-	
+
 	@Override
 	public void onClick(GuiMenu menu, InventoryClickEvent event) {
 		Player player = (Player) event.getWhoClicked();
@@ -41,5 +42,5 @@ public class ClickableStackReturnArrow extends ClickableStack{
 		else
 			player.closeInventory();
 	}
-	
+
 }

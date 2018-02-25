@@ -10,11 +10,11 @@ import org.bukkit.block.Block;
 
 public abstract class NMSAdaptor {
 
-	
+
 	public static NMSAdaptor getAdaptor() {
 		return null;
 	}
-	
+
 	protected Set getSet(Class<?> c, String fieldName) {
 		try {
 			Field f = c.getDeclaredField(fieldName);
@@ -22,11 +22,12 @@ public abstract class NMSAdaptor {
 			Field modifiersField = Field.class.getDeclaredField("modifiers");
 			modifiersField.setAccessible(true);
 			modifiersField.setInt(f, f.getModifiers() & ~Modifier.FINAL);
-			return (Set)f.get(null);
+			return (Set) f.get(null);
 		}
-		catch (Exception e) {throw new RuntimeException(e);}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
-	
+
 	public abstract boolean isBestTool(Material toolType, Block block);
 }
- 
