@@ -30,7 +30,7 @@ public abstract class Event extends org.bukkit.event.Event{
 		
 		Bukkit.getServer().getPluginManager().callEvent(this);
 		if (this instanceof Cancellable)
-			Cancellable.set.remove(this);	
+			Cancellable.set.remove((Cancellable)this);	
 		
 		isCalled = true;
 	}
