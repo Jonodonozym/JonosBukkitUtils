@@ -15,7 +15,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.bukkit.Bukkit;
@@ -96,6 +95,8 @@ public final class SqlApi {
 						+ "&loginTimeout=1000&useSSL=false&autoReconnect=true";
 
 				dbConnection = DriverManager.getConnection(url, config.dbUsername, config.dbPassword);
+				
+				executeUpdateAsync("SET SESSION wait_timeout = 999999");
 
 				if (doLogging)
 					Bukkit.getLogger().info("Successfully connected to the " + config.dbName
