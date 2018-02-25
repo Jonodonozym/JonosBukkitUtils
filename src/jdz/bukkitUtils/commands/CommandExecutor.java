@@ -196,7 +196,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		return true;
 	}
 
-	public final void execute(SubCommand command, CommandSender sender, Set<String> flags, String... args) {
+	public void execute(SubCommand command, CommandSender sender, Set<String> flags, String... args) {
 		if (command.requiredArgs() > args.length) {
 			sender.sendMessage(ChatColor.RED + "Insufficient arguments");
 			if (!command.getUsage().equals(""))
