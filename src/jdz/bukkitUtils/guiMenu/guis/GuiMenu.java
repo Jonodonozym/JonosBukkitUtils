@@ -13,6 +13,7 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 
 public abstract class GuiMenu implements Listener{
@@ -45,7 +46,9 @@ public abstract class GuiMenu implements Listener{
         	p.closeInventory();
 
         e.setCancelled(true);
-        clickable.onClick(this, e);
+        Bukkit.getScheduler().runTaskLater(JonosBukkitUtils.instance, ()->{
+            clickable.onClick(this, e);
+        }, 1);
 	}
 	
 	protected void update(Inventory inv) {
