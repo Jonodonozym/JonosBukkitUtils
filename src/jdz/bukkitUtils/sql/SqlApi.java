@@ -102,9 +102,11 @@ public final class SqlApi {
 					Bukkit.getLogger().info("Successfully connected to the " + config.dbName
 							+ " SQL database at the host " + config.dbURL);
 
-				for (Runnable r : new ArrayList<Runnable>(connectHooks))
-					r.run();
-				connectHooks.clear();
+				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+					for (Runnable r : new ArrayList<Runnable>(connectHooks))
+						r.run();
+					connectHooks.clear();
+				});
 				return;
 			}
 			catch (Exception e) {
