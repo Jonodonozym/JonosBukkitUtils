@@ -2,15 +2,18 @@
 package jdz.bukkitUtils.events.custom;
 
 import org.bukkit.Bukkit;
+import org.bukkit.plugin.PluginManager;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 
 public class JBUEvents {
 
 	public static void registerAll(JonosBukkitUtils plugin) {
-		Bukkit.getPluginManager().registerEvents(new AnvilRenameEvent.AnvilRenameListener(), plugin);
-		Bukkit.getPluginManager().registerEvents(new AnvilRepairEvent.AnvilRepairListener(), plugin);
-		Bukkit.getPluginManager().registerEvents(new AnvilEvent.CustomEnchantAnvilCrashPreventer(), plugin);
-		Bukkit.getPluginManager().registerEvents(new PotionDrinkEvent.PotionDrinkEventListener(), plugin);
+		PluginManager pm = Bukkit.getPluginManager();
+		pm.registerEvents(new AnvilRenameEvent.AnvilRenameListener(), plugin);
+		pm.registerEvents(new AnvilRepairEvent.AnvilRepairListener(), plugin);
+		pm.registerEvents(new AnvilEvent.CustomEnchantAnvilCrashPreventer(), plugin);
+		pm.registerEvents(new PotionDrinkEvent.PotionDrinkEventListener(), plugin);
+		pm.registerEvents(new PlayerDamagedByPlayer.PlayerDamagedByPlayerListener() , plugin);
 	}
 }

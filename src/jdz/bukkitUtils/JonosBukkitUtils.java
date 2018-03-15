@@ -16,7 +16,6 @@ import java.util.Set;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import jdz.bukkitUtils.events.ListenerManager;
 import jdz.bukkitUtils.events.custom.JBUEvents;
 import jdz.bukkitUtils.fileIO.JarUtils;
 import jdz.bukkitUtils.misc.Config;

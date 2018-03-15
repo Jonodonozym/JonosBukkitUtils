@@ -22,7 +22,7 @@ public class ListenerManager implements Listener {
 	
 	private static Map<Plugin, Set<org.bukkit.event.Listener>> registered = new HashMap<Plugin, Set<org.bukkit.event.Listener>>();
 
-	void register(org.bukkit.event.Listener l, Plugin plugin) {
+	boolean register(org.bukkit.event.Listener l, Plugin plugin) {
 		if (!registered.containsKey(plugin))
 			registered.put(plugin, new HashSet<org.bukkit.event.Listener>());
 		if (registered.get(plugin).contains(l))
@@ -30,6 +30,7 @@ public class ListenerManager implements Listener {
 
 		registered.get(plugin).add(l);
 		Bukkit.getPluginManager().registerEvents(l, plugin);
+		return true;
 	}
 
 	@EventHandler

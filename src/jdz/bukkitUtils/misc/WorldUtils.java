@@ -125,6 +125,17 @@ public final class WorldUtils {
 
 		return getBlockAboveOrBelow(block, blockType, blockData, distance + 1);
 	}
+	
+	public static boolean isEmptyColumn(Location loc) {
+		return isEmptyColumn(loc.getWorld(), loc.getBlockX(), loc.getBlockZ());
+	}
+	
+	public static boolean isEmptyColumn(World world, int x, int z) {
+		for (int y = 0; y < world.getMaxHeight(); y++)
+			if (world.getBlockAt(x, y, z).getType() != Material.AIR)
+				return false;
+		return true;
+	}
 
 	/**
 	 * Get a set of players who are near a given location spherically
