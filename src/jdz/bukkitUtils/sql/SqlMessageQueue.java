@@ -18,7 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 
@@ -31,31 +31,16 @@ import jdz.bukkitUtils.JonosBukkitUtils;
  *
  * @author Jonodonozym
  */
-public final class SqlMessageQueue implements Listener {
-	private String MessageQueueTable = null;
-	private final SqlApi sqlApi;
+public final class SqlMessageQueue extends SqlDatabase implements Listener {
+	private final String MessageQueueTable;
+	private final SqlColumn[] columns = new SqlColumn[] { new SqlColumn("player", SqlColumnType.STRING_32),
+			new SqlColumn("message", SqlColumnType.STRING), new SqlColumn("priotiry", SqlColumnType.INT) };
 
-	public SqlMessageQueue(Plugin plugin, SqlApi sqlApi) {
-		this.sqlApi = sqlApi;
+	public SqlMessageQueue(JavaPlugin plugin, SqlDatabase sqlApi) {
+		super(plugin);
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
-		if (MessageQueueTable == null)
-			setTable(plugin.getName() + "_MessageQueue");
-	}
-
-	public void setTable(String table) {
-		MessageQueueTable = table;
-		sqlApi.runOnConnect(() -> {
-			ensureCorrectTables();
-		});
-	}
-
-	private void ensureCorrectTables() {
-		if (!checkPreconditions())
-			return;
-
-		String update = "CREATE TABLE IF NOT EXISTS " + MessageQueueTable
-				+ " (player varchar(63), message varchar(1023), priority int);";
-		sqlApi.executeUpdate(update);
+		MessageQueueTable = plugin.getName() + "_MessageQueue";
+		addTable(MessageQueueTable, columns);
 	}
 
 	public void addQueuedMessage(OfflinePlayer offlinePlayer, String message) {
@@ -71,18 +56,12 @@ public final class SqlMessageQueue implements Listener {
 			return;
 		}
 
-		if (!checkPreconditions())
-			return;
-
 		String update = "INSERT INTO " + MessageQueueTable + " (player, message, priority) VALUES('"
 				+ offlinePlayer.getName() + "','" + message + "'," + priority + ");";
-		System.out.println(update + " :: " + message);
-		sqlApi.executeUpdateAsync(update);
+		updateAsync(update);
 	}
 
 	public void setQueuedMessages(OfflinePlayer offlinePlayer, List<String> messages) {
-		if (!checkPreconditions())
-			return;
 		String update = "INSERT INTO " + MessageQueueTable + " (player, message, priority) VALUES('"
 				+ offlinePlayer.getName() + "','{m}',{p});";
 		clearQueuedMessages(offlinePlayer);
@@ -90,57 +69,48 @@ public final class SqlMessageQueue implements Listener {
 		for (String s : messages) {
 			if (s == "")
 				continue;
-			sqlApi.executeUpdateAsync(update.replace("{m}", s).replace("{p}", "" + i++));
+			updateAsync(update.replace("{m}", s).replace("{p}", "" + i++));
 		}
 	}
 
 	public void clearQueuedMessages(OfflinePlayer offlinePlayer) {
-		if (!checkPreconditions())
+		if (!isConnected())
 			return;
 
 		String update = "DELETE FROM " + MessageQueueTable + " WHERE player = '" + offlinePlayer.getName() + "';";
-		sqlApi.executeUpdateAsync(update);
+		updateAsync(update);
 	}
 
 	private List<String> getQueuedMessages(OfflinePlayer offlinePlayer) {
-		if (!checkPreconditions())
+		if (!isConnected())
 			return new ArrayList<String>();
 
 		String query = "SELECT message FROM " + MessageQueueTable + " WHERE player = '" + offlinePlayer.getName() + "' "
 				+ "ORDER BY priority asc;";
-		List<String[]> list = sqlApi.getRows(query);
+		List<SqlRow> list = query(query);
 		List<String> returnList = new ArrayList<String>();
-		for (String[] str : list)
-			returnList.add(str[0]);
+		for (SqlRow row : list)
+			returnList.add(row.get(0));
 		return returnList;
 	}
 
 	private int getHighestPirority(OfflinePlayer offlinePlayer) {
-		if (!checkPreconditions())
+		if (!isConnected())
 			return 1000;
+		
 		String query = "SELECT MAX(priority) FROM " + MessageQueueTable + " WHERE player = '" + offlinePlayer.getName()
 				+ "';";
 		try {
-			return Integer.parseInt(sqlApi.getRows(query).get(0)[0]);
+			return Integer.parseInt(query(query).get(0).get(0));
 		}
 		catch (Exception e) {
 			return 1000;
 		}
 	}
 
-	private boolean checkPreconditions() {
-		if (MessageQueueTable == null)
-			throw new RuntimeException(
-					"Must call MessageQueue.init() in this plugin's code somewhere, preferably before calling any MessageQueue methods");
-
-		if (!sqlApi.isConnected())
-			return false;
-		return true;
-	}
-
 	@EventHandler(priority = EventPriority.HIGH)
 	public void onPlayerJoin(PlayerJoinEvent event) {
-		Bukkit.getScheduler().runTaskAsynchronously(JonosBukkitUtils.instance, () -> {
+		Bukkit.getScheduler().runTaskAsynchronously(JonosBukkitUtils.getInstance(), () -> {
 			List<String> messages = getQueuedMessages(event.getPlayer());
 			if (!messages.isEmpty()) {
 				for (String s : messages)

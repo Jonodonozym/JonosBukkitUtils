@@ -19,37 +19,20 @@ import lombok.Getter;
  */
 @AllArgsConstructor
 public final class SqlColumn {
-	private final String name;
-	private final SqlColumnType type;
+	@Getter private final String name;
+	@Getter private final SqlColumnType type;
 	@Getter private final String Default;
 	@Getter private final boolean primary;
 
 	public SqlColumn(String name, SqlColumnType type) {
-		this.name = name;
-		this.type = type;
-		this.Default = type.getDefaultStatement();
-		this.primary = false;
+		this(name, type, type.getDefaultStatement(), false);
 	}
 
 	public SqlColumn(String name, SqlColumnType type, String Default) {
-		this.name = name;
-		this.type = type;
-		this.Default = " DEFAULT " + Default;
-		this.primary = false;
+		this(name, type, " DEFAULT " + Default, false);
 	}
 
 	public SqlColumn(String name, SqlColumnType type, boolean primary) {
-		this.name = name;
-		this.type = type;
-		this.Default = type.getDefaultStatement();
-		this.primary = primary;
-	}
-
-	public String name() {
-		return name;
-	}
-
-	public SqlColumnType getType() {
-		return type;
+		this(name, type, type.getDefaultStatement(), primary);
 	}
 }
