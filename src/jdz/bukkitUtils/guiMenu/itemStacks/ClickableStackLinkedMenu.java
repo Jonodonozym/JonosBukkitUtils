@@ -32,7 +32,7 @@ public class ClickableStackLinkedMenu extends ClickableStack {
 
 	@Override
 	public void onClick(GuiMenu menu, InventoryClickEvent event) {
-		Bukkit.getScheduler().runTaskLater(JonosBukkitUtils.instance, () -> {
+		Bukkit.getScheduler().runTaskLater(JonosBukkitUtils.getInstance(), () -> {
 			targetGuiMenu.open((Player) event.getWhoClicked());
 		}, 1L);
 	}

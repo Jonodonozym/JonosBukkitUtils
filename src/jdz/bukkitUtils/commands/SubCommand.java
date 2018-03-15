@@ -249,7 +249,7 @@ public abstract class SubCommand {
 				method.setAccessible(isAccessible);
 			}
 			catch (IllegalAccessException | IllegalArgumentException e) {
-				new FileLogger(JonosBukkitUtils.instance).createErrorLog(e);
+				new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(e);
 			}
 			catch (InvocationTargetException e) {
 				throw new ExecuteException(e.getCause());

@@ -138,7 +138,7 @@ public final class FileLogger {
 		String header = "An error occurred in the plugin. If you can't work out the issue from this file, send this file to the plugin developer with a description of the failure\n";
 		header += "Plugin name: " + plugin.getName() + "\n";
 		header += "Plugin version: " + plugin.getDescription().getVersion() + "\n";
-		header += "JBU version: " + JonosBukkitUtils.instance.getDescription().getVersion() + "\n";
+		header += "JBU version: " + JonosBukkitUtils.getInstance().getDescription().getVersion() + "\n";
 
 		writeFile(header, error, file);
 	}

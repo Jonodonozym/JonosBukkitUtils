@@ -52,7 +52,11 @@ public final class StringUtils {
 	}
 
 	public static String[] splitIntoLines(String s, int charsPerLine) {
+		if (s == null || s.equals(""))
+			return new String[] {""};
+		
 		List<String> lines = new ArrayList<String>();
+		
 		for (String line : s.split("\n")) {
 			String buffer = "";
 			for (String word : line.split(" ")) {

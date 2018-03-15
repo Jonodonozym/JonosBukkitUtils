@@ -62,9 +62,9 @@ public final class Config {
 	}
 
 	public static File getDefaultSqlFile(JavaPlugin targetPlugin) {
-		File file = new File(JonosBukkitUtils.instance.getDataFolder() + File.separator + "sqlConfig.yml");
+		File file = new File(JonosBukkitUtils.getInstance().getDataFolder() + File.separator + "sqlConfig.yml");
 		targetPlugin.getDataFolder().mkdir();
-		FileExporter fe = new FileExporter(JonosBukkitUtils.instance);
+		FileExporter fe = new FileExporter(JonosBukkitUtils.getInstance());
 		if (!file.exists() && fe.hasResource("sqlConfig.yml"))
 			fe.ExportResource("sqlConfig.yml", targetPlugin.getDataFolder() + File.separator + "sqlConfig.yml");
 		return file;

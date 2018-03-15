@@ -16,11 +16,13 @@ import java.util.Set;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.events.ListenerManager;
 import jdz.bukkitUtils.events.custom.JBUEvents;
 import jdz.bukkitUtils.fileIO.JarUtils;
 import jdz.bukkitUtils.misc.Config;
 import jdz.bukkitUtils.misc.Enchantment;
 import jdz.bukkitUtils.misc.PluginUpdater;
+import lombok.Getter;
 
 /**
  * Jono's (or Java, I don't give a damn what you think) Utilities for Bukkit to
@@ -30,7 +32,7 @@ import jdz.bukkitUtils.misc.PluginUpdater;
  * @author Jonodonozym
  */
 public final class JonosBukkitUtils extends JavaPlugin {
-	public static JonosBukkitUtils instance;
+	@Getter private static JonosBukkitUtils instance;
 	private final int bukkitID = 281287;
 
 	public final Set<org.bukkit.enchantments.Enchantment> defaultEnchantments = new HashSet<org.bukkit.enchantments.Enchantment>(

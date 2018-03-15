@@ -62,7 +62,7 @@ public final class WorldUtils {
 					Integer.parseInt(args[3]) + 0.5, Float.parseFloat(args[4]), Float.parseFloat(args[5]));
 		}
 		catch (Exception e) {
-			new FileLogger(JonosBukkitUtils.instance).createErrorLog(e, "Error parsing location with args: " + args);
+			new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(e, "Error parsing location with args: " + args);
 			return null;
 		}
 	}

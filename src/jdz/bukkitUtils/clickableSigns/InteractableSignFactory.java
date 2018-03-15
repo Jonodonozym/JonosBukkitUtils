@@ -46,7 +46,7 @@ class InteractableSignFactory {
 
 						if (e.getCause() != null && e.getCause() instanceof InvalidSignException)
 							throw (InvalidSignException) e.getCause();
-						new FileLogger(JonosBukkitUtils.instance).createErrorLog(e);
+						new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(e);
 					}
 					catch (IllegalArgumentException e) {
 						throw new InvalidSignException(

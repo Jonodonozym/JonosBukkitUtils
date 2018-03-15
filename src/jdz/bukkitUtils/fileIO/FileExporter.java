@@ -62,7 +62,7 @@ public final class FileExporter {
 		}
 		catch (Exception ex) {
 			if (!isSilent)
-				new FileLogger(JonosBukkitUtils.instance).createErrorLog(ex);
+				new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(ex);
 		}
 		finally {
 			try {

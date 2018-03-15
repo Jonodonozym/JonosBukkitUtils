@@ -21,7 +21,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 	private static final Set<Enchantment> enchantments = new HashSet<Enchantment>();
 
 	public Enchantment(JavaPlugin plugin, int id) {
-		super(60000 + id % 7153);
+		super(1000 + id % 7153);
 
 		if (!enchantments.contains(this)) {
 			enchantments.add(this);
@@ -55,7 +55,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 
 	@Override
 	public int hashCode() {
-		return getClass().hashCode();
+		return getId();
 	}
 
 	/**
@@ -93,6 +93,15 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 
 	@SuppressWarnings("deprecation")
 	public static boolean isCustom(org.bukkit.enchantments.Enchantment e) {
-		return e.getId() > 59999 && e.getId() < 67153;
+		return e.getId() > 59999 && e.getId() < 67153 || e.getId() > 999 && e.getId() < 8153;
+	}
+	
+	@Override
+	@SuppressWarnings("deprecation")
+	public int getId() {
+		int id = super.getId();
+		if (id > 59999)
+			return id - 59000;
+		return id;
 	}
 }

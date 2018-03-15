@@ -50,7 +50,7 @@ public abstract class GuiMenu implements Listener {
 			p.closeInventory();
 
 		e.setCancelled(true);
-		Bukkit.getScheduler().runTaskLater(JonosBukkitUtils.instance, () -> {
+		Bukkit.getScheduler().runTaskLater(JonosBukkitUtils.getInstance(), () -> {
 			clickable.onClick(this, e);
 		}, 1);
 	}

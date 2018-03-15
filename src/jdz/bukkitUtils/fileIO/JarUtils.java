@@ -47,8 +47,7 @@ public final class JarUtils {
 		try {
 			for (final String libName : libNames) {
 				File lib = new File(plugin.getDataFolder(), libName);
-				if (!lib.exists())
-					extractFromJar(lib.getName(), lib.getAbsolutePath());
+				extractFromJar(lib.getName(), lib.getAbsolutePath());
 			}
 			for (final String libName : libNames) {
 				File lib = new File(plugin.getDataFolder(), libName);
@@ -57,7 +56,7 @@ public final class JarUtils {
 							+ "! Could not find lib: " + libName
 							+ ". If the problem persists, add it manually to your plugins directory";
 					Bukkit.getLogger().warning(errorMessage);
-					new FileLogger(JonosBukkitUtils.instance).createErrorLog(errorMessage);
+					new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(errorMessage);
 					Bukkit.getServer().getPluginManager().disablePlugin(plugin);
 					return;
 				}

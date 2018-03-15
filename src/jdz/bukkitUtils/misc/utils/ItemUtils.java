@@ -2,7 +2,6 @@
 package jdz.bukkitUtils.misc.utils;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -50,9 +49,19 @@ public class ItemUtils {
 	}
 
 	public static void give(Player player, ItemStack item, int amount) {
-		ItemStack newStack = new ItemStack(item);
-		newStack.setAmount(amount);
-		give(player, Arrays.asList(newStack));
+		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		
+		ItemStack newStack = item.clone();
+		newStack.setAmount(item.getType().getMaxStackSize());
+		int fullStacks = amount / item.getType().getMaxStackSize();
+		int remainder = amount % item.getType().getMaxStackSize();
+		
+		for (int i=0; i<fullStacks; i++)
+			stacks.add(newStack);
+		
+		newStack.setAmount(remainder);
+		stacks.add(newStack);
+		give(player, stacks);
 	}
 
 	public static void give(Player player, ItemStack item) {
