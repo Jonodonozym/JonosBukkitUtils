@@ -161,15 +161,15 @@ public final class WorldUtils {
 	 */
 	public static Set<Player> getPlayersInCuboid(Location origin, double width, double height, double depth) {
 		if (width < 0) {
-			origin.setX(origin.getX() - width);
+			origin.setX(origin.getX() + width);
 			width *= -1;
 		}
 		if (height < 0) {
-			origin.setY(origin.getY() - height);
+			origin.setY(origin.getY() + height);
 			height *= -1;
 		}
 		if (depth < 0) {
-			origin.setZ(origin.getZ() - depth);
+			origin.setZ(origin.getZ() + depth);
 			depth *= -1;
 		}
 
@@ -187,10 +187,13 @@ public final class WorldUtils {
 		return nearbyPlayers;
 	}
 
+
+	@Deprecated
 	public static void flingPlayer(Player player, Location destination, double heightGain) {
 		flingPlayer(player, destination.toVector(), heightGain);
 	}
 
+	@Deprecated
 	public static Vector flingPlayer(Player player, Vector destination, double heightGain) {
 		Vector from = player.getLocation().toVector();
 
@@ -253,7 +256,10 @@ public final class WorldUtils {
 		return locations;
 	}
 
+	@Deprecated
 	public static Vector getVector(double pitch, double yaw) {
+		pitch *=  Math.PI / 180D;
+		yaw *=  Math.PI / 180D;
 		double x = Math.sin(pitch) * Math.cos(yaw);
 		double y = Math.sin(pitch) * Math.sin(yaw);
 		double z = Math.cos(pitch);
