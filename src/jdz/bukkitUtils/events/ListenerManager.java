@@ -8,6 +8,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.HandlerList;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 
@@ -16,12 +17,12 @@ import lombok.Getter;
 
 public class ListenerManager implements Listener {
 	@Getter private static final ListenerManager instance = new ListenerManager();
+	private final Map<Plugin, Set<org.bukkit.event.Listener>> registered = new HashMap<Plugin, Set<org.bukkit.event.Listener>>();
+
 	private ListenerManager() {
 		register(this, JonosBukkitUtils.getInstance());
 	}
 	
-	private static Map<Plugin, Set<org.bukkit.event.Listener>> registered = new HashMap<Plugin, Set<org.bukkit.event.Listener>>();
-
 	boolean register(org.bukkit.event.Listener l, Plugin plugin) {
 		if (!registered.containsKey(plugin))
 			registered.put(plugin, new HashSet<org.bukkit.event.Listener>());
@@ -31,6 +32,12 @@ public class ListenerManager implements Listener {
 		registered.get(plugin).add(l);
 		Bukkit.getPluginManager().registerEvents(l, plugin);
 		return true;
+	}
+	
+	void unregister(org.bukkit.event.Listener l, Plugin plugin) {
+		if (registered.containsKey(plugin))
+			registered.get(plugin).remove(l);
+		HandlerList.unregisterAll(l);
 	}
 
 	@EventHandler
