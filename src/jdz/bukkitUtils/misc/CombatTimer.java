@@ -8,6 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
@@ -21,10 +22,10 @@ public class CombatTimer implements Listener{
 	@Getter private static final CombatTimer timer = new CombatTimer();
 	private CombatTimer() {
 		registerEvents(JonosBukkitUtils.getInstance());
-		Bukkit.getScheduler().runTaskAsynchronously(JonosBukkitUtils.getInstance(), ()->{
-			CollectionUtils.addToAll(timers, -1);
+		Bukkit.getScheduler().runTaskTimerAsynchronously(JonosBukkitUtils.getInstance(), ()->{
+			CollectionUtils.addToAll(timers, -10);
 			CollectionUtils.removeNonPositive(timers);
-		});
+		}, 10L, 10L);
 	}
 	
 	@Getter @Setter private int timerTicks = 100;
@@ -49,6 +50,16 @@ public class CombatTimer implements Listener{
 	public void onHit(PlayerDamagedByPlayer event) {
 		timers.put(event.getPlayer(), timerTicks);
 		lastAttacker.put(event.getPlayer(), event.getDamager());
+	}
+	
+	@EventHandler(priority = EventPriority.MONITOR)
+	public void onDeath(PlayerDeathEvent event) {
+		timers.remove(event.getEntity());
+		lastAttacker.remove(event.getEntity());
+		
+		for (Player player: lastAttacker.keySet())
+			if (lastAttacker.get(player).equals(event.getEntity()))
+				timers.remove(player);
 	}
 
 }
