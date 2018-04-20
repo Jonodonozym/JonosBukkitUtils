@@ -13,14 +13,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.events.custom.JBUEvents;
 import jdz.bukkitUtils.fileIO.JarUtils;
-import jdz.bukkitUtils.misc.Config;
 import jdz.bukkitUtils.misc.Enchantment;
-import jdz.bukkitUtils.misc.PluginUpdater;
+import jdz.bukkitUtils.updaters.PluginUpdater;
 import lombok.Getter;
 
 /**
@@ -38,15 +36,17 @@ public final class JonosBukkitUtils extends JavaPlugin {
 			Arrays.asList(Enchantment.values()));
 
 	@Override
+	public void onLoad() {
+		PluginUpdater.updateAll();
+	}
+
+	@Override
 	public void onEnable() {
 		instance = this;
 
 		new JarUtils(this).extractLibs("libs/lombok.jar");
 		new JarUtils(this).extractLibs("libs/exp4j.jar");
-
-		FileConfiguration config = Config.getConfig(this);
-		if (config.getBoolean("autoUpdate"))
-			new PluginUpdater(this, bukkitID, this.getFile(), PluginUpdater.UpdateType.DEFAULT, false);
+		new JarUtils(this).extractLibs("libs/github-api.jar");
 
 		JBUEvents.registerAll(this);
 	}

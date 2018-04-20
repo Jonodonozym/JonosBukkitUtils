@@ -1,0 +1,6 @@
+
+package jdz.bukkitUtils.updaters;
+
+public enum PluginUpdateResult {
+	SUCCESS, NO_UPDATE, DISABLED, FAIL_DOWNLOAD, FAIL_CONNECTION, FAIL_NOVERSION, FAIL_BADID, FAIL_APIKEY, UPDATE_AVAILABLE
+}
