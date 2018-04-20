@@ -18,7 +18,6 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
@@ -128,8 +127,16 @@ public final class FileLogger {
 	 * @param exception
 	 */
 	public void createErrorLog(String fileDir, String error) {
-		Bukkit.getLogger()
-				.severe("[" + plugin.getName() + "] An error occurred. Check the Error log file for details.");
+		plugin.getLogger().severe("An error occurred. Check the Error log file for details.");
+
+		int i = 0;
+		for (String s : error.split("\n")) {
+			plugin.getLogger().severe(s);
+			if (++i > 3) {
+				plugin.getLogger().severe("...");
+				break;
+			}
+		}
 
 		File file = new File(fileDir);
 		if (!file.getParentFile().exists())

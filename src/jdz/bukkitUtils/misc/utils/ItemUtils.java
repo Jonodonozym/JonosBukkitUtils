@@ -50,15 +50,15 @@ public class ItemUtils {
 
 	public static void give(Player player, ItemStack item, int amount) {
 		List<ItemStack> stacks = new ArrayList<ItemStack>();
-		
+
 		ItemStack newStack = item.clone();
 		newStack.setAmount(item.getType().getMaxStackSize());
 		int fullStacks = amount / item.getType().getMaxStackSize();
 		int remainder = amount % item.getType().getMaxStackSize();
-		
-		for (int i=0; i<fullStacks; i++)
+
+		for (int i = 0; i < fullStacks; i++)
 			stacks.add(newStack);
-		
+
 		newStack.setAmount(remainder);
 		stacks.add(newStack);
 		give(player, stacks);

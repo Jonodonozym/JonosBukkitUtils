@@ -3,7 +3,7 @@ package jdz.bukkitUtils.misc.loot;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Random;
+import java.util.Set;
 
 import lombok.Getter;
 
@@ -16,13 +16,11 @@ public abstract class LootTable {
 	}
 
 	public void addLoot(Loot loot, double weight) {
-		if (!weighting.keySet().contains(loot)) {
-			weighting.put(loot, weight);
-			totalWeight += weight;
-		}
+		if (weighting.keySet().contains(loot))
+			weighting.put(loot, weighting.get(loot));
 		else
-			throw new IllegalArgumentException(
-					"Boss Loot " + loot.getName() + " has already been added to the loot table");
+			weighting.put(loot, weight);
+		totalWeight += weight;
 	}
 
 	public boolean removeLoot(Loot loot) {
@@ -34,12 +32,22 @@ public abstract class LootTable {
 	}
 
 	public Loot getRandom() {
-		double rand = new Random().nextDouble() * totalWeight;
+		double rand = Math.random() * totalWeight;
 		for (Loot item : weighting.keySet()) {
 			rand -= weighting.get(item);
 			if (rand <= 0)
 				return item;
 		}
-		return null;
+		return weighting.keySet().iterator().next();
+	}
+
+	public Set<Loot> getAllLoot() {
+		return weighting.keySet();
+	}
+
+	public double getProbability(Loot loot) {
+		if (!weighting.containsKey(loot))
+			return -1;
+		return weighting.get(loot) / totalWeight;
 	}
 }

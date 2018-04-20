@@ -180,7 +180,7 @@ public abstract class AnvilEvent extends Event implements Cancellable {
 
 			String oldName = event.getLeftItem().getItemMeta().getDisplayName();
 
-			if (displayName != null && !oldName.replaceAll("§", "").equals(displayName))
+			if (displayName != null && !ChatColor.stripColor(ColorUtils.translate(oldName)).equals(displayName))
 				return;
 
 			im.setDisplayName(ColorUtils.translate(oldName));

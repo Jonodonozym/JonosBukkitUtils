@@ -93,14 +93,24 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	}
 
 	public void register() {
-		if (!isRegistered)
-			for (String label : aliases) {
-				if (plugin.getCommand(label) == null)
-					new FileLogger(plugin).createErrorLog(new IllegalArgumentException(),
-							"No command found in " + plugin.getName() + "'s plugin.yml file labeled '" + label + "'");
+		if (isRegistered) {
+			plugin.getLogger().warning(getLabel() + " command executor already registered!");
+
+			StackTraceElement[] elements = new Exception().getStackTrace();
+			for (int i = 1; i < Math.min(elements.length, 4); i++)
+				plugin.getLogger().warning(elements[i].toString());
+
+			return;
+		}
+
+		for (String label : aliases) {
+			if (plugin.getCommand(label) == null)
+				new FileLogger(plugin).createErrorLog(new IllegalArgumentException(),
+						"No command found in " + plugin.getName() + "'s plugin.yml file labeled '" + label + "'");
+			else
 				plugin.getCommand(label).setExecutor(this);
-				isRegistered = true;
-			}
+		}
+		isRegistered = true;
 	}
 
 	public boolean isRegistered() {
@@ -111,11 +121,11 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		return label;
 	}
 
-	public void disableHelpCommand() {
+	protected void disableHelpCommand() {
 		isHelpEnabled = false;
 	}
 
-	public void enableHelpCommand() {
+	protected void enableHelpCommand() {
 		isHelpEnabled = true;
 	}
 
@@ -133,10 +143,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			return true;
 		}
 
-		for (String s : permissions) {
-			if (!sender.hasPermission(s)) {
-				sender.sendMessage(ChatColor.RED + "You are missing the permission node " + s);
-				return true;
+		if (sender instanceof Player) {
+			for (String s : permissions) {
+				if (!sender.hasPermission(s)) {
+					sender.sendMessage(ChatColor.RED + "You are missing the permission node " + s);
+					return true;
+				}
 			}
 		}
 

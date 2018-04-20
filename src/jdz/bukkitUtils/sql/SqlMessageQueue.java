@@ -97,7 +97,7 @@ public final class SqlMessageQueue extends SqlDatabase implements Listener {
 	private int getHighestPirority(OfflinePlayer offlinePlayer) {
 		if (!isConnected())
 			return 1000;
-		
+
 		String query = "SELECT MAX(priority) FROM " + MessageQueueTable + " WHERE player = '" + offlinePlayer.getName()
 				+ "';";
 		try {

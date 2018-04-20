@@ -14,6 +14,7 @@ public class JBUEvents {
 		pm.registerEvents(new AnvilRepairEvent.AnvilRepairListener(), plugin);
 		pm.registerEvents(new AnvilEvent.CustomEnchantAnvilCrashPreventer(), plugin);
 		pm.registerEvents(new PotionDrinkEvent.PotionDrinkEventListener(), plugin);
-		pm.registerEvents(new PlayerDamagedByPlayer.PlayerDamagedByPlayerListener() , plugin);
+		pm.registerEvents(new PlayerDamagedByPlayer.PlayerDamagedByPlayerListener(), plugin);
+		pm.registerEvents(new CropTrampleEvent.CropTrampleListener(), plugin);
 	}
 }

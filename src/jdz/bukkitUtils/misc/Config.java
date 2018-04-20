@@ -13,8 +13,7 @@ import java.io.File;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-
+import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.fileIO.FileExporter;
 
@@ -29,7 +28,7 @@ public final class Config {
 	 * 
 	 * @return
 	 */
-	public static FileConfiguration getConfig(JavaPlugin plugin) {
+	public static FileConfiguration getConfig(Plugin plugin) {
 		return getConfig(plugin, "config.yml");
 	}
 
@@ -39,7 +38,7 @@ public final class Config {
 	 * 
 	 * @return
 	 */
-	public static File getConfigFile(JavaPlugin plugin) {
+	public static File getConfigFile(Plugin plugin) {
 		return getConfigFile(plugin, "config.yml");
 	}
 
@@ -48,11 +47,11 @@ public final class Config {
 	 * 
 	 * @return
 	 */
-	public static FileConfiguration getConfig(JavaPlugin plugin, String fileName) {
+	public static FileConfiguration getConfig(Plugin plugin, String fileName) {
 		return YamlConfiguration.loadConfiguration(getConfigFile(plugin, fileName));
 	}
 
-	public static File getConfigFile(JavaPlugin plugin, String fileName) {
+	public static File getConfigFile(Plugin plugin, String fileName) {
 		File file = new File(plugin.getDataFolder() + File.separator + fileName);
 		plugin.getDataFolder().mkdir();
 		FileExporter fe = new FileExporter(plugin);
@@ -61,7 +60,7 @@ public final class Config {
 		return file;
 	}
 
-	public static File getDefaultSqlFile(JavaPlugin targetPlugin) {
+	public static File getDefaultSqlFile(Plugin targetPlugin) {
 		File file = new File(JonosBukkitUtils.getInstance().getDataFolder() + File.separator + "sqlConfig.yml");
 		targetPlugin.getDataFolder().mkdir();
 		FileExporter fe = new FileExporter(JonosBukkitUtils.getInstance());

@@ -7,20 +7,8 @@ import java.util.stream.Collectors;
 import org.bukkit.ChatColor;
 
 public class ColorUtils {
-
-	private static String translateAlternateColorCodes(char altColorChar, String textToTranslate) {
-		char[] b = textToTranslate.toCharArray();
-		for (int i = 0; i < b.length - 1; i++) {
-			if (b[i] == altColorChar && "0123456789AaBbCcDdEeFfKkLlMmNnOoRr".indexOf(b[i + 1]) > -1) {
-				b[i] = '§';
-				b[i + 1] = Character.toLowerCase(b[i + 1]);
-			}
-		}
-		return new String(b);
-	}
-
 	public static String translate(String string) {
-		return translateAlternateColorCodes('&', string);
+		return ChatColor.translateAlternateColorCodes('&', string);
 	}
 
 	public static List<String> translate(List<String> string) {
@@ -48,5 +36,29 @@ public class ColorUtils {
 		for (String s : lines)
 			retLines.add(color + s);
 		return retLines;
+	}
+
+	public static ChatColor getLastColor(String text) {
+		for (int i = text.length() - 2; i >= 0; i--) {
+			char c = text.charAt(i);
+			if (c != '&' && c != '\u00A7')
+				continue;
+			ChatColor color = ChatColor.getByChar(text.charAt(i + 1));
+			if (color != null && color.isColor())
+				return color;
+		}
+		return null;
+	}
+
+	public static ChatColor getLastFormat(String text) {
+		for (int i = text.length() - 2; i >= 0; i--) {
+			char c = text.charAt(i);
+			if (c != '&' && c != '\u00A7')
+				continue;
+			ChatColor color = ChatColor.getByChar(text.charAt(i + 1));
+			if (color != null && color.isFormat())
+				return color;
+		}
+		return null;
 	}
 }

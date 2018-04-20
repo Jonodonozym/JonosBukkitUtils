@@ -18,8 +18,7 @@ import java.net.URL;
 import java.net.URLDecoder;
 import java.util.jar.JarFile;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
+import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.JonosBukkitUtils;
 
 /**
@@ -29,9 +28,9 @@ import jdz.bukkitUtils.JonosBukkitUtils;
  */
 public final class FileExporter {
 	static boolean RUNNING_FROM_JAR = false;
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
 
-	public FileExporter(JavaPlugin plugin) {
+	public FileExporter(Plugin plugin) {
 		this.plugin = plugin;
 	}
 

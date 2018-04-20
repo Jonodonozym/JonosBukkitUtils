@@ -10,13 +10,21 @@ import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.JonosBukkitUtils;
+import jdz.bukkitUtils.events.Listener;
 import jdz.bukkitUtils.fileIO.FileLogger;
 
 public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
+	static {
+		new EnchantTableListener().registerEvents(JonosBukkitUtils.getInstance());
+	}
 
 	private static final Set<Enchantment> enchantments = new HashSet<Enchantment>();
 
@@ -79,11 +87,9 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 
 	public int getLevel(ItemStack stack) {
 		Map<org.bukkit.enchantments.Enchantment, Integer> enchants = stack.getEnchantments();
-		for (org.bukkit.enchantments.Enchantment enchant : enchants.keySet()) {
-			if (enchant.getClass().getName().equals(getClass().getName())) {
+		for (org.bukkit.enchantments.Enchantment enchant : enchants.keySet())
+			if (enchant.getClass().getName().equals(getClass().getName()))
 				return enchants.get(enchant);
-			}
-		}
 		return 0;
 	}
 
@@ -93,9 +99,9 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 
 	@SuppressWarnings("deprecation")
 	public static boolean isCustom(org.bukkit.enchantments.Enchantment e) {
-		return e.getId() > 59999 && e.getId() < 67153 || e.getId() > 999 && e.getId() < 8153;
+		return (59999 < e.getId() && e.getId() < 67153) || (999 < e.getId() && e.getId() < 8153);
 	}
-	
+
 	@Override
 	@SuppressWarnings("deprecation")
 	public int getId() {
@@ -103,5 +109,22 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 		if (id > 59999)
 			return id - 59000;
 		return id;
+	}
+
+	private static class EnchantTableListener implements Listener {
+		@EventHandler
+		public void onEnchant(EnchantItemEvent event) {
+			int cost = event.getExpLevelCost();
+			Material material = event.getItem().getType();
+			for (Enchantment ench : enchantments) {
+				if (ench instanceof EnchantTableAddition) {
+					EnchantTableAddition enchAdd = (EnchantTableAddition) ench;
+					if (enchAdd.useOnTable() && enchAdd.getEnchantChance(cost, material) > Math.random()) {
+						int level = enchAdd.getEnchantLevel(cost, material);
+						ench.addTo(event.getItem(), level);
+					}
+				}
+			}
+		}
 	}
 }

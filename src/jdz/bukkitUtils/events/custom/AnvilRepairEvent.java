@@ -7,7 +7,7 @@ import org.bukkit.inventory.ItemStack;
 
 public class AnvilRepairEvent extends AnvilEvent {
 
-	public AnvilRepairEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem, int cost) {
+	private AnvilRepairEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem, int cost) {
 		super(player, leftItem, rightItem, resultItem, cost);
 	}
 

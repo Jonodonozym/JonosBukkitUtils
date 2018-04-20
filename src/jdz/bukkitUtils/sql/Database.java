@@ -93,7 +93,7 @@ abstract class Database {
 			while (rs.next()) {
 				LinkedHashMap<String, String> row = new LinkedHashMap<String, String>();
 				for (int i = 1; i <= columns; i++)
-					row.put(rs.getMetaData().getColumnName(i), rs.getString(i));
+					row.put(rs.getMetaData().getColumnName(i).toUpperCase(), rs.getString(i));
 				if (row.size() > 0)
 					rows.add(new SqlRow(row));
 			}
@@ -242,7 +242,7 @@ abstract class Database {
 	}
 
 	protected void removeTable(String tableName) {
-		String update = "DROP TABLE IF EXISTS '" + tableName + "';";
+		String update = "DROP TABLE IF EXISTS " + tableName + ";";
 		update(update);
 	}
 

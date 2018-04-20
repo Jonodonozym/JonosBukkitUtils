@@ -5,6 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.bukkit.ChatColor;
+
+import jdz.bukkitUtils.misc.utils.ColorUtils;
+
 public final class StringUtils {
 	public static String collectionToString(Collection<? extends Object> list, String separator) {
 		String returnString = "";
@@ -51,12 +55,25 @@ public final class StringUtils {
 		return combined.replaceFirst(" ", "");
 	}
 
+	public static String[] splitIntoColorizedLines(String s, int charsPerLine) {
+		String[] lines = StringUtils.splitIntoLines(s, charsPerLine);
+		for (int i = 0; i < lines.length - 1; i++) {
+			ChatColor lastColor = ColorUtils.getLastColor(lines[i]);
+			ChatColor lastFormat = ColorUtils.getLastFormat(lines[i]);
+			if (lastColor != null)
+				lines[i + 1] = lastColor + lines[i + 1];
+			if (lastFormat != null)
+				lines[i + 1] = lastFormat + lines[i + 1];
+		}
+		return lines;
+	}
+
 	public static String[] splitIntoLines(String s, int charsPerLine) {
 		if (s == null || s.equals(""))
-			return new String[] {""};
-		
+			return new String[] { "" };
+
 		List<String> lines = new ArrayList<String>();
-		
+
 		for (String line : s.split("\n")) {
 			String buffer = "";
 			for (String word : line.split(" ")) {

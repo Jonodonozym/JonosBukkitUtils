@@ -62,7 +62,8 @@ public final class WorldUtils {
 					Integer.parseInt(args[3]) + 0.5, Float.parseFloat(args[4]), Float.parseFloat(args[5]));
 		}
 		catch (Exception e) {
-			new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(e, "Error parsing location with args: " + args);
+			new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(e,
+					"Error parsing location with args: " + args);
 			return null;
 		}
 	}
@@ -125,11 +126,11 @@ public final class WorldUtils {
 
 		return getBlockAboveOrBelow(block, blockType, blockData, distance + 1);
 	}
-	
+
 	public static boolean isEmptyColumn(Location loc) {
 		return isEmptyColumn(loc.getWorld(), loc.getBlockX(), loc.getBlockZ());
 	}
-	
+
 	public static boolean isEmptyColumn(World world, int x, int z) {
 		for (int y = 0; y < world.getMaxHeight(); y++)
 			if (world.getBlockAt(x, y, z).getType() != Material.AIR)
@@ -146,10 +147,30 @@ public final class WorldUtils {
 	 */
 	public static Set<Player> getNearbyPlayers(Location location, double range) {
 		Set<Player> nearbyPlayers = new HashSet<Player>();
-		for (Player player : Bukkit.getServer().getOnlinePlayers())
-			if (player.getWorld().equals(location.getWorld()) && player.getLocation().distance(location) < range)
+		for (Player player : location.getWorld().getPlayers())
+			if (player.getLocation().distance(location) < range)
 				nearbyPlayers.add(player);
 		return nearbyPlayers;
+	}
+
+	/**
+	 * Gets the nearest player to a location
+	 * 
+	 * @param location
+	 * @param maxRange ignore players further than the range, -1 for unlimited range
+	 * @return the player, or null if none found
+	 */
+	public static Player getNearestPlayer(Location location, double maxRange) {
+		Player nearest = null;
+		double nearestDistance = maxRange <= 0 ? Double.MAX_VALUE : maxRange;
+		for (Player player : location.getWorld().getPlayers()) {
+			double playerDistance = player.getLocation().distance(location);
+			if (playerDistance < nearestDistance) {
+				nearest = player;
+				nearestDistance = playerDistance;
+			}
+		}
+		return nearest;
 	}
 
 	/**
@@ -175,9 +196,7 @@ public final class WorldUtils {
 
 		Set<Player> nearbyPlayers = new HashSet<Player>();
 		World world = origin.getWorld();
-		for (Player player : Bukkit.getServer().getOnlinePlayers()) {
-			if (!player.getWorld().equals(world))
-				continue;
+		for (Player player : world.getPlayers()) {
 			Location ploc = player.getLocation();
 			if (ploc.getX() > origin.getX() && ploc.getX() < origin.getBlockX() + width)
 				if (ploc.getY() > origin.getY() && ploc.getY() < origin.getY() + height)
@@ -258,8 +277,8 @@ public final class WorldUtils {
 
 	@Deprecated
 	public static Vector getVector(double pitch, double yaw) {
-		pitch *=  Math.PI / 180D;
-		yaw *=  Math.PI / 180D;
+		pitch *= Math.PI / 180D;
+		yaw *= Math.PI / 180D;
 		double x = Math.sin(pitch) * Math.cos(yaw);
 		double y = Math.sin(pitch) * Math.sin(yaw);
 		double z = Math.cos(pitch);

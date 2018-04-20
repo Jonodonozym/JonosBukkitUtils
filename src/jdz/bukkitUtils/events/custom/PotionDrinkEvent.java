@@ -15,11 +15,12 @@ import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 
 import jdz.bukkitUtils.events.Event;
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @SuppressWarnings("deprecation")
-@AllArgsConstructor
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PotionDrinkEvent extends Event implements Cancellable {
 	@Getter private final Collection<PotionEffect> effects;
 	@Getter private final Player player;

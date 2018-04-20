@@ -28,7 +28,7 @@ public abstract class PotionEffectType extends org.bukkit.potion.PotionEffectTyp
 	}
 
 	private static int SID = org.bukkit.potion.PotionEffectType.values().length;
-	
+
 	public PotionEffectType() {
 		super(SID++);
 

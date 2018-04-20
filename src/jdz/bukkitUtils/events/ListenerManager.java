@@ -22,7 +22,7 @@ public class ListenerManager implements Listener {
 	private ListenerManager() {
 		register(this, JonosBukkitUtils.getInstance());
 	}
-	
+
 	boolean register(org.bukkit.event.Listener l, Plugin plugin) {
 		if (!registered.containsKey(plugin))
 			registered.put(plugin, new HashSet<org.bukkit.event.Listener>());
@@ -33,7 +33,7 @@ public class ListenerManager implements Listener {
 		Bukkit.getPluginManager().registerEvents(l, plugin);
 		return true;
 	}
-	
+
 	void unregister(org.bukkit.event.Listener l, Plugin plugin) {
 		if (registered.containsKey(plugin))
 			registered.get(plugin).remove(l);

@@ -1,65 +1,111 @@
 
 package jdz.bukkitUtils.misc;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.events.Listener;
 import jdz.bukkitUtils.events.custom.PlayerDamagedByPlayer;
 import jdz.bukkitUtils.misc.utils.CollectionUtils;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 
-public class CombatTimer implements Listener{
-	@Getter private static final CombatTimer timer = new CombatTimer();
-	private CombatTimer() {
-		registerEvents(JonosBukkitUtils.getInstance());
-		Bukkit.getScheduler().runTaskTimerAsynchronously(JonosBukkitUtils.getInstance(), ()->{
-			CollectionUtils.addToAll(timers, -10);
-			CollectionUtils.removeNonPositive(timers);
-		}, 10L, 10L);
-	}
-	
-	@Getter @Setter private int timerTicks = 100;
+public class CombatTimer implements Listener {
+	private static final Map<Plugin, List<CombatTimer>> pluginToTimers = new HashMap<Plugin, List<CombatTimer>>();
+
+	@Getter(value = AccessLevel.PROTECTED) private final int timerTicks;
 	private final Map<Player, Player> lastAttacker = new HashMap<Player, Player>();
 	private final Map<Player, Integer> timers = new HashMap<Player, Integer>();
-	
-	public int getTimerTicks(Player player) {
-		return timers.containsKey(player)?timers.get(player):0;
+	@Getter @Setter public boolean doMessages = false;
+	private final Set<Player> messages = new HashSet<Player>();
+
+	public CombatTimer(Plugin plugin, int timerTicks) {
+		registerEvents(plugin);
+		this.timerTicks = timerTicks;
+
+		if (!pluginToTimers.containsKey(plugin))
+			pluginToTimers.put(plugin, new ArrayList<CombatTimer>());
+		pluginToTimers.get(plugin).add(this);
+
+		Bukkit.getScheduler().runTaskTimerAsynchronously(JonosBukkitUtils.getInstance(), () -> {
+			CollectionUtils.addToAll(timers, -10);
+			for (Player player : CollectionUtils.removeNonPositive(timers))
+				if (messages.remove(player))
+					player.sendMessage(ChatColor.AQUA + "You are no longer in combat");
+		}, 10L, 10L);
 	}
-	
+
+	public boolean isInCombat(Player player) {
+		return getTimerTicks(player) != 0;
+	}
+
+	public int getTimerTicks(Player player) {
+		return timers.containsKey(player) ? timers.get(player) : 0;
+	}
+
 	public Player getLastAttacker(Player player) {
 		return lastAttacker.get(player);
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onLogout(PlayerQuitEvent event) {
 		timers.remove(event.getPlayer());
 		lastAttacker.remove(event.getPlayer());
 	}
-	
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onHit(PlayerDamagedByPlayer event) {
-		timers.put(event.getPlayer(), timerTicks);
+		timers.put(event.getPlayer(), getTimerTicks());
+		timers.put(event.getDamager(), getTimerTicks());
+		if (doMessages) {
+			messages.add(event.getPlayer());
+			messages.add(event.getDamager());
+		}
 		lastAttacker.put(event.getPlayer(), event.getDamager());
 	}
-	
+
+	public void sendMessageOnEnd(Player player) {
+		if (timers.containsKey(player))
+			messages.add(player);
+	}
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onDeath(PlayerDeathEvent event) {
 		timers.remove(event.getEntity());
 		lastAttacker.remove(event.getEntity());
-		
-		for (Player player: lastAttacker.keySet())
+
+		for (Player player : lastAttacker.keySet())
 			if (lastAttacker.get(player).equals(event.getEntity()))
 				timers.remove(player);
 	}
 
+	static {
+		new UnloadListener().registerEvents(JonosBukkitUtils.getInstance());
+	}
+
+	private static final class UnloadListener implements Listener {
+		@EventHandler
+		public void onUnload(PluginDisableEvent event) {
+			Plugin plugin = event.getPlugin();
+			if (pluginToTimers.containsKey(plugin))
+				for (CombatTimer timer : pluginToTimers.remove(plugin))
+					timer.unregisterEvents(plugin);
+		}
+	}
 }

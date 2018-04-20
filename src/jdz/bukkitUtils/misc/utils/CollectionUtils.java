@@ -11,16 +11,18 @@ public class CollectionUtils {
 	@SuppressWarnings("unchecked")
 	public static <K, T extends Number> void addToAll(Map<K, T> map, T value) {
 		for (K key : map.keySet())
-			map.put(key, (T) addNumbers(map.get(key), value.doubleValue()));
+			if (map.get(key) != null)
+				map.replace(key, (T) addNumbers(map.get(key), value));
 	}
 
-	public static <K, T extends Number> void removeNonPositive(Map<K, T> map) {
+	public static <K, T extends Number> Set<K> removeNonPositive(Map<K, T> map) {
 		Set<K> toRemove = new HashSet<K>();
 		for (K key : map.keySet())
-			if (map.get(key).doubleValue() <= 0)
+			if (map.get(key) == null || map.get(key).doubleValue() <= 0)
 				toRemove.add(key);
 		for (K key : toRemove)
 			map.remove(key);
+		return toRemove;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -28,7 +30,7 @@ public class CollectionUtils {
 		int totalLength = first.length;
 		for (T[] array : rest)
 			totalLength += array.length;
-			
+
 		T[] result = Arrays.copyOf(first, totalLength);
 		int offset = first.length;
 		for (T[] array : rest) {
@@ -47,5 +49,9 @@ public class CollectionUtils {
 			return new Long(a.longValue() + b.longValue());
 		else
 			return new Integer(a.intValue() + b.intValue());
+	}
+
+	public static interface Condition<E> {
+		public boolean isTrue(E object);
 	}
 }

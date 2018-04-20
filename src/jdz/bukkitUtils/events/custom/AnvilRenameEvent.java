@@ -16,7 +16,7 @@ import lombok.Getter;
 public class AnvilRenameEvent extends AnvilEvent {
 	@Getter private final String oldName, newName;
 
-	public AnvilRenameEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem, int cost) {
+	private AnvilRenameEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem, int cost) {
 		super(player, leftItem, rightItem, resultItem, cost);
 		this.oldName = leftItem.getItemMeta().getDisplayName();
 		this.newName = resultItem.getItemMeta().getDisplayName();
