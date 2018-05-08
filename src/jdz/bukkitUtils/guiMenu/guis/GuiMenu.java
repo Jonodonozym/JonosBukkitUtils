@@ -9,9 +9,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
@@ -19,13 +20,14 @@ import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 public abstract class GuiMenu implements Listener {
 	private final Map<Inventory, Map<Integer, ClickableStack>> pages = new HashMap<Inventory, Map<Integer, ClickableStack>>();
 
-	protected GuiMenu(JavaPlugin plugin) {
+	protected GuiMenu(Plugin plugin) {
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 	}
 
-	@EventHandler
+	@EventHandler()
 	public void onInventoryClick(InventoryClickEvent e) {
 		Player p = (Player) e.getWhoClicked();
+
 		Inventory inv = p.getOpenInventory().getTopInventory();
 
 		ItemStack stack = null;
@@ -41,6 +43,12 @@ public abstract class GuiMenu implements Listener {
 
 		if (!pages.containsKey(inv))
 			return;
+
+		e.setCancelled(true);
+
+		if (e.getRawSlot() != e.getSlot())
+			return;
+
 		if (!pages.get(inv).containsKey(e.getSlot()))
 			return;
 
@@ -49,10 +57,15 @@ public abstract class GuiMenu implements Listener {
 		if (clickable.isCloseOnClick())
 			p.closeInventory();
 
-		e.setCancelled(true);
 		Bukkit.getScheduler().runTaskLater(JonosBukkitUtils.getInstance(), () -> {
 			clickable.onClick(this, e);
 		}, 1);
+	}
+
+	@EventHandler
+	public void onMove(InventoryMoveItemEvent event) {
+		if (pages.containsKey(event.getDestination()) || pages.containsKey(event.getSource()))
+			event.setCancelled(true);
 	}
 
 	protected void update(Inventory inv) {

@@ -17,6 +17,8 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 /**
  * Utility class with static methods to interact with the sql database
@@ -114,6 +116,17 @@ abstract class Database {
 		return rows;
 	}
 
+	protected SqlRow queryFirst(String query) {
+		if (query.endsWith(";"))
+			query = query.substring(0, query.length() - 1);
+		if (!query.contains("LIMIT 1"))
+			query += " LIMIT 1;";
+		List<SqlRow> rows = query(query);
+		if (rows.isEmpty())
+			return null;
+		return rows.get(0);
+	}
+
 	protected List<String> getColumns(String table) {
 		List<String> columns = new ArrayList<String>();
 		if (!isConnected())
@@ -183,10 +196,12 @@ abstract class Database {
 	 * @param connection
 	 * @param update
 	 */
+	private final Executor executor = Executors.newCachedThreadPool();
+
 	protected void updateAsync(String update) {
-		new Thread(() -> {
+		executor.execute(() -> {
 			update(update);
-		}).run();
+		});
 	}
 
 	/**
@@ -277,7 +292,7 @@ abstract class Database {
 		List<String> existingColumns = getColumns(tableName);
 		List<String> primaryKeys = getPrimaryKeys(tableName);
 		for (SqlColumn c : columns) {
-			if (!existingColumns.contains(c.getName())) {
+			if (!containsEqualsIgnoreCase(existingColumns, c.getName())) {
 				update += "ADD COLUMN " + c.getName() + " " + c.getType().getSqlSyntax() + " NOT NULL" + c.getDefault()
 						+ ", ";
 				if (c.isPrimary())
@@ -291,6 +306,14 @@ abstract class Database {
 			update(update);
 			setPrimaryKeys(tableName, primaryKeys.toArray(new String[primaryKeys.size()]));
 		}
+	}
+
+	private boolean containsEqualsIgnoreCase(List<String> list, String string) {
+		String lowerCase = string.toLowerCase();
+		for (String s : list)
+			if (s.toLowerCase().equals(lowerCase))
+				return true;
+		return false;
 	}
 
 	/**
@@ -361,11 +384,12 @@ abstract class Database {
 			return;
 		}
 
+		String dropUpdate = "";
 		if (!getPrimaryKeys(table).isEmpty())
-			update("ALTER TABLE " + table + " DROP PRIMARY KEY;");
+			dropUpdate = "drop primary key, ";
 
 		if (keys != null && keys.length != 0) {
-			String update = "ALTER TABLE " + table + " ADD PRIMARY KEY (";
+			String update = "ALTER TABLE " + table + " " + dropUpdate + "ADD PRIMARY KEY (";
 			for (String s : keys)
 				update += s + ", ";
 			update = update.substring(0, update.length() - 2) + ");";

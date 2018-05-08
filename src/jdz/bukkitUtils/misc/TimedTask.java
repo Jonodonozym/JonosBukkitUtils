@@ -10,7 +10,7 @@
 package jdz.bukkitUtils.misc;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Asynchronosly runs a task on a loop for you
@@ -27,11 +27,11 @@ public final class TimedTask {
 	private boolean isRunning = false;
 	private final Runnable runnable;
 	private final int tickInterval;
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
 
 	private int taskID = -1;
 
-	public TimedTask(JavaPlugin plugin, int tickInterval, Runnable r) {
+	public TimedTask(Plugin plugin, int tickInterval, Runnable r) {
 		this.tickInterval = tickInterval;
 		this.plugin = plugin;
 		runnable = r;

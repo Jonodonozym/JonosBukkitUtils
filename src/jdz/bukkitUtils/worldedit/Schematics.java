@@ -6,7 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import com.sk89q.worldedit.CuboidClipboard;
 import com.sk89q.worldedit.world.DataException;
@@ -19,7 +19,7 @@ public class Schematics {
 		return schemas.get(name);
 	}
 
-	public Schematics(JavaPlugin plugin) {
+	public Schematics(Plugin plugin) {
 		loadSchematics(plugin.getDataFolder());
 		System.out.println("[" + plugin.getName() + "] " + schemas.size() + " schematics loaded");
 	}

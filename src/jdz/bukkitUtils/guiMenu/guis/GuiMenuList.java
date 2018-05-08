@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 
@@ -14,15 +14,15 @@ public class GuiMenuList extends GuiMenu {
 
 	private List<ClickableStack> items = new ArrayList<ClickableStack>();
 
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
 	private final String name;
 	private final GuiMenu superMenu;
 
-	public GuiMenuList(JavaPlugin plugin, String name, List<ClickableStack> items) {
+	public GuiMenuList(Plugin plugin, String name, List<ClickableStack> items) {
 		this(plugin, name, items, null);
 	}
 
-	public GuiMenuList(JavaPlugin plugin, String name, List<ClickableStack> items, GuiMenu superMenu) {
+	public GuiMenuList(Plugin plugin, String name, List<ClickableStack> items, GuiMenu superMenu) {
 		super(plugin);
 
 		this.plugin = plugin;

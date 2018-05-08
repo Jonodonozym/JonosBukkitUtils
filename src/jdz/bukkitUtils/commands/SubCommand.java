@@ -32,8 +32,8 @@ public abstract class SubCommand {
 	private final List<String> labels;
 
 	public SubCommand() {
-		CommandLabels commandLabels = this.getClass().getAnnotation(CommandLabels.class);
-		CommandLabel label = this.getClass().getAnnotation(CommandLabel.class);
+		CommandLabels commandLabels = getClass().getAnnotation(CommandLabels.class);
+		CommandLabel label = getClass().getAnnotation(CommandLabel.class);
 		if (commandLabels == null && label == null)
 			throw new RuntimeException(
 					getClass().getName() + " command doesn't have the required @CommandLabel annotation!");
@@ -59,7 +59,7 @@ public abstract class SubCommand {
 	}
 
 	public boolean hasRequiredPermissions(CommandSender sender) {
-		CommandPermissions perms = this.getClass().getAnnotation(CommandPermissions.class);
+		CommandPermissions perms = getClass().getAnnotation(CommandPermissions.class);
 		if (perms == null)
 			return true;
 
@@ -111,7 +111,7 @@ public abstract class SubCommand {
 
 	public boolean tryParse(String methodName, boolean showErrors, CommandSender sender, Set<String> flags,
 			String... args) {
-		for (Method method : this.getClass().getMethods())
+		for (Method method : getClass().getMethods())
 			if (method.getName().equalsIgnoreCase(methodName))
 				return tryParse(method, showErrors, sender, flags, args);
 

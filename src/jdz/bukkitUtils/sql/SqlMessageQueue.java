@@ -18,7 +18,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 
@@ -36,7 +36,7 @@ public final class SqlMessageQueue extends SqlDatabase implements Listener {
 	private final SqlColumn[] columns = new SqlColumn[] { new SqlColumn("player", SqlColumnType.STRING_32),
 			new SqlColumn("message", SqlColumnType.STRING), new SqlColumn("priotiry", SqlColumnType.INT) };
 
-	public SqlMessageQueue(JavaPlugin plugin, SqlDatabase sqlApi) {
+	public SqlMessageQueue(Plugin plugin, SqlDatabase sqlApi) {
 		super(plugin);
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
 		MessageQueueTable = plugin.getName() + "_MessageQueue";

@@ -18,6 +18,9 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.material.Crops;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 public class MaterialUtils {
 
 	//
@@ -84,26 +87,35 @@ public class MaterialUtils {
 	}
 
 	public static enum ToolType {
-		PICKAXE, AXE, HOE, SPADE
+		PICKAXE, AXE, HOE, SPADE;
+		public ItemStack asItemStack(ResourceType type) {
+			try {
+				return new ItemStack(Material.valueOf(type.name() + "_" + name()));
+			}
+			catch (Exception e) {
+				throw new IllegalArgumentException(type + " is not a valid tool resource type!");
+			}
+		}
 	}
 
 	public static enum ArmourType {
-		HELMET, CHESTPLATE, LEGGINGS, BOOTS
+		HELMET, CHESTPLATE, LEGGINGS, BOOTS;
+		public ItemStack asItemStack(ResourceType type) {
+			try {
+				return new ItemStack(Material.valueOf(type.name() + "_" + name()));
+			}
+			catch (Exception e) {
+				throw new IllegalArgumentException(type + " is not a valid armor resource type!");
+			}
+		}
 	}
 
 
+	@AllArgsConstructor
 	public static enum ResourceType {
 		LEATHER(0), WOOD(0), GOLD(0), STONE(1), CHAINMAIL(2), IRON(2), DIAMOND(3);
 
-		private final int tier;
-
-		private ResourceType(int tier) {
-			this.tier = tier;
-		}
-
-		public int getTier() {
-			return tier;
-		}
+		@Getter private final int tier;
 
 		public Material getMaterial() {
 			switch (this) {
@@ -124,6 +136,14 @@ public class MaterialUtils {
 			default:
 				throw new IllegalStateException("ResourceType " + name() + " has no material component");
 			}
+		}
+
+		public ItemStack asItemStack(ToolType type) {
+			return type.asItemStack(this);
+		}
+
+		public ItemStack asItemStack(ArmourType type) {
+			return type.asItemStack(this);
 		}
 	}
 

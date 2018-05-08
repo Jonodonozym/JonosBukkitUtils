@@ -29,7 +29,7 @@ public final class Config {
 	 * @return
 	 */
 	public static FileConfiguration getConfig(Plugin plugin) {
-		return getConfig(plugin, "config.yml");
+		return getConfig(plugin, "config");
 	}
 
 	/**
@@ -39,7 +39,7 @@ public final class Config {
 	 * @return
 	 */
 	public static File getConfigFile(Plugin plugin) {
-		return getConfigFile(plugin, "config.yml");
+		return getConfigFile(plugin, "config");
 	}
 
 	/**
@@ -48,6 +48,8 @@ public final class Config {
 	 * @return
 	 */
 	public static FileConfiguration getConfig(Plugin plugin, String fileName) {
+		if (!fileName.endsWith(".yml"))
+			fileName += ".yml";
 		return YamlConfiguration.loadConfiguration(getConfigFile(plugin, fileName));
 	}
 

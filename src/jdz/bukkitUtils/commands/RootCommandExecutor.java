@@ -17,6 +17,10 @@ import jdz.bukkitUtils.fileIO.FileLogger;
  */
 public abstract class RootCommandExecutor extends CommandExecutor {
 
+	public RootCommandExecutor(JavaPlugin plugin) {
+		this(plugin, false);
+	}
+
 	public RootCommandExecutor(JavaPlugin plugin, boolean logCommands) {
 		super(plugin, "", logCommands);
 	}

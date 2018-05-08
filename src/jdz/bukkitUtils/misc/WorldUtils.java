@@ -128,12 +128,16 @@ public final class WorldUtils {
 	}
 
 	public static boolean isEmptyColumn(Location loc) {
-		return isEmptyColumn(loc.getWorld(), loc.getBlockX(), loc.getBlockZ());
+		return isEmptyColumn(loc.getWorld(), loc.getBlockX(), loc.getBlockZ(), loc.getBlockY());
 	}
 
 	public static boolean isEmptyColumn(World world, int x, int z) {
+		return isEmptyColumn(world, x, z, -1);
+	}
+
+	public static boolean isEmptyColumn(World world, int x, int z, int yException) {
 		for (int y = 0; y < world.getMaxHeight(); y++)
-			if (world.getBlockAt(x, y, z).getType() != Material.AIR)
+			if (yException != y && world.getBlockAt(x, y, z).getType() != Material.AIR)
 				return false;
 		return true;
 	}

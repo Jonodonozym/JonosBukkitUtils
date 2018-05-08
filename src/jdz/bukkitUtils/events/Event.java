@@ -29,8 +29,6 @@ public abstract class Event extends org.bukkit.event.Event {
 			throw new IllegalStateException("Events can only be called once");
 
 		Bukkit.getServer().getPluginManager().callEvent(this);
-		if (this instanceof Cancellable)
-			Cancellable.set.remove(this);
 
 		isCalled = true;
 		return this;

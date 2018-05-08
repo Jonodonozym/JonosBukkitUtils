@@ -8,7 +8,7 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
@@ -27,7 +27,7 @@ public class AboutPluginCommand extends SubCommand {
 
 	private String[] permissions = new String[0];
 
-	public AboutPluginCommand(JavaPlugin plugin) {
+	public AboutPluginCommand(Plugin plugin) {
 		this(plugin.getDescription().getName(), plugin.getDescription().getDescription(),
 				plugin.getDescription().getVersion(), plugin.getDescription().getAuthors());
 	}

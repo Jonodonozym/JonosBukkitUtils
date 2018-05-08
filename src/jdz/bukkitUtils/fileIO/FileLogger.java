@@ -18,9 +18,13 @@ import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.bukkit.plugin.java.JavaPlugin;
-
+import org.bukkit.Bukkit;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.server.PluginDisableEvent;
+import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.JonosBukkitUtils;
+import jdz.bukkitUtils.events.Listener;
+import lombok.Setter;
 
 /**
  * Lets you log plugin messages in a file
@@ -29,20 +33,36 @@ import jdz.bukkitUtils.JonosBukkitUtils;
  *
  * @author Jonodonozym
  */
-public final class FileLogger {
+public class FileLogger implements Listener {
 	private BufferedWriter defaultLogWriter = null;
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
 	private final String logName;
 	private final String logDirectory;
+	@Setter private boolean printToConsole = false;
+	@Setter private boolean writeToLog = true;
+	@Setter private boolean newLog = false;
 
-	public FileLogger(JavaPlugin plugin) {
-		this(plugin, "Log");
+	public FileLogger(Plugin plugin) {
+		this(plugin, "Log", true);
 	}
 
-	public FileLogger(JavaPlugin plugin, String logName) {
+	public FileLogger(Plugin plugin, String logName) {
+		this(plugin, logName, true);
+	}
+
+	public FileLogger(Plugin plugin, String logName, boolean newLogFileEachRun) {
 		this.plugin = plugin;
 		this.logName = logName;
 		this.logDirectory = plugin.getDataFolder() + File.separator + "Logs";
+		this.newLog = newLogFileEachRun;
+		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
+			if (defaultLogWriter != null)
+				try {
+					defaultLogWriter.flush();
+				}
+				catch (IOException e) {}
+		}, 600, 600);
+		registerEvents(plugin);
 	}
 
 	/**
@@ -57,13 +77,15 @@ public final class FileLogger {
 			if (defaultLogWriter != null)
 				defaultLogWriter.close();
 
-			File file = new File(logDirectory + File.separator + logName + " " + getTimestamp() + ".txt");
+			File file = new File(logDirectory + File.separator + logName + File.separator + getTimestamp() + ".txt");
+			if (!newLog)
+				file = new File(logDirectory + File.separator + logName + ".txt");
 			if (!file.getParentFile().exists())
 				file.getParentFile().mkdirs();
 			if (!file.exists())
 				file.createNewFile();
 
-			defaultLogWriter = new BufferedWriter(new FileWriter(file));
+			defaultLogWriter = new BufferedWriter(new FileWriter(file, true));
 		}
 		catch (IOException exception) {
 			exception.printStackTrace();
@@ -78,14 +100,30 @@ public final class FileLogger {
 	 */
 	public void log(String message) {
 		try {
-			if (defaultLogWriter == null)
-				startNewLog();
-			defaultLogWriter.write(getTimestampShort() + ": " + message);
-			defaultLogWriter.newLine();
-			defaultLogWriter.flush();
+			if (writeToLog) {
+				if (defaultLogWriter == null)
+					startNewLog();
+				String timestamp = newLog ? getTimestampShort() : "[" + getTimestamp() + "]";
+				defaultLogWriter.append(timestamp + "  " + message + System.lineSeparator());
+			}
+			if (printToConsole)
+				plugin.getLogger().info(message);
 		}
 		catch (IOException exception) {
 			exception.printStackTrace();
+		}
+	}
+
+	@EventHandler
+	public void onUnload(PluginDisableEvent event) {
+		if (event.getPlugin().equals(plugin)) {
+			try {
+				if (defaultLogWriter != null)
+					defaultLogWriter.flush();
+			}
+			catch (IOException exception) {
+				exception.printStackTrace();
+			}
 		}
 	}
 

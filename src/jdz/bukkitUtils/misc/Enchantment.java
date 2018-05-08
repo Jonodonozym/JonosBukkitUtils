@@ -15,7 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.events.Listener;
@@ -28,7 +28,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 
 	private static final Set<Enchantment> enchantments = new HashSet<Enchantment>();
 
-	public Enchantment(JavaPlugin plugin, int id) {
+	public Enchantment(Plugin plugin, int id) {
 		super(1000 + id % 7153);
 
 		if (!enchantments.contains(this)) {
@@ -38,7 +38,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 	}
 
 	@SuppressWarnings("deprecation")
-	private void register(JavaPlugin plugin) {
+	private void register(Plugin plugin) {
 		try {
 			Field f = org.bukkit.enchantments.Enchantment.class.getDeclaredField("acceptingNew");
 			f.setAccessible(true);

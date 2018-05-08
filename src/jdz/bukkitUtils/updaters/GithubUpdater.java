@@ -41,11 +41,17 @@ public class GithubUpdater extends PluginDownloader {
 	}
 
 	private void fetchData(String repoName, String login, String oauthAccessToken) throws Exception {
+		System.out.println("Connecting to github");
 		GitHub github = GitHub.connect(login, oauthAccessToken);
+		System.out.println("Connecting to repo " + repoName);
 		GHRepository repo = github.getRepository(repoName);
+		System.out.println("fetching latest release");
 		GHRelease latestRelease = repo.getLatestRelease();
+		System.out.println("parsing version");
 		latestVersion = new Version(latestRelease.getName());
+		System.out.println("fetching download URL");
 		versionURL = latestRelease.getAssets().get(0).getUrl();
+		System.out.println("Connecting to github complete!");
 	}
 
 	@Override
@@ -61,6 +67,7 @@ public class GithubUpdater extends PluginDownloader {
 
 	@Override
 	File download(File targetFolder) {
+		waitForDataFetch();
 		return download(versionURL, targetFolder);
 	}
 

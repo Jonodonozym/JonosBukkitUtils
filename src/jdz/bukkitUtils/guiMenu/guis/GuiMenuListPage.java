@@ -8,7 +8,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStackLinkedMenu;
@@ -17,7 +17,7 @@ class GuiMenuListPage extends GuiMenu {
 	private final Inventory inventory;
 	private final int pageNumber;
 
-	public GuiMenuListPage(JavaPlugin plugin, String name, int pageNumber) {
+	public GuiMenuListPage(Plugin plugin, String name, int pageNumber) {
 		super(plugin);
 		this.pageNumber = pageNumber;
 		inventory = Bukkit.createInventory(null, 54, name + " | Page " + pageNumber);

@@ -5,7 +5,6 @@ import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.plugin.Plugin;
 
@@ -27,7 +26,7 @@ public class PluginUpdater {
 	}
 
 	public static void update(PluginDownloader downloader) {
-		Bukkit.getScheduler().runTaskAsynchronously(JonosBukkitUtils.getInstance(), () -> {
+		new Thread(() -> {
 			Plugin plugin = downloader.getPlugin();
 			Version currentVersion = new Version(plugin);
 			if (updatesEnabled(downloader.getPlugin()) && downloader.updateToLatestVersion()
@@ -42,7 +41,7 @@ public class PluginUpdater {
 				catch (Exception e) {
 					e.printStackTrace();
 				}
-		});
+		}).run();;
 	}
 
 	public static boolean updatesEnabled(Plugin plugin) {

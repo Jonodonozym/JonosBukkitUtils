@@ -14,6 +14,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.commands.annotations.CommandExecutorAlias;
@@ -24,13 +25,14 @@ import jdz.bukkitUtils.commands.annotations.CommandExecutorPermissions;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPlayerOnly;
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.StringUtils;
+import lombok.Setter;
 
 public abstract class CommandExecutor implements org.bukkit.command.CommandExecutor {
 	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-	private static final Map<JavaPlugin, FileLogger> loggers = new HashMap<JavaPlugin, FileLogger>();
+	private static final Map<Plugin, FileLogger> loggers = new HashMap<Plugin, FileLogger>();
 
 	protected final JavaPlugin plugin;
-	protected final boolean logCommands;
+	@Setter protected boolean logging;
 	protected final String label;
 	protected final List<String> aliases;
 	protected final List<String> permissions;
@@ -38,7 +40,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 	protected final HelpCommand helpCommand;
 	protected SubCommand defaultCommand = null;
-	protected final Map<SubCommand, JavaPlugin> extraCommands = new HashMap<SubCommand, JavaPlugin>();
+	protected final Map<SubCommand, Plugin> extraCommands = new HashMap<SubCommand, Plugin>();
 
 	protected boolean isHelpEnabled = true;
 	protected boolean isRegistered = false;
@@ -47,8 +49,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		this(null, "", false);
 	}
 
+	public CommandExecutor(JavaPlugin plugin, String label) {
+		this(plugin, label, false);
+	}
+
 	public CommandExecutor(JavaPlugin plugin, String label, boolean logCommands) {
-		this.logCommands = logCommands;
+		this.logging = logCommands;
 		this.label = label;
 
 		CommandExecutorAliases commandAliases = this.getClass().getAnnotation(CommandExecutorAliases.class);
@@ -238,7 +244,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	}
 
 	private final void logCommand(CommandSender sender, String label, String[] args) {
-		if (logCommands)
+		if (logging)
 			fileLogger.log("[" + dtf.format(LocalDateTime.now()) + "] " + sender.getName() + " : /" + this.label + " "
 					+ label + " " + StringUtils.arrayToString(args, 0, " "));
 	}

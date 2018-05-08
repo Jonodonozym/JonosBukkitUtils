@@ -11,15 +11,19 @@ import java.util.Set;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.projectiles.ProjectileSource;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.events.Listener;
+import jdz.bukkitUtils.events.custom.CombatLogEvent;
 import jdz.bukkitUtils.events.custom.PlayerDamagedByPlayer;
 import jdz.bukkitUtils.misc.utils.CollectionUtils;
 import lombok.AccessLevel;
@@ -65,8 +69,11 @@ public class CombatTimer implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onLogout(PlayerQuitEvent event) {
-		timers.remove(event.getPlayer());
-		lastAttacker.remove(event.getPlayer());
+		Player player = event.getPlayer();
+		if (timers.containsKey(player))
+			new CombatLogEvent(this, player, timers.get(player), lastAttacker.get(player)).call();
+		timers.remove(player);
+		lastAttacker.remove(player);
 	}
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
@@ -78,6 +85,27 @@ public class CombatTimer implements Listener {
 			messages.add(event.getDamager());
 		}
 		lastAttacker.put(event.getPlayer(), event.getDamager());
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onHit(EntityDamageByEntityEvent event) {
+		if (!(event.getEntity() instanceof Player && event.getDamager() instanceof Projectile))
+			return;
+
+		ProjectileSource source = ((Projectile) event.getDamager()).getShooter();
+		if (source == null || !(source instanceof Player))
+			return;
+
+		Player player = (Player) event.getEntity();
+		Player damager = (Player) source;
+
+		timers.put(player, getTimerTicks());
+		timers.put(damager, getTimerTicks());
+		if (doMessages) {
+			messages.add(player);
+			messages.add(damager);
+		}
+		lastAttacker.put(player, damager);
 	}
 
 	public void sendMessageOnEnd(Player player) {

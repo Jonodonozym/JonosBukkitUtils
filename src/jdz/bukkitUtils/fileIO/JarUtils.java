@@ -16,7 +16,7 @@ import java.net.URL;
 import java.net.URLClassLoader;
 
 import org.bukkit.Bukkit;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 /**
  * Class for extracting libs that your BukkitJUtils.plugin uses into the plugins
@@ -25,10 +25,10 @@ import org.bukkit.plugin.java.JavaPlugin;
  * @author Jaiden Baker
  */
 public final class JarUtils {
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
 	private final FileExporter fileExporter;
 
-	public JarUtils(JavaPlugin plugin) {
+	public JarUtils(Plugin plugin) {
 		this.plugin = plugin;
 		fileExporter = new FileExporter(plugin);
 	}
@@ -37,7 +37,8 @@ public final class JarUtils {
 		try {
 			for (final String libName : libNames) {
 				File lib = new File(plugin.getDataFolder(), libName);
-				extractFromJar(libName, lib.getAbsolutePath());
+				if (!lib.exists())
+					extractFromJar(libName, lib.getAbsolutePath());
 			}
 			for (final String libName : libNames) {
 				File lib = new File(plugin.getDataFolder(), libName);
@@ -60,7 +61,7 @@ public final class JarUtils {
 	private boolean extractFromJar(final String fileName, final String dest) throws IOException {
 		if (fileExporter.getRunningJar() == null)
 			return false;
-		fileExporter.ExportResource(fileName, plugin.getDataFolder() + File.separator + fileName);
+		fileExporter.ExportResource(fileName, dest);
 		return true;
 	}
 

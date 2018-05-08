@@ -10,16 +10,16 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.SignChangeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.fileIO.FileLogger;
 
 public class SignEventListener implements Listener {
 	private final InteractableSignFactory factory;
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
 
 	@SafeVarargs
-	public SignEventListener(JavaPlugin plugin, Class<? extends InteractableSign>... classes) {
+	public SignEventListener(Plugin plugin, Class<? extends InteractableSign>... classes) {
 		this.factory = new InteractableSignFactory(classes);
 		this.plugin = plugin;
 	}

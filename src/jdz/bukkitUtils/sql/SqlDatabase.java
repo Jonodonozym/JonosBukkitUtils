@@ -2,26 +2,43 @@
 package jdz.bukkitUtils.sql;
 
 import java.io.File;
+import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.plugin.java.JavaPlugin;
-
+import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.Config;
 
 public class SqlDatabase extends Database {
-	private final JavaPlugin plugin;
+	private final Plugin plugin;
+	private boolean doFileLogging = false;
+	private boolean doConsoleLogging = false;
+	private final FileLogger logger;
 
-	public SqlDatabase(JavaPlugin plugin) {
+	public SqlDatabase(Plugin plugin) {
 		this.plugin = plugin;
+		this.logger = new FileLogger(plugin);
+		logger.setWriteToLog(false);
+		logger.setPrintToConsole(false);
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
 			setConfig(getConfig(plugin));
 		});
 	}
 
-	public SqlConfig getConfig(JavaPlugin plugin) {
+	protected void setDoFileLogging(boolean doFileLogging) {
+		this.doFileLogging = doFileLogging;
+		logger.setWriteToLog(doFileLogging);
+	}
+
+
+	protected void setDoConsoleLogging(boolean doConsoleLogging) {
+		this.doConsoleLogging = doConsoleLogging;
+		logger.setPrintToConsole(doConsoleLogging);
+	}
+
+	public SqlConfig getConfig(Plugin plugin) {
 		File configFile = Config.getConfigFile(plugin, "sqlConfig.yml");
 		if (!configFile.exists())
 			configFile = Config.getDefaultSqlFile(plugin);
@@ -42,5 +59,25 @@ public class SqlDatabase extends Database {
 	@Override
 	protected void onError(Throwable t, String query) {
 		new FileLogger(plugin).createErrorLog((Exception) t, query);
+	}
+
+	@Override
+	protected void update(String update) {
+		if (doFileLogging || doConsoleLogging)
+			logger.log(update);
+		super.update(update);
+	}
+
+	@Override
+	protected List<SqlRow> query(String query) {
+		if (doFileLogging || doConsoleLogging) {
+			logger.log(query);
+			List<SqlRow> rows = super.query(query);
+			logger.log("Size: " + rows.size());
+			for (SqlRow row : rows)
+				logger.log(row.toString());
+			return rows;
+		}
+		return super.query(query);
 	}
 }

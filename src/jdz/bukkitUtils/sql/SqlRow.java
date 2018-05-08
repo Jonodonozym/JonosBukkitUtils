@@ -4,6 +4,7 @@ package jdz.bukkitUtils.sql;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map.Entry;
 
 public class SqlRow {
 	private final LinkedHashMap<String, String> columnToValue;
@@ -37,5 +38,18 @@ public class SqlRow {
 
 	public List<String> values() {
 		return values;
+	}
+
+	@Override
+	public String toString() {
+		if (columnToValue.isEmpty())
+			return "{}";
+
+		String s = "";
+		for (Entry<String, String> entry : columnToValue.entrySet())
+			s += entry.getKey() + ": " + entry.getValue() + ",   ";
+		if (!columnToValue.isEmpty())
+			s = s.substring(0, s.length() - 4);
+		return "{" + s + "}";
 	}
 }
