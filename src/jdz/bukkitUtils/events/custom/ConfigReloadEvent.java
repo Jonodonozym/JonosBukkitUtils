@@ -22,11 +22,11 @@ public class ConfigReloadEvent extends Event implements Cancellable {
 	private final FileConfiguration config;
 	private final String name;
 
-	private ConfigReloadEvent(Plugin plugin) {
+	public ConfigReloadEvent(Plugin plugin) {
 		this(plugin, "config");
 	}
 
-	private ConfigReloadEvent(Plugin plugin, String fileName) {
+	public ConfigReloadEvent(Plugin plugin, String fileName) {
 		this.plugin = plugin;
 		config = Config.getConfig(plugin, fileName);
 		name = fileName;
