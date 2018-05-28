@@ -34,7 +34,7 @@ import lombok.Setter;
  * @author Jonodonozym
  */
 public class FileLogger implements Listener {
-	private BufferedWriter defaultLogWriter = null;
+	private BufferedWriter bufferedWriter = null;
 	private final Plugin plugin;
 	private final String logName;
 	private final String logDirectory;
@@ -55,13 +55,6 @@ public class FileLogger implements Listener {
 		this.logName = logName;
 		this.logDirectory = plugin.getDataFolder() + File.separator + "Logs";
 		this.newLog = newLogFileEachRun;
-		Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, () -> {
-			if (defaultLogWriter != null)
-				try {
-					defaultLogWriter.flush();
-				}
-				catch (IOException e) {}
-		}, 600, 600);
 		registerEvents(plugin);
 	}
 
@@ -74,18 +67,18 @@ public class FileLogger implements Listener {
 	 */
 	private void startNewLog() {
 		try {
-			if (defaultLogWriter != null)
-				defaultLogWriter.close();
+			if (bufferedWriter != null)
+				bufferedWriter.close();
 
-			File file = new File(logDirectory + File.separator + logName + File.separator + getTimestamp() + ".txt");
+			File file = new File(logDirectory, logName + File.separator + getTimestamp() + ".txt");
 			if (!newLog)
-				file = new File(logDirectory + File.separator + logName + ".txt");
+				file = new File(logDirectory, logName + ".txt");
 			if (!file.getParentFile().exists())
 				file.getParentFile().mkdirs();
 			if (!file.exists())
 				file.createNewFile();
 
-			defaultLogWriter = new BufferedWriter(new FileWriter(file, true));
+			bufferedWriter = new BufferedWriter(new FileWriter(file, true));
 		}
 		catch (IOException exception) {
 			exception.printStackTrace();
@@ -101,10 +94,18 @@ public class FileLogger implements Listener {
 	public void log(String message) {
 		try {
 			if (writeToLog) {
-				if (defaultLogWriter == null)
+				if (bufferedWriter == null)
 					startNewLog();
 				String timestamp = newLog ? getTimestampShort() : "[" + getTimestamp() + "]";
-				defaultLogWriter.append(timestamp + "  " + message + System.lineSeparator());
+				bufferedWriter.append(timestamp + "  " + message + System.lineSeparator());
+				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+					try {
+						bufferedWriter.flush();
+					}
+					catch (IOException e) {
+						e.printStackTrace();
+					}
+				});
 			}
 			if (printToConsole)
 				plugin.getLogger().info(message);
@@ -118,8 +119,8 @@ public class FileLogger implements Listener {
 	public void onUnload(PluginDisableEvent event) {
 		if (event.getPlugin().equals(plugin)) {
 			try {
-				if (defaultLogWriter != null)
-					defaultLogWriter.flush();
+				if (bufferedWriter != null)
+					bufferedWriter.flush();
 			}
 			catch (IOException exception) {
 				exception.printStackTrace();
