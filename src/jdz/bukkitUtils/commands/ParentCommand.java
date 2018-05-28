@@ -2,7 +2,6 @@
 package jdz.bukkitUtils.commands;
 
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
@@ -27,7 +26,7 @@ public abstract class ParentCommand extends SubCommand {
 	}
 
 	@Override
-	public final void execute(CommandSender sender, Set<String> flags, String... args) {
+	public final void execute(CommandSender sender, String... args) {
 		if (args.length == 0) {
 			sender.sendMessage(ChatColor.RED + "Insufficient arguments");
 			if (!getUsage().equals(""))

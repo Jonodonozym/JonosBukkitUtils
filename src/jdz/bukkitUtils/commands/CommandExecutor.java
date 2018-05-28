@@ -5,10 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -137,42 +135,29 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 	@Override
 	public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
-		CommandExecutorPlayerOnly cepo = this.getClass().getAnnotation(CommandExecutorPlayerOnly.class);
-		if (cepo != null && !(sender instanceof Player)) {
+		CommandExecutorPlayerOnly playerOnlyAnnotation = this.getClass().getAnnotation(CommandExecutorPlayerOnly.class);
+		if (playerOnlyAnnotation != null && !(sender instanceof Player)) {
 			sender.sendMessage(ChatColor.RED + "You must be a player to do that!");
 			return true;
 		}
 
-		CommandExecutorOpOnly ceopo = this.getClass().getAnnotation(CommandExecutorOpOnly.class);
-		if (ceopo != null && !sender.isOp()) {
+		CommandExecutorOpOnly OPOnlyAnnotation = this.getClass().getAnnotation(CommandExecutorOpOnly.class);
+		if (OPOnlyAnnotation != null && !sender.isOp()) {
 			sender.sendMessage(ChatColor.RED + "You don't have enough permissions to do that!");
 			return true;
 		}
 
-		if (sender instanceof Player) {
-			for (String s : permissions) {
+		if (sender instanceof Player)
+			for (String s : permissions)
 				if (!sender.hasPermission(s)) {
 					sender.sendMessage(ChatColor.RED + "You are missing the permission node " + s);
 					return true;
 				}
-			}
-		}
 
 		if (args.length == 0) {
-			execute(getDefaultCommand(), sender, new HashSet<String>(), args);
+			execute(getDefaultCommand(), sender, args);
 			return true;
 		}
-
-		Set<String> flags = new HashSet<String>();
-		for (String arg : args)
-			if (arg.startsWith("-"))
-				flags.add(arg.substring(1));
-
-		String[] newArgs = new String[args.length - flags.size()];
-		int i = 0;
-		for (String arg : args)
-			if (!arg.startsWith("-"))
-				newArgs[i++] = arg;
 
 		List<SubCommand> commands = new ArrayList<SubCommand>(getSubCommands());
 
@@ -180,11 +165,11 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			commands.add(helpCommand);
 
 		for (SubCommand command : commands) {
-			if (command.labelMatches(newArgs[0])) {
-				String[] subArgs = new String[newArgs.length - 1];
+			if (command.labelMatches(args[0])) {
+				String[] subArgs = new String[args.length - 1];
 				for (int j = 0; j < subArgs.length; j++)
-					subArgs[j] = newArgs[j + 1];
-				execute(command, sender, flags, subArgs);
+					subArgs[j] = args[j + 1];
+				execute(command, sender, subArgs);
 				return true;
 			}
 		}
@@ -198,11 +183,11 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 				continue;
 			}
 
-			if (command.labelMatches(newArgs[0])) {
-				String[] subArgs = new String[newArgs.length - 1];
+			if (command.labelMatches(args[0])) {
+				String[] subArgs = new String[args.length - 1];
 				for (int j = 0; j < subArgs.length; j++)
-					subArgs[j] = newArgs[j + 1];
-				execute(command, sender, flags, subArgs);
+					subArgs[j] = args[j + 1];
+				execute(command, sender, subArgs);
 				return true;
 			}
 		}
@@ -210,13 +195,13 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		if (!isHelpEnabled && getDefaultCommand() instanceof HelpCommand)
 			return false;
 		else
-			execute(getDefaultCommand(), sender, flags, args);
+			execute(getDefaultCommand(), sender, args);
 
 		return true;
 	}
 
-	public void execute(SubCommand command, CommandSender sender, Set<String> flags, String... args) {
-		if (command.requiredArgs() > args.length) {
+	public void execute(SubCommand command, CommandSender sender, String... args) {
+		if (command.getRequiredArgs() > args.length) {
 			sender.sendMessage(ChatColor.RED + "Insufficient arguments");
 			if (!command.getUsage().equals(""))
 				sender.sendMessage(ChatColor.RED + "Usage: /" + label + " " + command.getUsage());
@@ -226,18 +211,18 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		else if (command.isOPOnly() && !sender.isOp())
 			sender.sendMessage(ChatColor.RED + "You don't have enough permissions to do that!");
 		else
-			executeIfHasPerms(command, sender, flags, args);
+			executeIfHasPerms(command, sender, args);
 	}
 
-	private final void executeIfHasPerms(SubCommand command, CommandSender sender, Set<String> flags, String... args) {
+	private final void executeIfHasPerms(SubCommand command, CommandSender sender, String... args) {
 		logCommand(sender, command.getLabel(), args);
 		if (command.hasRequiredPermissions(sender)) {
 			if (command.isAsync())
 				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-					command.execute(sender, flags, args);
+					command.execute(sender, args);
 				});
 			else
-				command.execute(sender, flags, args);
+				command.execute(sender, args);
 		}
 		else
 			sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that");

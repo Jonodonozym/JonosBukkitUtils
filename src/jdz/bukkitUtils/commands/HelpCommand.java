@@ -3,12 +3,12 @@ package jdz.bukkitUtils.commands;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
+import jdz.bukkitUtils.commands.annotations.CommandMethod;
 import jdz.bukkitUtils.commands.annotations.CommandNoHelp;
 import jdz.bukkitUtils.commands.annotations.CommandUsage;
 import jdz.bukkitUtils.misc.StringUtils;
@@ -18,8 +18,6 @@ import jdz.bukkitUtils.misc.StringUtils;
 @CommandNoHelp
 public final class HelpCommand extends SubCommand {
 	private final CommandExecutor executor;
-
-	private String[] permissions = new String[0];
 
 	private ChatColor titleColor, usageColor, descColor;
 	private int linesPerPage = 10;
@@ -38,10 +36,6 @@ public final class HelpCommand extends SubCommand {
 		this.titleColor = titleColor;
 		this.usageColor = usageColor;
 		this.descColor = descColor;
-	}
-
-	public void setPermissions(String... permissions) {
-		this.permissions = permissions;
 	}
 
 	public void setTitleColor(ChatColor color) {
@@ -68,33 +62,31 @@ public final class HelpCommand extends SubCommand {
 		reload();
 	}
 
-	@Override
-	public void execute(CommandSender sender, Set<String> flags, String... args) {
+	@CommandMethod
+	public void execute(CommandSender sender) {
+		execute(sender, 1);
+	}
+
+	@CommandMethod
+	public void execute(CommandSender sender, int page) {
 		if (messages == null)
 			reload();
 
-		for (String permission : permissions)
-			if (!sender.hasPermission(permission)) {
-				sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that!");
-				return;
-			}
-		try {
-			int i = Integer.parseInt(args[0]);
-			showPage(sender, i + 1);
-		}
-		catch (Exception e) {
+		showPage(sender, page - 1);
+	}
 
-			if (args.length > 0)
-				for (SubCommand command : executor.getSubCommands())
-					if (command.getClass().getAnnotation(CommandNoHelp.class) == null)
-						if (command.labelMatches(args[0]))
-							if (!command.getClass().equals(HelpCommand.class)) {
-								sender.sendMessage(getCommandDesc(command, false));
-								return;
-							}
+	@CommandMethod
+	public void execute(CommandSender sender, String commandName) {
+		if (messages == null)
+			reload();
 
-			showPage(sender, 0);
-		}
+		for (SubCommand command : executor.getSubCommands())
+			if (command.getClass().getAnnotation(CommandNoHelp.class) == null)
+				if (command.labelMatches(commandName))
+					if (!command.getClass().equals(HelpCommand.class)) {
+						sender.sendMessage(getCommandDesc(command, false));
+						return;
+					}
 	}
 
 	public void reload() {

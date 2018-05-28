@@ -1,23 +1,16 @@
 
 package jdz.bukkitUtils.commands;
 
-import java.util.Set;
-
 import org.bukkit.command.CommandSender;
 
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
+import jdz.bukkitUtils.commands.annotations.CommandMethod;
 
 class TestParseCommand {
-
 	@CommandLabel("testCommand")
 	private static class testClass extends SubCommand {
 
-		@Override
-		public void execute(CommandSender sender, Set<String> flags, String... args) {
-			tryParse("onWarp", false, null, flags, args);
-		}
-
-		@SuppressWarnings("unused") // used via reflection :O
+		@CommandMethod(withSender = true, parseFlags = false)
 		public void onWarp(CommandSender sender, double testInt, String testString) {
 			assert sender == null;
 			assert testInt == 2.5;
