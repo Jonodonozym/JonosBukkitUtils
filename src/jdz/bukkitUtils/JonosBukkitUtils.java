@@ -10,6 +10,9 @@
 package jdz.bukkitUtils;
 
 import org.bukkit.plugin.java.JavaPlugin;
+
+import jdz.bukkitUtils.commands.ArgumentParsers;
+import jdz.bukkitUtils.commands.JBU.ReloadConfigCommand;
 import jdz.bukkitUtils.events.custom.JBUEvents;
 import jdz.bukkitUtils.fileIO.JarUtils;
 import jdz.bukkitUtils.misc.ServerTimer;
@@ -28,22 +31,23 @@ public final class JonosBukkitUtils extends JavaPlugin {
 	public static JonosBukkitUtils getInstance() {
 		return instance;
 	}
-
-	// private final int bukkitID = 281287;
-
+	
 	@Override
 	public void onLoad() {
 		instance = this;
-
-		new JarUtils(this).extractLibs("libs/lombok.jar");
-		new JarUtils(this).extractLibs("libs/exp4j.jar");
-		new JarUtils(this).extractLibs("libs/mockito.jar");
-
-		PluginUpdater.updateAll();
 	}
 
 	@Override
 	public void onEnable() {
+		new JarUtils(this).extractLibs("libs/lombok.jar");
+		new JarUtils(this).extractLibs("libs/exp4j.jar");
+		new JarUtils(this).extractLibs("libs/mockito.jar");
+		
+		ArgumentParsers.initDefaults();
+		new ReloadConfigCommand().register(this);
+
+		PluginUpdater.updateAll();
+		
 		JBUEvents.registerAll(this);
 		ServerTimer.start();
 	}

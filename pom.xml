@@ -2,9 +2,15 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>JonosBukkitUtils</groupId>
+	<groupId>jdz.bukkit</groupId>
 	<artifactId>JonosBukkitUtils</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>0.10.0-SNAPSHOT</version>
+	<packaging>jar</packaging>
+	
+	<name>Jonos Bukkit Utils</name>
+  	<description>Bunch of utilities to fast-track bukkit plugin development</description>
+  	<url>https://github.com/Jonodonozym/JonosBukkitUtils</url>
+  
 	<build>
 		<finalName>JBU</finalName>
 		<sourceDirectory>src</sourceDirectory>
@@ -65,7 +71,7 @@
 						<configuration>
 							<target>
 								<copy
-									file="D:\User\git\^^Libs\${project.build.finalName}.jar"
+									file="D:\User\git\^^Libs\Minecraft Plugins\${project.build.finalName}.jar"
 									todir="D:\MC Servers\IJRJPGVPWX\plugins" />
 							</target>
 						</configuration>
