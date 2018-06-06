@@ -43,11 +43,11 @@ public class FileLogger implements Listener {
 	@Setter private boolean newLog = false;
 
 	public FileLogger(Plugin plugin) {
-		this(plugin, "Log", true);
+		this(plugin, "Log", false);
 	}
 
 	public FileLogger(Plugin plugin, String logName) {
-		this(plugin, logName, true);
+		this(plugin, logName, false);
 	}
 
 	public FileLogger(Plugin plugin, String logName, boolean newLogFileEachRun) {
