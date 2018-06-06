@@ -10,8 +10,8 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
-
-import com.sk89q.worldedit.entity.Player;
+import org.bukkit.command.ConsoleCommandSender;
+import org.bukkit.entity.Player;
 
 import jdz.bukkitUtils.commands.annotations.CommandAsync;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
@@ -91,6 +91,8 @@ public abstract class SubCommand {
 	}
 
 	public boolean hasRequiredPermissions(CommandSender sender) {
+		if (sender.isOp() || sender instanceof ConsoleCommandSender)
+			return true;
 		for (String perm : permissions)
 			if (!sender.hasPermission(perm))
 				return false;
