@@ -11,5 +11,5 @@ import java.lang.annotation.Target;
 @Target(METHOD)
 public @interface CommandMethod {
 	public boolean withSender() default true;
-	public boolean parseFlags() default true;
+	public boolean parseFlags() default false;
 }
