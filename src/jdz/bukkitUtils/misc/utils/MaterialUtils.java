@@ -80,7 +80,7 @@ public class MaterialUtils {
 	 * @return
 	 */
 	public static ArmourType getArmourType(Material material) {
-		if (!isTool(material))
+		if (!isArmour(material))
 			throw new IllegalArgumentException("getArmourType requires armour to be passed in");
 
 		return ArmourType.valueOf(material.name().split("_")[1]);
