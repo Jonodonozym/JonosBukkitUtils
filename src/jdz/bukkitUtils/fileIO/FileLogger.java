@@ -17,8 +17,9 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
-import org.bukkit.Bukkit;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
@@ -34,6 +35,8 @@ import lombok.Setter;
  * @author Jonodonozym
  */
 public class FileLogger implements Listener {
+	private static final Executor IOExecutor = Executors.newCachedThreadPool();
+
 	private BufferedWriter bufferedWriter = null;
 	private final Plugin plugin;
 	private final String logName;
@@ -98,7 +101,7 @@ public class FileLogger implements Listener {
 					startNewLog();
 				String timestamp = newLog ? getTimestampShort() : "[" + getTimestamp() + "]";
 				bufferedWriter.append(timestamp + "  " + message + System.lineSeparator());
-				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
+				IOExecutor.execute(() -> {
 					try {
 						bufferedWriter.flush();
 					}

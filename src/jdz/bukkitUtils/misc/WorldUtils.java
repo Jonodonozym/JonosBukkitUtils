@@ -7,12 +7,13 @@ import java.util.List;
 import java.util.Set;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Chunk;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.entity.Player;
-import org.bukkit.util.Vector;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.fileIO.FileLogger;
@@ -60,6 +61,23 @@ public final class WorldUtils {
 			World world = Bukkit.getWorld(args[0]);
 			return new Location(world, Integer.parseInt(args[1]) + 0.5, Integer.parseInt(args[2]),
 					Integer.parseInt(args[3]) + 0.5, Float.parseFloat(args[4]), Float.parseFloat(args[5]));
+		}
+		catch (Exception e) {
+			new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(e,
+					"Error parsing location with args: " + args);
+			return null;
+		}
+	}
+
+	public static String chunkToString(Chunk c) {
+		return c.getWorld().getName() + "," + c.getX() + "," + c.getZ();
+	}
+
+	public static Chunk chunkFromString(String s) {
+		String[] args = s.split(",");
+		try {
+			World world = Bukkit.getWorld(args[0]);
+			return world.getChunkAt(Integer.parseInt(args[1]), Integer.parseInt(args[2]));
 		}
 		catch (Exception e) {
 			new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(e,
@@ -150,10 +168,12 @@ public final class WorldUtils {
 	 * @return
 	 */
 	public static Set<Player> getNearbyPlayers(Location location, double range) {
+		double rangeSquared = range * range;
 		Set<Player> nearbyPlayers = new HashSet<Player>();
 		for (Player player : location.getWorld().getPlayers())
-			if (player.getLocation().distance(location) < range)
-				nearbyPlayers.add(player);
+			if (player.getLocation().distanceSquared(location) < rangeSquared)
+				if (player.getGameMode() != GameMode.SPECTATOR)
+					nearbyPlayers.add(player);
 		return nearbyPlayers;
 	}
 
@@ -165,13 +185,16 @@ public final class WorldUtils {
 	 * @return the player, or null if none found
 	 */
 	public static Player getNearestPlayer(Location location, double maxRange) {
+		double rangeSquared = maxRange * maxRange;
+
 		Player nearest = null;
-		double nearestDistance = maxRange <= 0 ? Double.MAX_VALUE : maxRange;
+		double nearestDistSquared = maxRange <= 0 ? Double.MAX_VALUE : rangeSquared;
+
 		for (Player player : location.getWorld().getPlayers()) {
-			double playerDistance = player.getLocation().distance(location);
-			if (playerDistance < nearestDistance) {
+			double distSquared = player.getLocation().distanceSquared(location);
+			if (distSquared < nearestDistSquared) {
 				nearest = player;
-				nearestDistance = playerDistance;
+				nearestDistSquared = distSquared;
 			}
 		}
 		return nearest;
@@ -210,62 +233,6 @@ public final class WorldUtils {
 		return nearbyPlayers;
 	}
 
-
-	@Deprecated
-	public static void flingPlayer(Player player, Location destination, double heightGain) {
-		flingPlayer(player, destination.toVector(), heightGain);
-	}
-
-	@Deprecated
-	public static Vector flingPlayer(Player player, Vector destination, double heightGain) {
-		Vector from = player.getLocation().toVector();
-
-		// Gravity of a player
-		double gravity = 0.306;
-
-		// Block locations
-		int endGain = destination.getBlockY() - from.getBlockY();
-		double horizDist = Math.sqrt(distanceSquared(from, destination));
-
-		// Height gain
-		double gain = heightGain;
-
-		double maxGain = gain > (endGain + gain) ? gain : (endGain + gain);
-
-		// Solve quadratic equation for velocity
-		double a = -horizDist * horizDist / (4 * maxGain);
-		double b = horizDist;
-		double c = -endGain;
-
-		double slope = (-b - Math.sqrt(b * b - 4 * a * c)) / (2 * a);
-
-		// Vertical velocity
-		double vy = Math.sqrt(maxGain * gravity);
-
-		// Horizontal velocity
-		double vh = vy / slope;
-
-		// Calculate horizontal direction
-		int dx = destination.getBlockX() - from.getBlockX();
-		int dz = destination.getBlockZ() - from.getBlockZ();
-		double mag = Math.sqrt(dx * dx + dz * dz);
-		double dirx = dx / mag;
-		double dirz = dz / mag;
-
-		// Horizontal velocity components
-		double vx = vh * dirx;
-		double vz = vh * dirz;
-
-		return new Vector(vx, vy, vz);
-	}
-
-	private static double distanceSquared(Vector from, Vector to) {
-		double dx = to.getBlockX() - from.getBlockX();
-		double dz = to.getBlockZ() - from.getBlockZ();
-
-		return dx * dx + dz * dz;
-	}
-
 	public static List<Location> getCircle(Location center, double radius, int amount) {
 		World world = center.getWorld();
 		double increment = (2 * Math.PI) / amount;
@@ -277,15 +244,5 @@ public final class WorldUtils {
 			locations.add(new Location(world, x, center.getY(), z));
 		}
 		return locations;
-	}
-
-	@Deprecated
-	public static Vector getVector(double pitch, double yaw) {
-		pitch *= Math.PI / 180D;
-		yaw *= Math.PI / 180D;
-		double x = Math.sin(pitch) * Math.cos(yaw);
-		double y = Math.sin(pitch) * Math.sin(yaw);
-		double z = Math.cos(pitch);
-		return new Vector(x, y, z);
 	}
 }

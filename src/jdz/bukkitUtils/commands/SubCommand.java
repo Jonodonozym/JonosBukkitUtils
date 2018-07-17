@@ -13,7 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import jdz.bukkitUtils.commands.annotations.CommandAsync;
+import jdz.bukkitUtils.ArgumentParsers;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandLabels;
 import jdz.bukkitUtils.commands.annotations.CommandLongDescription;
@@ -35,7 +35,6 @@ public abstract class SubCommand {
 	@Getter private final List<String> permissions = loadPermissions();
 	@Getter private final boolean OPOnly = getClass().getAnnotation(CommandOpOnly.class) != null;
 	@Getter private final boolean playerOnly = getClass().getAnnotation(CommandPlayerOnly.class) != null;
-	@Getter private final boolean async = getClass().getAnnotation(CommandAsync.class) != null;
 	@Getter private final String usage = getClass().getAnnotation(CommandUsage.class) == null ? ""
 			: getClass().getAnnotation(CommandUsage.class).value();
 	@Getter private final String shortDescription = getClass().getAnnotation(CommandShortDescription.class) == null ? ""
@@ -107,11 +106,10 @@ public abstract class SubCommand {
 		List<Method> methods = getBestMethods(args);
 		if (methods.size() == 1)
 			tryParse(methods.get(0), true, sender, args);
-		else {
+		else
 			for (Method method : methods)
 				if (tryParse(method, false, sender, args))
 					return;
-		}
 	}
 
 	@Deprecated
@@ -128,6 +126,8 @@ public abstract class SubCommand {
 		for (Method method : this.methods) {
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			CommandMethod annotation = method.getAnnotation(CommandMethod.class);
+			if (annotation == null)
+				continue;
 			if (annotation.withSender() && !parameterTypes[0].equals(CommandSender.class)
 					&& !parameterTypes[0].equals(Player.class))
 				continue;

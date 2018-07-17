@@ -10,6 +10,7 @@ import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Material;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
@@ -83,6 +84,28 @@ public class ItemUtils {
 		HashMap<Integer, ItemStack> itemOverflow = inv.addItem(items.toArray(new ItemStack[1]));
 
 		return new ArrayList<ItemStack>(itemOverflow.values());
+	}
+	
+	public static void remove(Inventory inv, Material m, int quantity) {
+		ItemStack[] contents = inv.getContents();
+		for (int i=0; i<contents.length; i++) {
+			ItemStack item = contents[i];
+			if (item == null || m != item.getType())
+				continue;
+			
+			if (quantity >= item.getAmount()) {
+				quantity -= item.getAmount();
+				inv.setItem(i, new ItemStack(Material.AIR));
+				if (quantity == 0)
+					return;
+			}
+			else {
+				ItemStack newItem = new ItemStack(item);
+				newItem.setAmount(item.getAmount() - quantity);
+				inv.setItem(i, newItem);
+				return;
+			}
+		}
 	}
 
 	public static Map<Enchantment, Integer> getCustomEnchants(ItemStack stack) {

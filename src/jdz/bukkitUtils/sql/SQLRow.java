@@ -6,11 +6,11 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
-public class SqlRow {
+public class SQLRow {
 	private final LinkedHashMap<String, String> columnToValue;
 	private final List<String> values = new ArrayList<String>();
 
-	SqlRow(LinkedHashMap<String, String> columnToValue) {
+	SQLRow(LinkedHashMap<String, String> columnToValue) {
 		this.columnToValue = columnToValue;
 		for (String s : columnToValue.values())
 			values.add(s);
@@ -20,15 +20,22 @@ public class SqlRow {
 		return values().get(index);
 	}
 
-	public String get(String columnName) {
-		String upperName = columnName.toUpperCase();
-		if (!columnToValue.containsKey(upperName))
-			throw new IllegalArgumentException(
-					upperName + " is not a valid column name! names are: " + columnToValue.keySet());
-		return columnToValue.get(upperName);
+	public boolean has(String columnName) {
+		return columnToValue.containsKey(columnName.toUpperCase());
 	}
 
-	public String get(SqlColumn column) {
+	public String get(String columnName) {
+		if (!has(columnName))
+			throw new IllegalArgumentException(
+					columnName.toUpperCase() + " is not a valid column name! names are: " + columnToValue.keySet());
+		return columnToValue.get(columnName.toUpperCase());
+	}
+
+	public boolean has(SQLColumn column) {
+		return has(column.getName());
+	}
+
+	public String get(SQLColumn column) {
 		return get(column.getName());
 	}
 

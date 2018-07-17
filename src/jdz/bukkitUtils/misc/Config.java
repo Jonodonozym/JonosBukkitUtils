@@ -16,6 +16,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.fileIO.FileExporter;
+import jdz.bukkitUtils.sql.SQLConfig;
+import jdz.bukkitUtils.sql.SQLDriver;
 
 /**
  * Class for getting the config without worrying about exporting it first
@@ -62,6 +64,25 @@ public final class Config {
 		return file;
 	}
 
+	public static SQLConfig getSQLConfig(Plugin plugin) {
+		File configFile = Config.getConfigFile(plugin, "sqlConfig.yml");
+		if (!configFile.exists())
+			configFile = Config.getDefaultSqlFile(plugin);
+
+		FileConfiguration config = YamlConfiguration.loadConfiguration(configFile);
+
+		String dbURL = config.getString("database.URL");
+		String dbName = config.getString("database.name");
+		String dbUsername = config.getString("database.username");
+		String dbPassword = config.getString("database.password");
+		long dbReconnectTime = config.getInt("database.autoReconnectSeconds") * 20;
+		dbReconnectTime = dbReconnectTime <= 600 ? 600 : dbReconnectTime;
+		boolean preferSQL = config.getBoolean("preferSQL", true);
+
+		return new SQLConfig(dbURL, dbName, dbUsername, dbPassword, SQLDriver.MYSQL_DRIVER, preferSQL);
+	}
+	
+	@Deprecated
 	public static File getDefaultSqlFile(Plugin targetPlugin) {
 		File file = new File(JonosBukkitUtils.getInstance().getDataFolder() + File.separator + "sqlConfig.yml");
 		targetPlugin.getDataFolder().mkdir();

@@ -7,6 +7,7 @@ import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.commands.Command;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
+import jdz.bukkitUtils.commands.annotations.CommandOpOnly;
 import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 import jdz.bukkitUtils.commands.annotations.CommandUsage;
 import jdz.bukkitUtils.events.custom.ConfigReloadEvent;
@@ -15,6 +16,7 @@ import jdz.bukkitUtils.events.custom.ConfigReloadEvent;
 @CommandLabel("rc")
 @CommandRequiredArgs(1)
 @CommandUsage("rc [Plugin]")
+@CommandOpOnly
 public class ReloadConfigCommand extends Command {
 
 	@Override

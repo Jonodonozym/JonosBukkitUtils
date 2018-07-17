@@ -1,5 +1,5 @@
 
-package jdz.bukkitUtils.commands.annotations;
+package jdz.bukkitUtils.sql;
 
 import static java.lang.annotation.ElementType.TYPE;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
@@ -7,9 +7,8 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
-@Deprecated
 @Retention(RUNTIME)
 @Target(TYPE)
-public @interface CommandAsync {
-
+public @interface TableName {
+	public String value();
 }

@@ -39,7 +39,7 @@ public class PlayerDamagedByPlayer extends Event implements Cancellable {
 
 	static final class PlayerDamagedByPlayerListener implements Listener {
 		@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
-		public void onDrink(EntityDamageByEntityEvent event) {
+		public void onDamage(EntityDamageByEntityEvent event) {
 			if (!(event.getDamager() instanceof Player && event.getEntity() instanceof Player))
 				return;
 

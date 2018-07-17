@@ -7,6 +7,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -26,6 +28,8 @@ import jdz.bukkitUtils.misc.StringUtils;
 import lombok.Setter;
 
 public abstract class CommandExecutor implements org.bukkit.command.CommandExecutor {
+	private static final Executor es = Executors.newCachedThreadPool();
+
 	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 	private static final Map<Plugin, FileLogger> loggers = new HashMap<Plugin, FileLogger>();
 
@@ -216,14 +220,10 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 	private final void executeIfHasPerms(SubCommand command, CommandSender sender, String... args) {
 		logCommand(sender, command.getLabel(), args);
-		if (command.hasRequiredPermissions(sender)) {
-			if (command.isAsync())
-				Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {
-					command.execute(sender, args);
-				});
-			else
+		if (command.hasRequiredPermissions(sender))
+			es.execute(() -> {
 				command.execute(sender, args);
-		}
+			});
 		else
 			sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that");
 	}

@@ -11,6 +11,7 @@ package jdz.bukkitUtils.sql;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -25,35 +26,27 @@ import java.util.concurrent.Executors;
  * 
  * @author Jonodonozym
  */
-abstract class Database {
-	private static final String DRIVER = "com.mysql.jdbc.Driver";
-	private static RuntimeException driverFailureError = null;
-
-	static {
-		try {
-			Class.forName(DRIVER).newInstance();
-		}
-		catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-			driverFailureError = new RuntimeException(e);
-		}
-	}
-
-	private Connection dbConnection = null;
+public abstract class Database {
+	protected Connection dbConnection = null;
 	private boolean isAutoReconnecting = false;
 
 	private final List<Runnable> runOnConnect = new ArrayList<Runnable>();
 
-	protected SqlConfig config;
+	protected SQLConfig config;
 
 	protected Database() {}
 
-	protected Database(SqlConfig config) {
+	protected Database(SQLConfig config) {
 		setConfig(config);
 	}
 
-	protected void setConfig(SqlConfig config) {
-		if (driverFailureError != null)
-			throw driverFailureError;
+	protected void setConfig(SQLConfig config) {
+		try {
+			Class.forName(config.driver.getClasspath()).newInstance();
+		}
+		catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
+			e.printStackTrace();
+		}
 
 		this.config = config;
 
@@ -81,8 +74,8 @@ abstract class Database {
 	 * @param query
 	 * @return
 	 */
-	protected List<SqlRow> query(String query) {
-		List<SqlRow> rows = new ArrayList<SqlRow>();
+	public List<SQLRow> query(String query) {
+		List<SQLRow> rows = new ArrayList<SQLRow>();
 
 		if (!isConnected())
 			return rows;
@@ -94,10 +87,14 @@ abstract class Database {
 			int columns = rs.getMetaData().getColumnCount();
 			while (rs.next()) {
 				LinkedHashMap<String, String> row = new LinkedHashMap<String, String>();
-				for (int i = 1; i <= columns; i++)
-					row.put(rs.getMetaData().getColumnName(i).toUpperCase(), rs.getString(i));
+				for (int i = 1; i <= columns; i++) {
+					String str = rs.getString(i);
+					if ("null".equals(str))
+						str = null;
+					row.put(rs.getMetaData().getColumnName(i).toUpperCase(), str);
+				}
 				if (row.size() > 0)
-					rows.add(new SqlRow(row));
+					rows.add(new SQLRow(row));
 			}
 		}
 		catch (SQLException e) {
@@ -116,15 +113,23 @@ abstract class Database {
 		return rows;
 	}
 
-	protected SqlRow queryFirst(String query) {
+	public SQLRow queryFirst(String query) {
 		if (query.endsWith(";"))
 			query = query.substring(0, query.length() - 1);
 		if (!query.contains("LIMIT 1"))
 			query += " LIMIT 1;";
-		List<SqlRow> rows = query(query);
+		List<SQLRow> rows = query(query);
 		if (rows.isEmpty())
 			return null;
 		return rows.get(0);
+	}
+	
+	public List<SQLRow> query(PreparedStatement statement){
+		return query(statement.toString());
+	}
+	
+	public SQLRow queryFirst(PreparedStatement statement){
+		return queryFirst(statement.toString());
 	}
 
 	protected List<String> getColumns(String table) {
@@ -162,31 +167,30 @@ abstract class Database {
 	 * @param connection
 	 * @param update
 	 */
-	protected void update(String update) {
+	public boolean update(String update) {
 		if (!isConnected()) {
 			runOnConnect(() -> {
 				update(update);
 			});
-			return;
+			return false;
 		}
 
-		Statement stmt = null;
 		try {
-			stmt = dbConnection.createStatement();
-			stmt.executeUpdate(update);
+			return update(dbConnection.prepareStatement(update));
 		}
 		catch (SQLException e) {
 			onError(e, update);
+			return false;
 		}
-		finally {
-			if (stmt != null) {
-				try {
-					stmt.close();
-				}
-				catch (SQLException e) {
-					onError(e, update);
-				}
-			}
+	}
+
+	public boolean update(PreparedStatement statement) {
+		try {
+			return statement.execute();
+		}
+		catch (SQLException exception) {
+			onError(exception, statement.toString());
+			return false;
 		}
 	}
 
@@ -199,6 +203,22 @@ abstract class Database {
 	private final Executor executor = Executors.newCachedThreadPool();
 
 	protected void updateAsync(String update) {
+		try {
+			if (!isConnected()) {
+				runOnConnect(() -> {
+					updateAsync(update);
+				});
+				return;
+			}
+			
+			updateAsync(dbConnection.prepareStatement(update));
+		}
+		catch (SQLException e) {
+			onError(e, update);
+		}
+	}
+
+	protected void updateAsync(PreparedStatement update) {		
 		executor.execute(() -> {
 			update(update);
 		});
@@ -215,7 +235,7 @@ abstract class Database {
 		if (!isConnected())
 			return false;
 
-		for (SqlRow row : query("SHOW TABLES LIKE '" + tableName + "';"))
+		for (SQLRow row : query("SHOW TABLES LIKE '" + tableName + "';"))
 			if (row.get(0).equals(tableName))
 				return true;
 
@@ -228,7 +248,7 @@ abstract class Database {
 	 * @param tableName
 	 * @param columns
 	 */
-	protected void addTable(String tableName, SqlColumn... columns) {
+	public void addTable(String tableName, SQLColumn... columns) {
 		if (!isConnected()) {
 			runOnConnect(() -> {
 				addTable(tableName, columns);
@@ -240,7 +260,7 @@ abstract class Database {
 			String update = "CREATE TABLE IF NOT EXISTS " + tableName;
 			if (columns != null && columns.length > 0) {
 				update = update + " (";
-				for (SqlColumn c : columns)
+				for (SQLColumn c : columns)
 					update += c.getName() + " " + c.getType().getSqlSyntax() + " NOT NULL"
 							+ c.getType().getDefaultStatement() + ", ";
 				if (columns.length != 0)
@@ -267,7 +287,7 @@ abstract class Database {
 	 * @param tableName
 	 * @param column
 	 */
-	protected void addColumn(String tableName, SqlColumn column) {
+	protected void addColumn(String tableName, SQLColumn column) {
 		addColumns(tableName, column);
 	}
 
@@ -277,7 +297,7 @@ abstract class Database {
 	 * @param tableName
 	 * @param columns
 	 */
-	protected void addColumns(String tableName, SqlColumn... columns) {
+	protected void addColumns(String tableName, SQLColumn... columns) {
 		if (columns == null || columns.length == 0)
 			return;
 
@@ -291,7 +311,7 @@ abstract class Database {
 		String update = "ALTER TABLE " + tableName + " ";
 		List<String> existingColumns = getColumns(tableName);
 		List<String> primaryKeys = getPrimaryKeys(tableName);
-		for (SqlColumn c : columns) {
+		for (SQLColumn c : columns) {
 			if (!containsEqualsIgnoreCase(existingColumns, c.getName())) {
 				update += "ADD COLUMN " + c.getName() + " " + c.getType().getSqlSyntax() + " NOT NULL" + c.getDefault()
 						+ ", ";
@@ -362,15 +382,15 @@ abstract class Database {
 			return keys;
 
 		String query = "SHOW KEYS FROM " + table + " WHERE Key_name = 'PRIMARY'";
-		List<SqlRow> result = query(query);
-		for (SqlRow row : result)
+		List<SQLRow> result = query(query);
+		for (SQLRow row : result)
 			keys.add(row.get("Column_name"));
 		return keys;
 	}
 
-	protected void updatePrimaryKeys(String table, SqlColumn... columns) {
+	protected void updatePrimaryKeys(String table, SQLColumn... columns) {
 		List<String> keys = new ArrayList<String>();
-		for (SqlColumn c : columns)
+		for (SQLColumn c : columns)
 			if (c.isPrimary())
 				keys.add(c.getName());
 		setPrimaryKeys(table, keys.toArray(new String[keys.size()]));
@@ -411,13 +431,13 @@ abstract class Database {
 		closeConnection();
 
 		try {
-			String url = "jdbc:mysql://" + config.dbURL + ":" + config.dbPort + "/" + config.dbName + "?user="
-					+ config.dbUsername + "&password=" + config.dbPassword
+			String url = "jdbc:" + config.driver.getName() + "://" + config.dbURL + ":" + config.dbPort + "/"
+					+ config.dbName + "?user=" + config.dbUsername + "&password=" + config.dbPassword
 					+ "&loginTimeout=1000&useSSL=false&autoReconnect=true";
 
 			dbConnection = DriverManager.getConnection(url, config.dbUsername, config.dbPassword);
 
-			updateAsync("SET SESSION wait_timeout = 999999;");
+			// updateAsync("SET SESSION wait_timeout = 999999;");
 
 			for (Runnable r : new ArrayList<Runnable>(runOnConnect)) {
 				if (r == null)
@@ -434,7 +454,7 @@ abstract class Database {
 		}
 	}
 
-	protected void runOnConnect(Runnable r) {
+	public void runOnConnect(Runnable r) {
 		if (isConnected())
 			r.run();
 		else
@@ -490,5 +510,32 @@ abstract class Database {
 		t.printStackTrace();
 		if (query != null && !query.equals(""))
 			System.out.println("Using query: " + query);
+	}
+
+	protected boolean executeTransaction(Transaction t) {
+		try {
+			dbConnection.setAutoCommit(false);
+			boolean success = false;
+			try {
+				success = t.execute();
+			}
+			catch (Exception ex) {
+				onError(ex);
+			}
+			if (success)
+				dbConnection.commit();
+			else
+				dbConnection.rollback();
+			dbConnection.setAutoCommit(true);
+			return success;
+		}
+		catch (SQLException e) {
+			onError(e);
+			return false;
+		}
+	}
+
+	protected static interface Transaction {
+		public boolean execute();
 	}
 }

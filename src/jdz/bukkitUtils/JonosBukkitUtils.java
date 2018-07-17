@@ -11,11 +11,11 @@ package jdz.bukkitUtils;
 
 import org.bukkit.plugin.java.JavaPlugin;
 
-import jdz.bukkitUtils.commands.ArgumentParsers;
 import jdz.bukkitUtils.commands.JBU.ReloadConfigCommand;
 import jdz.bukkitUtils.events.custom.JBUEvents;
 import jdz.bukkitUtils.fileIO.JarUtils;
 import jdz.bukkitUtils.misc.ServerTimer;
+import jdz.bukkitUtils.sql.minecraft.SQLDataClassBukkitParser;
 import jdz.bukkitUtils.updaters.PluginUpdater;
 
 /**
@@ -44,6 +44,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 		new JarUtils(this).extractLibs("libs/mockito.jar");
 		
 		ArgumentParsers.initDefaults();
+		SQLDataClassBukkitParser.initDefaults();
 		new ReloadConfigCommand().register(this);
 
 		PluginUpdater.updateAll();

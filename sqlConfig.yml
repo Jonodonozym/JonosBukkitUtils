@@ -1,3 +1,4 @@
+preferSQL: false
 database:
   URL: "localhost"
   port: 3306

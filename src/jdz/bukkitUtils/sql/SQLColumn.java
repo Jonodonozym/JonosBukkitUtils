@@ -1,5 +1,5 @@
 /**
- * SqlColumn.java
+ * SQLColumn.java
  *
  * Created by Jonodonozym on god knows when
  * Copyright © 2017. All rights reserved.
@@ -18,21 +18,21 @@ import lombok.Getter;
  * @author Jaiden Baker
  */
 @AllArgsConstructor
-public final class SqlColumn {
+public final class SQLColumn {
 	@Getter private final String name;
-	@Getter private final SqlColumnType type;
+	@Getter private final SQLColumnType type;
 	@Getter private final String Default;
 	@Getter private final boolean primary;
 
-	public SqlColumn(String name, SqlColumnType type) {
+	public SQLColumn(String name, SQLColumnType type) {
 		this(name, type, type.getDefaultStatement(), false);
 	}
 
-	public SqlColumn(String name, SqlColumnType type, String Default) {
+	public SQLColumn(String name, SQLColumnType type, String Default) {
 		this(name, type, " DEFAULT " + Default, false);
 	}
 
-	public SqlColumn(String name, SqlColumnType type, boolean primary) {
+	public SQLColumn(String name, SQLColumnType type, boolean primary) {
 		this(name, type, type.getDefaultStatement(), primary);
 	}
 }
