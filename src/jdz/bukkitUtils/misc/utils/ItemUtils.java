@@ -85,14 +85,14 @@ public class ItemUtils {
 
 		return new ArrayList<ItemStack>(itemOverflow.values());
 	}
-	
+
 	public static void remove(Inventory inv, Material m, int quantity) {
 		ItemStack[] contents = inv.getContents();
-		for (int i=0; i<contents.length; i++) {
+		for (int i = 0; i < contents.length; i++) {
 			ItemStack item = contents[i];
 			if (item == null || m != item.getType())
 				continue;
-			
+
 			if (quantity >= item.getAmount()) {
 				quantity -= item.getAmount();
 				inv.setItem(i, new ItemStack(Material.AIR));

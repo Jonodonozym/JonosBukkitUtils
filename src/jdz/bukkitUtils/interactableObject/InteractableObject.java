@@ -10,7 +10,8 @@ import jdz.bukkitUtils.JonosBukkitUtils;
 public abstract class InteractableObject {
 
 	protected InteractableObject(Metadatable object, Object... constructorArgs) {
-		object.setMetadata("interactType", new FixedMetadataValue(JonosBukkitUtils.getInstance(), getTypeName(getClass())));
+		object.setMetadata("interactType",
+				new FixedMetadataValue(JonosBukkitUtils.getInstance(), getTypeName(getClass())));
 	}
 
 	public abstract void onInteract(Player player);

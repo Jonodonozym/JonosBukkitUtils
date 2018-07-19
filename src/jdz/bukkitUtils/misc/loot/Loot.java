@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
 
 public abstract class Loot {
 	public abstract Collection<ItemStack> getItems();
-
 	public abstract String getName();
 
 	public static Loot make(String name, ItemStack... items) {

@@ -17,7 +17,7 @@ public abstract class GuiMenuPlayer extends GuiMenu {
 	protected GuiMenuPlayer(Plugin plugin) {
 		super(plugin);
 	}
-	
+
 	@Override
 	public void open(Player player) {
 		if (!invs.containsKey(player))

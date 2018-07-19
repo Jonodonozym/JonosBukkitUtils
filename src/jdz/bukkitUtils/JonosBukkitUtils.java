@@ -31,7 +31,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 	public static JonosBukkitUtils getInstance() {
 		return instance;
 	}
-	
+
 	@Override
 	public void onLoad() {
 		instance = this;
@@ -42,13 +42,13 @@ public final class JonosBukkitUtils extends JavaPlugin {
 		new JarUtils(this).extractLibs("libs/lombok.jar");
 		new JarUtils(this).extractLibs("libs/exp4j.jar");
 		new JarUtils(this).extractLibs("libs/mockito.jar");
-		
+
 		ArgumentParsers.initDefaults();
 		SQLDataClassBukkitParser.initDefaults();
 		new ReloadConfigCommand().register(this);
 
 		PluginUpdater.updateAll();
-		
+
 		JBUEvents.registerAll(this);
 		ServerTimer.start();
 	}

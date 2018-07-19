@@ -13,7 +13,7 @@ import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.events.Listener;
 
 public interface AbstractMessenger extends OfflineMessenger, Listener {
-	
+
 	@Override
 	public default void message(OfflinePlayer player, String message) {
 		message(player, message, getHighestPriority(player) + 1);

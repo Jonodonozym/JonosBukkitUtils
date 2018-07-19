@@ -11,29 +11,30 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
 public class ArgumentParsers {
-	public static interface ArgumentParser<E>{
+	public static interface ArgumentParser<E> {
 		public E parse(String s);
 	}
-	
+
 	private static final Map<Class<?>, ArgumentParser<?>> parsers = new HashMap<Class<?>, ArgumentParser<?>>();
 
 	public static <E> void addParser(Class<E> clazz, ArgumentParser<E> parser) {
 		parsers.put(clazz, parser);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public static <E> ArgumentParser<E> getParser(Class<E> clazz){
+	public static <E> ArgumentParser<E> getParser(Class<E> clazz) {
 		if (!parsers.containsKey(clazz))
-			throw new IllegalArgumentException("No parser defined for "+clazz.getSimpleName()+", add it with ArgumentParsers.addParser()");
+			throw new IllegalArgumentException(
+					"No parser defined for " + clazz.getSimpleName() + ", add it with ArgumentParsers.addParser()");
 		return (ArgumentParser<E>) parsers.get(clazz);
 	}
 
 	@SuppressWarnings("deprecation")
 	public static void initDefaults() {
-		addParser(String.class, (s)->{
+		addParser(String.class, (s) -> {
 			return s;
 		});
-		
+
 		addNumberParser(int.class, (s) -> {
 			return Integer.parseInt(s);
 		});
@@ -61,11 +62,11 @@ public class ArgumentParsers {
 		addNumberParser(double.class, (s) -> {
 			return Double.parseDouble(s);
 		});
-		
-		addNumberParser(Float.class, (s)->{
+
+		addNumberParser(Float.class, (s) -> {
 			return Float.parseFloat(s);
 		});
-		addNumberParser(float.class, (s)->{
+		addNumberParser(float.class, (s) -> {
 			return Float.parseFloat(s);
 		});
 

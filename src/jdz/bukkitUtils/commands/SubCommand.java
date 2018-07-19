@@ -156,7 +156,7 @@ public abstract class SubCommand {
 					sender.sendMessage(ChatColor.RED + "You must be a player to do that");
 					return false;
 				}
-				newArgs[0] = (Player) sender;
+				newArgs[0] = sender;
 			}
 			else {
 				if (!parameterTypes[0].equals(CommandSender.class))

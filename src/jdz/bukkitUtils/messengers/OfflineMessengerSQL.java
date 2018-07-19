@@ -22,6 +22,7 @@ import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.sql.SqlDatabase;
+import jdz.bukkitUtils.sql.ORM.SQLDataClass;
 
 /**
  * Allows you to queue messages for players who may or may not be online
@@ -40,7 +41,7 @@ public final class OfflineMessengerSQL extends SqlDatabase implements AbstractMe
 			messengers.put(serverGrounp, new OfflineMessengerSQL(serverGrounp));
 		return messengers.get(serverGrounp);
 	}
-	
+
 	private final String serverName;
 
 	private PreparedStatement clearQueueStatement;
@@ -54,11 +55,11 @@ public final class OfflineMessengerSQL extends SqlDatabase implements AbstractMe
 
 		runOnConnect(() -> {
 			try {
-				clearQueueStatement = dbConnection.prepareStatement(
-						"DELETE FROM " + Message.getTableName(Message.class) + " WHERE player = ? AND serverName = ?;");
+				clearQueueStatement = dbConnection.prepareStatement("DELETE FROM "
+						+ SQLDataClass.getTableName(Message.class) + " WHERE player = ? AND serverName = ?;");
 				clearQueueStatement.setString(1, serverName);
 				highestPriority = dbConnection.prepareStatement(
-						"SELECT MAX(priority) FROM " + Message.getTableName(Message.class) + " WHERE player = ?;");
+						"SELECT MAX(priority) FROM " + SQLDataClass.getTableName(Message.class) + " WHERE player = ?;");
 			}
 			catch (SQLException e) {
 				onError(e, "");
@@ -66,10 +67,12 @@ public final class OfflineMessengerSQL extends SqlDatabase implements AbstractMe
 		});
 	}
 
+	@Override
 	public void message(OfflinePlayer offlinePlayer, String message, int priority) {
 		new Message(serverName, offlinePlayer.getUniqueId(), message, priority).insert(this);
 	}
 
+	@Override
 	public void setQueuedMessages(OfflinePlayer offlinePlayer, List<String> messages) {
 		executeTransaction(() -> {
 			clearQueuedMessages(offlinePlayer);
@@ -80,6 +83,7 @@ public final class OfflineMessengerSQL extends SqlDatabase implements AbstractMe
 		});
 	}
 
+	@Override
 	public void clearQueuedMessages(OfflinePlayer offlinePlayer) {
 		try {
 			clearQueueStatement.setString(0, offlinePlayer.getName());
@@ -90,12 +94,13 @@ public final class OfflineMessengerSQL extends SqlDatabase implements AbstractMe
 		}
 	}
 
+	@Override
 	public List<Message> getQueuedMessages(OfflinePlayer offlinePlayer) {
 		if (!isConnected())
 			return new ArrayList<Message>();
 
-		return Message.select(this, Message.class, "WHERE player = " + offlinePlayer.getName() + " AND serverName = "
-				+ serverName + " ORDER BY priority asc;");
+		return SQLDataClass.select(this, Message.class, "WHERE player = " + offlinePlayer.getName()
+				+ " AND serverName = " + serverName + " ORDER BY priority asc;");
 	}
 
 	@Override

@@ -18,6 +18,7 @@ import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.events.Listener;
 import jdz.bukkitUtils.misc.Config;
+import jdz.bukkitUtils.sql.ORM.SQLDataClass;
 
 public class OfflineMessengerYML implements Listener, OfflineMessenger {
 	private static final Map<Plugin, OfflineMessengerYML> messengers = new HashMap<Plugin, OfflineMessengerYML>();
@@ -37,10 +38,12 @@ public class OfflineMessengerYML implements Listener, OfflineMessenger {
 		registerEvents(JonosBukkitUtils.getInstance());
 	}
 
+	@Override
 	public void message(OfflinePlayer player, String message) {
 		message(player, message, getHighestPriority(player) + 1);
 	}
 
+	@Override
 	public void message(OfflinePlayer player, String message, int priority) {
 		if (player.isOnline()) {
 			player.getPlayer().sendMessage(message);
@@ -107,8 +110,8 @@ public class OfflineMessengerYML implements Listener, OfflineMessenger {
 		playerToMessages.clear();
 		for (String player : config.getKeys(false)) {
 			List<Message> messageList = new ArrayList<Message>();
-			for (String s :  config.getStringList(player))
-				messageList.add(Message.fromString(Message.class, s));
+			for (String s : config.getStringList(player))
+				messageList.add(SQLDataClass.fromString(Message.class, s));
 			playerToMessages.put(UUID.fromString(player), messageList);
 		}
 	}

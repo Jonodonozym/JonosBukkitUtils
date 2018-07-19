@@ -81,7 +81,7 @@ public final class Config {
 
 		return new SQLConfig(dbURL, dbName, dbUsername, dbPassword, SQLDriver.MYSQL_DRIVER, preferSQL);
 	}
-	
+
 	@Deprecated
 	public static File getDefaultSqlFile(Plugin targetPlugin) {
 		File file = new File(JonosBukkitUtils.getInstance().getDataFolder() + File.separator + "sqlConfig.yml");

@@ -123,12 +123,12 @@ public abstract class Database {
 			return null;
 		return rows.get(0);
 	}
-	
-	public List<SQLRow> query(PreparedStatement statement){
+
+	public List<SQLRow> query(PreparedStatement statement) {
 		return query(statement.toString());
 	}
-	
-	public SQLRow queryFirst(PreparedStatement statement){
+
+	public SQLRow queryFirst(PreparedStatement statement) {
 		return queryFirst(statement.toString());
 	}
 
@@ -210,7 +210,7 @@ public abstract class Database {
 				});
 				return;
 			}
-			
+
 			updateAsync(dbConnection.prepareStatement(update));
 		}
 		catch (SQLException e) {
@@ -218,7 +218,7 @@ public abstract class Database {
 		}
 	}
 
-	protected void updateAsync(PreparedStatement update) {		
+	protected void updateAsync(PreparedStatement update) {
 		executor.execute(() -> {
 			update(update);
 		});
