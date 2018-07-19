@@ -27,7 +27,7 @@ public class SQLConfig {
 	}
 
 	public boolean isValid() {
-		return !(dbURL == null || dbName == null || dbUsername == null || dbPassword == null || dbURL.equals("")
+		return !preferSQL || !(dbURL == null || dbName == null || dbUsername == null || dbPassword == null || dbURL.equals("")
 				|| dbName.equals("") || dbUsername.equals("") || dbPassword.equals(""));
 	}
 }
