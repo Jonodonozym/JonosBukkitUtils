@@ -53,6 +53,8 @@ public abstract class GuiMenu implements Listener {
 			return;
 
 		ClickableStack clickable = pages.get(inv).get(e.getSlot());
+		if (clickable == null)
+			return;
 
 		if (clickable.isCloseOnClick())
 			p.closeInventory();

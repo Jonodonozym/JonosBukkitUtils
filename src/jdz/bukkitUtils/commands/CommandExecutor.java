@@ -23,6 +23,7 @@ import jdz.bukkitUtils.commands.annotations.CommandExecutorOpOnly;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPermission;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPermissions;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPlayerOnly;
+import jdz.bukkitUtils.commands.annotations.CommandSync;
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.StringUtils;
 import lombok.Setter;
@@ -221,9 +222,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	private final void executeIfHasPerms(SubCommand command, CommandSender sender, String... args) {
 		logCommand(sender, command.getLabel(), args);
 		if (command.hasRequiredPermissions(sender))
-			es.execute(() -> {
+			if (command.getClass().getAnnotation(CommandSync.class) != null)
 				command.execute(sender, args);
-			});
+			else
+				es.execute(() -> {
+					command.execute(sender, args);
+				});
 		else
 			sender.sendMessage(ChatColor.RED + "You don't have the permissions to do that");
 	}

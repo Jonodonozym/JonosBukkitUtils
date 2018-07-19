@@ -3,13 +3,11 @@ package jdz.bukkitUtils.guiMenu.itemStacks;
 
 import java.util.List;
 
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
-import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.guiMenu.guis.GuiMenu;
 
 public class ClickableStackLinkedMenu extends ClickableStack {
@@ -32,9 +30,7 @@ public class ClickableStackLinkedMenu extends ClickableStack {
 
 	@Override
 	public void onClick(GuiMenu menu, InventoryClickEvent event) {
-		Bukkit.getScheduler().runTaskLater(JonosBukkitUtils.getInstance(), () -> {
-			targetGuiMenu.open((Player) event.getWhoClicked());
-		}, 1L);
+		targetGuiMenu.open((Player) event.getWhoClicked());
 	}
 
 }
