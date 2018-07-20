@@ -94,12 +94,7 @@ public class InteractableObjectListener implements Listener {
 	}
 
 	private void onInteract(Player player, Metadatable object) {
-		try {
-			InteractableObjectFactory.get(object).makeFromExisting(object).onInteract(player);
-		}
-		catch (InvalidMetadataException e) {
-			e.printStackTrace();
-		}
+		InteractableObjectFactory.get(object).getMaker().make(object).onInteract(player);
 	}
 
 }

@@ -10,16 +10,11 @@ import java.util.Set;
 import org.bukkit.metadata.Metadatable;
 import org.bukkit.plugin.Plugin;
 
-import jdz.bukkitUtils.JonosBukkitUtils;
 import lombok.Getter;
 
-public abstract class InteractableObjectFactory<T extends InteractableObject> {
+public class InteractableObjectFactory<T extends InteractableObject> {
 	private static final Map<String, InteractableObjectFactory<?>> factories = new HashMap<>();
 	private static final Map<Plugin, Set<InteractableObjectFactory<?>>> pluginToFactories = new HashMap<>();
-
-	static {
-		new InteractableObjectListener().registerEvents(JonosBukkitUtils.getInstance());
-	}
 
 	static InteractableObjectFactory<?> get(Metadatable object) {
 		String interactType = (String) object.getMetadata("interactType").get(0).value();
@@ -34,15 +29,18 @@ public abstract class InteractableObjectFactory<T extends InteractableObject> {
 
 	@Getter private final Class<T> type;
 	@Getter private final String typeName;
+	@Getter private final ObjectMaker<T> maker;
 
-	protected InteractableObjectFactory(Class<T> type) {
+	public InteractableObjectFactory(Class<T> type, ObjectMaker<T> maker) {
 		this.type = type;
 		this.typeName = InteractableObject.getTypeName(type);
+		this.maker = maker;
 	}
 
 	public void register(Plugin plugin) {
 		if (factories.containsKey(typeName))
-			throw new IllegalStateException("There is already a factory for object type " + typeName);
+			throw new IllegalStateException("There is already a factory for object type " + typeName
+					+ ". Use @ObjectType on the object to define a new name");
 		factories.put(typeName, this);
 		if (!pluginToFactories.containsKey(plugin))
 			pluginToFactories.put(plugin, new HashSet<>());
@@ -56,5 +54,7 @@ public abstract class InteractableObjectFactory<T extends InteractableObject> {
 				pluginToFactories.get(plugin).remove(this);
 	}
 
-	public abstract T makeFromExisting(Metadatable object) throws InvalidMetadataException;
+	public static interface ObjectMaker<T extends InteractableObject> {
+		public T make(Metadatable object);
+	}
 }
