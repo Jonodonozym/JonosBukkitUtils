@@ -19,6 +19,7 @@ import java.net.URLDecoder;
 import java.util.jar.JarFile;
 
 import org.bukkit.plugin.Plugin;
+
 import jdz.bukkitUtils.JonosBukkitUtils;
 
 /**

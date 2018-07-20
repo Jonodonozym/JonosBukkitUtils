@@ -10,11 +10,11 @@
 	<name>Jonos Bukkit Utils</name>
 	<description>Bunch of utilities to fast-track bukkit plugin development</description>
 	<url>https://github.com/Jonodonozym/JonosBukkitUtils</url>
-	
+
 	<properties>
 		<powermock.version>1.6.6</powermock.version>
 	</properties>
-	
+
 	<build>
 		<finalName>JBU</finalName>
 		<sourceDirectory>src</sourceDirectory>

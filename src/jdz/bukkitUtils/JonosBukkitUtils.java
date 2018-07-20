@@ -9,14 +9,17 @@
 
 package jdz.bukkitUtils;
 
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.commands.JBU.ReloadConfigCommand;
 import jdz.bukkitUtils.events.custom.JBUEvents;
 import jdz.bukkitUtils.fileIO.JarUtils;
+import jdz.bukkitUtils.interactableObject.InteractableObjectListener;
 import jdz.bukkitUtils.misc.ServerTimer;
 import jdz.bukkitUtils.sql.minecraft.SQLDataClassBukkitParser;
 import jdz.bukkitUtils.updaters.PluginUpdater;
+import lombok.Getter;
 
 /**
  * Jono's (or Java, I don't give a damn what you think) Utilities for Bukkit to
@@ -26,11 +29,7 @@ import jdz.bukkitUtils.updaters.PluginUpdater;
  * @author Jonodonozym
  */
 public final class JonosBukkitUtils extends JavaPlugin {
-	private static JonosBukkitUtils instance;
-
-	public static JonosBukkitUtils getInstance() {
-		return instance;
-	}
+	@Getter private static Plugin instance;
 
 	@Override
 	public void onLoad() {
@@ -46,6 +45,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 		ArgumentParsers.initDefaults();
 		SQLDataClassBukkitParser.initDefaults();
 		new ReloadConfigCommand().register(this);
+		new InteractableObjectListener().registerEvents(this);
 
 		PluginUpdater.updateAll();
 
