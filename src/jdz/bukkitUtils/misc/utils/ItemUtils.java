@@ -2,6 +2,7 @@
 package jdz.bukkitUtils.misc.utils;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -49,6 +50,10 @@ public class ItemUtils {
 		return itemStack;
 	}
 
+	public static void give(Player player, ItemStack item) {
+		give(player, Arrays.asList(item));
+	}
+
 	public static void give(Player player, ItemStack item, int amount) {
 		List<ItemStack> stacks = new ArrayList<ItemStack>();
 
@@ -65,10 +70,6 @@ public class ItemUtils {
 		give(player, stacks);
 	}
 
-	public static void give(Player player, ItemStack item) {
-		give(player, item, Math.min(1, item.getAmount()));
-	}
-
 	public static void give(Player player, Collection<ItemStack> items) {
 		List<ItemStack> overflow = addAllItems(player.getInventory(), items);
 
@@ -82,7 +83,6 @@ public class ItemUtils {
 
 	public static List<ItemStack> addAllItems(Inventory inv, Collection<ItemStack> items) {
 		HashMap<Integer, ItemStack> itemOverflow = inv.addItem(items.toArray(new ItemStack[1]));
-
 		return new ArrayList<ItemStack>(itemOverflow.values());
 	}
 

@@ -90,11 +90,16 @@ public class InteractableObjectListener implements Listener {
 	}
 
 	private boolean canBreak(Metadatable object) {
-		return InteractableObjectFactory.get(object).getType().getAnnotation(ObjectType.class).canBreak();
+		InteractableObjectFactory<?> f = InteractableObjectFactory.get(object);
+		if (f == null)
+			return true;
+		return f.getType().getAnnotation(ObjectType.class).canBreak();
 	}
 
 	private void onInteract(Player player, Metadatable object) {
-		InteractableObjectFactory.get(object).getMaker().make(object).onInteract(player);
+		InteractableObjectFactory<?> f = InteractableObjectFactory.get(object);
+		if (f != null)
+			f.getMaker().make(object).onInteract(player);
 	}
 
 }

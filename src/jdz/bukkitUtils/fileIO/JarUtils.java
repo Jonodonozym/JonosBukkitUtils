@@ -66,7 +66,7 @@ public final class JarUtils {
 	}
 
 	private void addClassPath(final URL url) throws IOException {
-		final URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+		final URLClassLoader sysloader = new URLClassLoader(new URL[] {url}, ClassLoader.getSystemClassLoader());
 		final Class<URLClassLoader> sysclass = URLClassLoader.class;
 		try {
 			final Method method = sysclass.getDeclaredMethod("addURL", new Class[] { URL.class });

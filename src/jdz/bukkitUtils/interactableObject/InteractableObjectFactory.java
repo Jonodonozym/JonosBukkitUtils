@@ -17,8 +17,11 @@ public class InteractableObjectFactory<T extends InteractableObject> {
 	private static final Map<Plugin, Set<InteractableObjectFactory<?>>> pluginToFactories = new HashMap<>();
 
 	static InteractableObjectFactory<?> get(Metadatable object) {
-		String interactType = (String) object.getMetadata("interactType").get(0).value();
-		return factories.get(interactType);
+		if (object.hasMetadata("interactType")) {
+			String interactType = (String) object.getMetadata("interactType").get(0).value();
+			return factories.get(interactType);
+		}
+		return null;
 	}
 
 	static Set<InteractableObjectFactory<?>> get(Plugin plugin) {

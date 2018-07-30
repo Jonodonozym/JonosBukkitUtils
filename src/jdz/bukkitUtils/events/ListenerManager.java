@@ -22,6 +22,10 @@ public class ListenerManager implements Listener {
 	private ListenerManager() {
 		register(this, JonosBukkitUtils.getInstance());
 	}
+	
+	boolean isRegistered(org.bukkit.event.Listener l, Plugin plugin) {
+		return registered.containsKey(plugin) && registered.get(plugin).contains(l);
+	}
 
 	boolean register(org.bukkit.event.Listener l, Plugin plugin) {
 		if (!registered.containsKey(plugin))
