@@ -73,8 +73,10 @@ public abstract class AutoConfig implements Listener {
 	private void reloadConfig(ConfigurationSection section) {
 		try {
 			for (Field field : fields) {
-				Object val = AutoConfigFieldParsers.getParser(field.getType()).parse(section, field.getName());
-				field.set(this, val);
+				if (section.contains(field.getName())) {
+					Object val = AutoConfigFieldParsers.getParser(field.getType()).parse(section, field.getName());
+					field.set(this, val);
+				}
 			}
 		}
 		catch (ReflectiveOperationException e) {
