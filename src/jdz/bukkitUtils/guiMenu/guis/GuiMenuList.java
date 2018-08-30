@@ -2,6 +2,8 @@
 package jdz.bukkitUtils.guiMenu.guis;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import org.bukkit.entity.Player;
@@ -18,6 +20,10 @@ public class GuiMenuList extends GuiMenu {
 	private final String name;
 	private final GuiMenu superMenu;
 
+	public GuiMenuList(Plugin plugin, String name) {
+		this(plugin, name, Arrays.asList(), null);
+	}
+	
 	public GuiMenuList(Plugin plugin, String name, List<ClickableStack> items) {
 		this(plugin, name, items, null);
 	}
@@ -59,6 +65,10 @@ public class GuiMenuList extends GuiMenu {
 	public void remove(ClickableStack stack) {
 		items.remove(stack);
 		setItems(items);
+	}
+	
+	protected List<GuiMenuListPage> getPages(){
+		return Collections.unmodifiableList(pages);
 	}
 
 	@Override

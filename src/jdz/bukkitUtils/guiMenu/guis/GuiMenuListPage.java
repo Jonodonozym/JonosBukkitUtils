@@ -12,10 +12,11 @@ import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStackLinkedMenu;
+import lombok.Getter;
 
-class GuiMenuListPage extends GuiMenu {
-	private final Inventory inventory;
-	private final int pageNumber;
+public class GuiMenuListPage extends GuiMenu {
+	@Getter private final Inventory inventory;
+	@Getter private final int pageNumber;
 
 	public GuiMenuListPage(Plugin plugin, String name, int pageNumber) {
 		super(plugin);
