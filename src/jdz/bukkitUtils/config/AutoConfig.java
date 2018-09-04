@@ -33,6 +33,8 @@ public abstract class AutoConfig implements Listener {
 	protected AutoConfig(Plugin plugin, String configSection, String file) {
 		this.plugin = plugin;
 		this.section = configSection;
+		if (!file.endsWith(".yml"))
+			file = file + ".yml";
 		this.fileName = file;
 
 		for (Field field : getClass().getDeclaredFields())

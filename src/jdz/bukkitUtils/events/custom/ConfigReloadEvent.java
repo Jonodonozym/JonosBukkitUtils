@@ -23,12 +23,14 @@ public class ConfigReloadEvent extends Event implements Cancellable {
 	private final String name;
 
 	public ConfigReloadEvent(Plugin plugin) {
-		this(plugin, "config");
+		this(plugin, "config.yml");
 	}
 
 	public ConfigReloadEvent(Plugin plugin, String fileName) {
 		this.plugin = plugin;
 		config = Config.getConfig(plugin, fileName);
+		if (!fileName.endsWith(".yml"))
+			fileName = fileName + ".yml";
 		name = fileName;
 	}
 
