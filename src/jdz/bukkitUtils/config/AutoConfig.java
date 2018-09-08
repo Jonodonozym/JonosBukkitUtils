@@ -13,14 +13,17 @@ import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.events.Listener;
 import jdz.bukkitUtils.events.custom.ConfigReloadEvent;
+import jdz.bukkitUtils.events.custom.ConfigSaveEvent;
 import jdz.bukkitUtils.misc.Config;
+import lombok.AccessLevel;
+import lombok.Getter;
 
 public abstract class AutoConfig implements Listener {
-	private final Plugin plugin;
-	private final String fileName;
-	private final String section;
+	@Getter private final Plugin plugin;
+	@Getter private final String fileName;
+	@Getter private final String section;
 
-	private final List<Field> fields = new ArrayList<Field>();
+	@Getter(value = AccessLevel.PACKAGE) private final List<Field> fields = new ArrayList<Field>();
 
 	protected AutoConfig(Plugin plugin) {
 		this(plugin, "", "config.yml");
@@ -52,9 +55,18 @@ public abstract class AutoConfig implements Listener {
 		if (!event.getName().equals(fileName))
 			return;
 
-		FileConfiguration config = event.getConfig();
-		ConfigurationSection configSection = config.getConfigurationSection(section);
-		reloadConfig(configSection);
+		reloadConfig();
+		saveChanges();
+	}
+	
+	@EventHandler
+	public void onConfigSave(ConfigSaveEvent event) {
+		if (!event.getPlugin().equals(plugin))
+			return;
+
+		if (!event.getName().equals(fileName))
+			return;
+		
 		saveChanges();
 	}
 
@@ -71,8 +83,14 @@ public abstract class AutoConfig implements Listener {
 			e.printStackTrace();
 		}
 	}
+	
+	public void reloadConfig() {
+		FileConfiguration config = Config.getConfig(plugin, fileName);
+		ConfigurationSection configSection = config.getConfigurationSection(section);
+		reloadConfig(configSection);
+	}
 
-	private void reloadConfig(ConfigurationSection section) {
+	public void reloadConfig(ConfigurationSection section) {
 		try {
 			for (Field field : fields) {
 				if (section.contains(field.getName())) {
@@ -86,7 +104,7 @@ public abstract class AutoConfig implements Listener {
 		}
 	}
 
-	private void writeConfig(ConfigurationSection section) {
+	protected void writeConfig(ConfigurationSection section) {
 		try {
 			for (Field field : fields) {
 				Object val = field.get(this);

@@ -10,14 +10,14 @@ import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandOpOnly;
 import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 import jdz.bukkitUtils.commands.annotations.CommandUsage;
-import jdz.bukkitUtils.events.custom.ConfigReloadEvent;
+import jdz.bukkitUtils.events.custom.ConfigSaveEvent;
 
-@CommandLabel("reloadConfig")
-@CommandLabel("rc")
+@CommandLabel("saveConfig")
+@CommandLabel("sc")
 @CommandRequiredArgs(1)
-@CommandUsage("rc [Plugin]")
+@CommandUsage("sc [Plugin]")
 @CommandOpOnly
-public class ReloadConfigCommand extends Command {
+public class SaveConfigCommand extends Command {
 
 	@Override
 	public void execute(CommandSender sender, String... args) {
@@ -27,7 +27,7 @@ public class ReloadConfigCommand extends Command {
 	}
 
 	public void reload(CommandSender sender, Plugin plugin) {
-		new ConfigReloadEvent(plugin).call();
+		new ConfigSaveEvent(plugin).call();
 		sender.sendMessage(ChatColor.GREEN + "Config reloaded for " + plugin.getName());
 	}
 

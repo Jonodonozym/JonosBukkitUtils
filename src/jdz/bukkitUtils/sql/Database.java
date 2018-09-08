@@ -535,7 +535,7 @@ public abstract class Database {
 		}
 	}
 
-	protected static interface Transaction {
-		public boolean execute();
+	public static interface Transaction {
+		public boolean execute() throws SQLException;
 	}
 }

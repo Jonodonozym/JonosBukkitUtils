@@ -11,42 +11,42 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 
 import jdz.bukkitUtils.misc.WorldUtils;
-import jdz.bukkitUtils.sql.ORM.SQLDataClass;
+import jdz.bukkitUtils.sql.ORM.SQLDataSerialiser;
 
 public class SQLDataClassBukkitParser {
 
 	public static void initDefaults() {
-		SQLDataClass.addParserSerialiser(OfflinePlayer.class, (uuid) -> {
+		SQLDataSerialiser.addParserSerialiser(OfflinePlayer.class, (uuid) -> {
 			return Bukkit.getOfflinePlayer(UUID.fromString(uuid));
 		}, (player) -> {
 			return player.getUniqueId().toString();
 		});
 
-		SQLDataClass.addParserSerialiser(Player.class, (uuid) -> {
+		SQLDataSerialiser.addParserSerialiser(Player.class, (uuid) -> {
 			return Bukkit.getPlayer(UUID.fromString(uuid));
 		}, (player) -> {
 			return player.getUniqueId().toString();
 		});
 
-		SQLDataClass.addParserSerialiser(Location.class, (loc) -> {
+		SQLDataSerialiser.addParserSerialiser(Location.class, (loc) -> {
 			return WorldUtils.locationFromString(loc);
 		}, (loc) -> {
 			return WorldUtils.locationToString(loc);
 		});
 
-		SQLDataClass.addParserSerialiser(World.class, (name) -> {
+		SQLDataSerialiser.addParserSerialiser(World.class, (name) -> {
 			return Bukkit.getWorld(name);
 		}, (world) -> {
 			return world.getName();
 		});
 
-		SQLDataClass.addParserSerialiser(Chunk.class, (chunk) -> {
+		SQLDataSerialiser.addParserSerialiser(Chunk.class, (chunk) -> {
 			return WorldUtils.chunkFromString(chunk);
 		}, (chunk) -> {
 			return WorldUtils.chunkToString(chunk);
 		});
 
-		SQLDataClass.addParser(UUID.class, (s) -> {
+		SQLDataSerialiser.addParser(UUID.class, (s) -> {
 			return UUID.fromString(s);
 		});
 	}

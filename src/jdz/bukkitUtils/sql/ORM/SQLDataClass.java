@@ -2,19 +2,15 @@
 package jdz.bukkitUtils.sql.ORM;
 
 import java.lang.reflect.Field;
-import java.sql.Date;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.UUID;
 import java.util.function.Predicate;
 
 import jdz.bukkitUtils.sql.Database;
@@ -22,15 +18,13 @@ import jdz.bukkitUtils.sql.SQLColumn;
 import jdz.bukkitUtils.sql.SQLColumnType;
 import jdz.bukkitUtils.sql.SQLRow;
 import jdz.bukkitUtils.sql.TableName;
+import jdz.bukkitUtils.sql.ORM.SQLDataSerialiser.ParserMethod;
 
 public class SQLDataClass {
-	private static final Map<Class<?>, ParserMethod<?>> parserMethods = new HashMap<Class<?>, ParserMethod<?>>();
-	@SuppressWarnings("rawtypes") private static final Map<Class<?>, Serialiser> serialiserMethods = new HashMap<Class<?>, Serialiser>();
-
 	public static <T extends SQLDataClass> List<T> selectAll(Database database, Class<T> clazz) {
 		return select(database, clazz, "");
 	}
-
+	
 	public static <T extends SQLDataClass> List<T> select(Database database, Class<T> clazz, String whereClause) {
 		return select(database, clazz, false, whereClause);
 	}
@@ -194,7 +188,7 @@ public class SQLDataClass {
 					continue;
 				}
 
-				if (!parserMethods.containsKey(paramClass)) {
+				if (!SQLDataSerialiser.hasMethods(paramClass)) {
 					String cName = paramClass.getSimpleName();
 					throw new IllegalArgumentException("Parser method for class " + cName
 							+ " is not defined. Add it with\n SQLDataClass.addParserSerializer(" + cName
@@ -202,7 +196,7 @@ public class SQLDataClass {
 							+ ".toString(); });");
 				}
 
-				ParserMethod<?> method = parserMethods.get(paramClass);
+				ParserMethod<?> method = SQLDataSerialiser.getParser(paramClass);
 				String serializedObject = row.get(getColumnName(field));
 				if (serializedObject == null)
 					args[j] = null;
@@ -298,7 +292,7 @@ public class SQLDataClass {
 					continue;
 				}
 
-				if (!serialiserMethods.containsKey(clazz)) {
+				if (!SQLDataSerialiser.hasMethods(clazz)) {
 					String cName = clazz.getName();
 					throw new IllegalArgumentException("Serialiser for class " + cName
 							+ " is not defined. Add it with\n SQLDataClass.addParserSerializer(" + cName
@@ -309,7 +303,7 @@ public class SQLDataClass {
 				Object obj;
 				try {
 					obj = field.get(this);
-					@SuppressWarnings("unchecked") String value = serialiserMethods.get(clazz).serialise(obj);
+					@SuppressWarnings("unchecked") String value = SQLDataSerialiser.getSerialiser(clazz).serialise(obj);
 					if (isQuoted(clazz))
 						fields.put(field, "'" + value + "'");
 					else
@@ -333,122 +327,6 @@ public class SQLDataClass {
 		update = update.substring(0, update.length() - 5);
 		update += ";";
 		return update;
-	}
-
-	static {
-		addParser(int.class, (s) -> {
-			return Integer.parseInt(s);
-		});
-		addParser(Integer.class, (s) -> {
-			return Integer.parseInt(s);
-		});
-
-		addParser(double.class, (s) -> {
-			return Double.parseDouble(s);
-		});
-		addParser(Double.class, (s) -> {
-			return Double.parseDouble(s);
-		});
-
-		addParser(long.class, (s) -> {
-			return Long.parseLong(s);
-		});
-		addParser(Long.class, (s) -> {
-			return Long.parseLong(s);
-		});
-
-		addParser(float.class, (s) -> {
-			return Float.parseFloat(s);
-		});
-		addParser(Float.class, (s) -> {
-			return Float.parseFloat(s);
-		});
-
-
-		addParserSerialiser(boolean.class, (s) -> {
-			return Integer.valueOf(s) == 1;
-		}, (bool) -> {
-			return "" + (bool.booleanValue() ? 1 : 0);
-		});
-
-		addParserSerialiser(Boolean.class, (s) -> {
-			return Integer.valueOf(s) == 1;
-		}, (bool) -> {
-			return "" + (bool.booleanValue() ? 1 : 0);
-		});
-
-		addParser(String.class, (s) -> {
-			return s.trim();
-		});
-
-		addParser(char.class, (s) -> {
-			return s.charAt(0);
-		});
-		addParser(Character.class, (s) -> {
-			return s.charAt(0);
-		});
-
-		addParser(short.class, (s) -> {
-			return Short.valueOf(s);
-		});
-		addParser(Short.class, (s) -> {
-			return Short.valueOf(s);
-		});
-
-		addParser(byte.class, (s) -> {
-			return Byte.valueOf(s);
-		});
-		addParser(Byte.class, (s) -> {
-			return Byte.valueOf(s);
-		});
-
-		SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
-		addParserSerialiser(java.util.Date.class, (s) -> {
-			try {
-				return new java.util.Date(format.parse(s).getTime());
-			}
-			catch (ParseException e) {
-				e.printStackTrace();
-				return null;
-			}
-		}, (date) -> {
-			return format.format(date);
-		});
-
-		addParser(UUID.class, (s) -> {
-			return UUID.fromString(s);
-		});
-
-		addParser(Date.class, (s) -> {
-			try {
-				return new Date(format.parse(s).getTime());
-			}
-			catch (ParseException e) {
-				e.printStackTrace();
-				return null;
-			}
-		});
-	}
-
-	public static <T> void addParser(Class<T> c, ParserMethod<T> method) {
-		addParserSerialiser(c, method, (o) -> {
-			if (o == null)
-				return null;
-			return o.toString();
-		});
-	}
-
-	public static <T> void addParserSerialiser(Class<T> c, ParserMethod<T> method, Serialiser<T> serialiser) {
-		parserMethods.put(c, method);
-		serialiserMethods.put(c, serialiser);
-	}
-
-	public static interface ParserMethod<E> {
-		public E parse(String s);
-	}
-
-	public static interface Serialiser<E> {
-		public String serialise(E object);
 	}
 
 	private static boolean isQuoted(Class<?> clazz) {
@@ -502,13 +380,13 @@ public class SQLDataClass {
 
 				Class<?> paramClass = field.getType();
 
-				if (!parserMethods.containsKey(paramClass)) {
+				if (!SQLDataSerialiser.hasMethods(paramClass)) {
 					String cName = paramClass.getSimpleName();
 					throw new IllegalArgumentException("Parser method for class " + cName
 							+ " is not defined. Add it with SQLDataClass.addParserSerializer");
 				}
 
-				ParserMethod<?> method = parserMethods.get(paramClass);
+				ParserMethod<?> method = SQLDataSerialiser.getParser(paramClass);
 				String serializedObject = parts[i].substring(parts[i].indexOf('=') + 1, parts[i].length());
 				i++;
 				if (isQuoted(paramClass))

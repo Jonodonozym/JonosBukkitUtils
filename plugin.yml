@@ -8,3 +8,5 @@ softdepend: [Vault, WorldEdit]
 commands:
   reloadConfig:
     alias: rc
+  saveConfig:
+    alias: sc
