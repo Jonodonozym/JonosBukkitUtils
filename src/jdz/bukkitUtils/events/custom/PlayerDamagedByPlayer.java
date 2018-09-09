@@ -10,13 +10,12 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 
 import jdz.bukkitUtils.events.Event;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class PlayerDamagedByPlayer extends Event implements Cancellable {
 	private final EntityDamageByEntityEvent parent;

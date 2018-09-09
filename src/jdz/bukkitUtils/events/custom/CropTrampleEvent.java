@@ -13,13 +13,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import jdz.bukkitUtils.events.Cancellable;
 import jdz.bukkitUtils.events.Event;
 import jdz.bukkitUtils.events.Listener;
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 @Data
-@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
+@RequiredArgsConstructor
 @EqualsAndHashCode(callSuper = true)
 public class CropTrampleEvent extends Event implements Cancellable {
 	private final Player player;

@@ -38,6 +38,7 @@ public class CombatTimer implements Listener {
 	@Getter(value = AccessLevel.PROTECTED) private final int timerTicks;
 	private final Map<Player, Player> lastAttacker = new HashMap<Player, Player>();
 	private final Map<Player, Integer> timers = new HashMap<Player, Integer>();
+	
 	@Getter @Setter public boolean doMessages = false;
 	private final Set<Player> messages = new HashSet<Player>();
 
