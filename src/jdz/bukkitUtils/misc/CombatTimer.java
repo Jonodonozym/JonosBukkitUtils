@@ -23,6 +23,8 @@ import org.bukkit.projectiles.ProjectileSource;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.events.Listener;
+import jdz.bukkitUtils.events.custom.CombatEnterEvent;
+import jdz.bukkitUtils.events.custom.CombatLeaveEvent;
 import jdz.bukkitUtils.events.custom.CombatLogEvent;
 import jdz.bukkitUtils.events.custom.PlayerDamagedByPlayer;
 import jdz.bukkitUtils.misc.utils.CollectionUtils;
@@ -49,9 +51,11 @@ public class CombatTimer implements Listener {
 
 		Bukkit.getScheduler().runTaskTimerAsynchronously(JonosBukkitUtils.getInstance(), () -> {
 			CollectionUtils.addToAll(timers, -10);
-			for (Player player : CollectionUtils.removeNonPositive(timers))
+			for (Player player : CollectionUtils.removeNonPositive(timers)) {
+				new CombatLeaveEvent(this, player).call();
 				if (messages.remove(player))
 					player.sendMessage(ChatColor.AQUA + "You are no longer in combat");
+			}
 		}, 10L, 10L);
 	}
 
@@ -78,12 +82,20 @@ public class CombatTimer implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onHit(PlayerDamagedByPlayer event) {
+		if (!timers.containsKey(event.getPlayer()))
+			new CombatEnterEvent(this, event.getPlayer(), event.getDamager()).call();
+
+		if (!timers.containsKey(event.getDamager()))
+			new CombatEnterEvent(this, event.getDamager(), event.getPlayer()).call();
+			
 		timers.put(event.getPlayer(), getTimerTicks());
 		timers.put(event.getDamager(), getTimerTicks());
+		
 		if (doMessages) {
 			messages.add(event.getPlayer());
 			messages.add(event.getDamager());
 		}
+		
 		lastAttacker.put(event.getPlayer(), event.getDamager());
 	}
 
@@ -105,6 +117,7 @@ public class CombatTimer implements Listener {
 			messages.add(player);
 			messages.add(damager);
 		}
+		
 		lastAttacker.put(player, damager);
 	}
 
