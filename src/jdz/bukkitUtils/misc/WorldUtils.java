@@ -170,10 +170,12 @@ public final class WorldUtils {
 	public static Set<Player> getNearbyPlayers(Location location, double range) {
 		double rangeSquared = range * range;
 		Set<Player> nearbyPlayers = new HashSet<Player>();
-		for (Player player : location.getWorld().getPlayers())
-			if (player.getLocation().distanceSquared(location) < rangeSquared)
+		World world = location.getWorld();
+		for (Player player : Bukkit.getOnlinePlayers())
+			if (player.getWorld().equals(world))
 				if (player.getGameMode() != GameMode.SPECTATOR)
-					nearbyPlayers.add(player);
+					if (player.getLocation().distanceSquared(location) < rangeSquared)
+						nearbyPlayers.add(player);
 		return nearbyPlayers;
 	}
 
