@@ -2,6 +2,7 @@
 package jdz.bukkitUtils.misc;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -246,5 +247,81 @@ public final class WorldUtils {
 			locations.add(new Location(world, x, center.getY(), z));
 		}
 		return locations;
+	}
+
+
+	/**
+	 * Comparator for locations, compares y, then x, then z
+	 * @param l1
+	 * @param l2
+	 * @return
+	 */
+	public static int compareLocations(Location l1, Location l2) {
+		if (l1.getY() > l2.getY())
+			return -1;
+		if (l1.getY() < l2.getY())
+			return 1;
+
+		if (l1.getX() > l2.getX())
+			return -1;
+		if (l1.getX() < l2.getX())
+			return 1;
+
+		if (l1.getZ() > l2.getZ())
+			return -1;
+		if (l1.getZ() < l2.getZ())
+			return 1;
+
+		return 0;
+	}
+
+	public static List<Chunk> getChunksDiamond(Chunk c, int radius) {
+		if (radius <= 0)
+			return Arrays.asList(c);
+
+		List<Chunk> chunks = new ArrayList<Chunk>();
+		World world = c.getWorld();
+		int ix = c.getX();
+		int iz = c.getZ();
+		int xmin = ix - radius, xmax = ix + radius;
+		int x = xmax, z = iz;
+		for (; x > ix; x--) {
+			chunks.add(world.getChunkAt(x, z));
+			z++;
+		}
+		for (; x > xmin; x--) {
+			chunks.add(world.getChunkAt(x, z));
+			z--;
+		}
+		for (; x < ix; x++) {
+			chunks.add(world.getChunkAt(x, z));
+			z--;
+		}
+		for (; x < xmax; x++) {
+			chunks.add(world.getChunkAt(x, z));
+			z++;
+		}
+		return chunks;
+	}
+
+	public static List<Chunk> getChunksSquare(Chunk c, int radius) {
+		if (radius <= 0)
+			return Arrays.asList(c);
+
+		List<Chunk> chunks = new ArrayList<Chunk>();
+		World world = c.getWorld();
+		int ix = c.getX();
+		int iz = c.getZ();
+		int xmin = ix - radius, xmax = ix + radius;
+		int zmin = iz - radius, zmax = iz + radius;
+		for (int x = xmin; x < xmax; x++) {
+			chunks.add(world.getChunkAt(x, zmin));
+			chunks.add(world.getChunkAt(x, zmax));
+		}
+		for (int z = zmin + 1; z < zmax - 1; z++) {
+			chunks.add(world.getChunkAt(xmin, z));
+			chunks.add(world.getChunkAt(xmax, z));
+		}
+		return chunks;
 	}
 }
