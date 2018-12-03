@@ -6,6 +6,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
@@ -46,6 +47,10 @@ public abstract class AutoConfig implements Listener {
 				fields.add(field);
 			}
 	}
+	
+	public void register() {
+		Bukkit.getPluginManager().registerEvents(this, plugin);
+	}
 
 	@EventHandler
 	public void onConfigReload(ConfigReloadEvent event) {
@@ -58,7 +63,7 @@ public abstract class AutoConfig implements Listener {
 		reloadConfig();
 		saveChanges();
 	}
-	
+
 	@EventHandler
 	public void onConfigSave(ConfigSaveEvent event) {
 		if (!event.getPlugin().equals(plugin))
@@ -66,7 +71,7 @@ public abstract class AutoConfig implements Listener {
 
 		if (!event.getName().equals(fileName))
 			return;
-		
+
 		saveChanges();
 	}
 
@@ -83,7 +88,7 @@ public abstract class AutoConfig implements Listener {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void reloadConfig() {
 		FileConfiguration config = Config.getConfig(plugin, fileName);
 		ConfigurationSection configSection = config.getConfigurationSection(section);
@@ -94,7 +99,7 @@ public abstract class AutoConfig implements Listener {
 		try {
 			for (Field field : fields) {
 				if (section.contains(field.getName())) {
-					Object val = AutoConfigFieldParsers.getParser(field.getType()).parse(section, field.getName());
+					Object val = AutoConfigFieldParsers.parse(field.getType(), section, field.getName());
 					field.set(this, val);
 				}
 			}
@@ -108,7 +113,7 @@ public abstract class AutoConfig implements Listener {
 		try {
 			for (Field field : fields) {
 				Object val = field.get(this);
-				AutoConfigFieldParsers.getSerializer(field.getType()).save(section, field.getName(), val);
+				AutoConfigFieldParsers.save(field.getType(), section, field.getName(), val);
 			}
 		}
 		catch (ReflectiveOperationException e) {
