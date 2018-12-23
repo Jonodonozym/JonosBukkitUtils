@@ -16,7 +16,6 @@ import jdz.bukkitUtils.events.Listener;
 import jdz.bukkitUtils.events.custom.ConfigReloadEvent;
 import jdz.bukkitUtils.events.custom.ConfigSaveEvent;
 import jdz.bukkitUtils.misc.Config;
-import lombok.AccessLevel;
 import lombok.Getter;
 
 public abstract class AutoConfig implements Listener {
@@ -24,7 +23,7 @@ public abstract class AutoConfig implements Listener {
 	@Getter private final String fileName;
 	@Getter private final String section;
 
-	@Getter(value = AccessLevel.PACKAGE) private final List<Field> fields = new ArrayList<Field>();
+	@Getter private final List<Field> fields = new ArrayList<Field>();
 
 	protected AutoConfig(Plugin plugin) {
 		this(plugin, "", "config.yml");
