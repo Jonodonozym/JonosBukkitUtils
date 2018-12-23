@@ -26,6 +26,7 @@ import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.events.Listener;
+import lombok.Getter;
 import lombok.Setter;
 
 /**
@@ -41,7 +42,7 @@ public class FileLogger implements Listener {
 	private BufferedWriter bufferedWriter = null;
 	private final Plugin plugin;
 	private final String logName;
-	private final String logDirectory;
+	@Getter private final String logDirectory;
 	@Setter private boolean printToConsole = false;
 	@Setter private boolean writeToLog = true;
 	@Setter private boolean newLog = false;
@@ -74,9 +75,9 @@ public class FileLogger implements Listener {
 			if (bufferedWriter != null)
 				bufferedWriter.close();
 
-			File file = new File(logDirectory, logName + File.separator + getTimestamp() + ".txt");
+			File file = new File(getLogDirectory(), logName + File.separator + getTimestamp() + ".txt");
 			if (!newLog)
-				file = new File(logDirectory, logName + ".txt");
+				file = new File(getLogDirectory(), logName + ".txt");
 			if (!file.getParentFile().exists())
 				file.getParentFile().mkdirs();
 			if (!file.exists())
@@ -151,7 +152,7 @@ public class FileLogger implements Listener {
 		}
 		pw.flush();
 		String exceptionAsString = sw.toString();
-		createErrorLog(logDirectory + File.separator + "Errors" + File.separator + exception.getClass().getSimpleName()
+		createErrorLog(getLogDirectory() + File.separator + "Errors" + File.separator + exception.getClass().getSimpleName()
 				+ getTimestamp() + ".txt", exceptionAsString);
 	}
 
@@ -161,7 +162,7 @@ public class FileLogger implements Listener {
 	 * @param error
 	 */
 	public void createErrorLog(String error) {
-		createErrorLog(logDirectory + File.separator + "Errors" + File.separator + "Error " + getTimestamp() + ".txt",
+		createErrorLog(getLogDirectory() + File.separator + "Errors" + File.separator + "Error " + getTimestamp() + ".txt",
 				error);
 	}
 
