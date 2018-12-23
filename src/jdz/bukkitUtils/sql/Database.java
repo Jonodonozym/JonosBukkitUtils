@@ -70,7 +70,6 @@ public abstract class Database {
 	/**
 	 * Executes a query, returning the rows if the database responds with them
 	 * 
-	 * @param connection
 	 * @param query
 	 * @return
 	 */
@@ -164,7 +163,6 @@ public abstract class Database {
 	/**
 	 * Executes a database update
 	 * 
-	 * @param connection
 	 * @param update
 	 */
 	public boolean update(String update) {
@@ -194,14 +192,13 @@ public abstract class Database {
 		}
 	}
 
+	private final Executor executor = Executors.newCachedThreadPool();
+
 	/**
 	 * Executes a database update asynchronously be wary of concurrency issues
 	 * 
-	 * @param connection
 	 * @param update
 	 */
-	private final Executor executor = Executors.newCachedThreadPool();
-
 	protected void updateAsync(String update) {
 		try {
 			if (!isConnected()) {
@@ -227,7 +224,6 @@ public abstract class Database {
 	/**
 	 * Checks to see if the database has a table
 	 * 
-	 * @param connection
 	 * @param tableName
 	 * @return
 	 */
@@ -423,8 +419,7 @@ public abstract class Database {
 	 * Opens a new connection to a specified SQL database If it fails 3 times,
 	 * writes the error to a log file in the plugin's directory
 	 * 
-	 * @param logger
-	 *            the logger to record success / fail messages to
+	 * @param doLogging whether or not to log errors
 	 * @return the opened connection, or null if one couldn't be created
 	 */
 	private void openConnection(boolean doLogging) {
@@ -463,8 +458,6 @@ public abstract class Database {
 
 	/**
 	 * Closes a given connection, catching any errors
-	 * 
-	 * @param connection
 	 */
 	protected boolean closeConnection() {
 		if (dbConnection != null) {

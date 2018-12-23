@@ -137,6 +137,7 @@ public class FileLogger implements Listener {
 	 * and extra information you might want to tack on to help debugging
 	 * 
 	 * @param exception
+	 * @param extraData
 	 */
 	public void createErrorLog(Exception exception, String... extraData) {
 		StringWriter sw = new StringWriter();
@@ -157,18 +158,13 @@ public class FileLogger implements Listener {
 	/**
 	 * Writes an error message to an error log file
 	 * 
-	 * @param exception
+	 * @param error
 	 */
 	public void createErrorLog(String error) {
 		createErrorLog(logDirectory + File.separator + "Errors" + File.separator + "Error " + getTimestamp() + ".txt",
 				error);
 	}
 
-	/**
-	 * Writes an error message to an error log file
-	 * 
-	 * @param exception
-	 */
 	public void createErrorLog(String fileDir, String error) {
 		plugin.getLogger().severe("An error occurred. Check the Error log file for details.");
 

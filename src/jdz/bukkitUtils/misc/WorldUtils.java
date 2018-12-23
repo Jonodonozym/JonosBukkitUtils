@@ -203,13 +203,6 @@ public final class WorldUtils {
 		return nearest;
 	}
 
-	/**
-	 * Get a set of players who are within a given cuboid region
-	 * 
-	 * @param location
-	 * @param range
-	 * @return
-	 */
 	public static Set<Player> getPlayersInCuboid(Location origin, double width, double height, double depth) {
 		if (width < 0) {
 			origin.setX(origin.getX() + width);
@@ -249,13 +242,6 @@ public final class WorldUtils {
 		return locations;
 	}
 
-
-	/**
-	 * Comparator for locations, compares y, then x, then z
-	 * @param l1
-	 * @param l2
-	 * @return
-	 */
 	public static int compareLocations(Location l1, Location l2) {
 		if (l1.getY() > l2.getY())
 			return -1;

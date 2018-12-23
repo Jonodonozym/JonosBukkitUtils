@@ -24,7 +24,7 @@ public class SQLDataClass {
 	public static <T extends SQLDataClass> List<T> selectAll(Database database, Class<T> clazz) {
 		return select(database, clazz, "");
 	}
-	
+
 	public static <T extends SQLDataClass> List<T> select(Database database, Class<T> clazz, String whereClause) {
 		return select(database, clazz, false, whereClause);
 	}
@@ -303,7 +303,8 @@ public class SQLDataClass {
 				Object obj;
 				try {
 					obj = field.get(this);
-					@SuppressWarnings("unchecked") String value = SQLDataSerialiser.getSerialiser(clazz).serialise(obj);
+					@SuppressWarnings("unchecked")
+					String value = SQLDataSerialiser.getSerialiser(clazz).serialise(obj);
 					if (isQuoted(clazz))
 						fields.put(field, "'" + value + "'");
 					else
@@ -357,7 +358,6 @@ public class SQLDataClass {
 	 * @param c
 	 * @param s
 	 * @return
-	 * @throws ParseException
 	 */
 	@SuppressWarnings("unchecked")
 	public static <T extends SQLDataClass> T fromString(Class<T> c, String s) {

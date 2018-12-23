@@ -9,10 +9,9 @@ import org.bukkit.command.CommandSender;
 import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 
 /**
- * Command that acts as a parent for more children commands
- * e.g. /plot rent <sub-command>, where rent's sub-commands are: pay, list,
- * payall, and
- * are defined as if you were doing /plot pay, /plot list etc.
+ * SubCommand that acts as a parent for more sub-commands
+ * e.g. {/plot rent <sub-command>}, where rent's sub-commands are: pay, list,
+ * payall
  *
  * @author Jaiden Baker
  */

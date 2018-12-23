@@ -35,15 +35,6 @@ public final class FileExporter {
 		this.plugin = plugin;
 	}
 
-	/**
-	 * Export a resource embedded into a Jar file to the local file path.
-	 *
-	 * @param resourceName
-	 *            ie.: "/SmartLibrary.dll"
-	 * @return The path to the exported resource
-	 * @throws IOException
-	 * @throws Exception
-	 */
 	private void ExportResource(String resourceName, String destinationPath, boolean isSilent) {
 		InputStream stream = null;
 		OutputStream resStreamOut = null;
@@ -77,36 +68,14 @@ public final class FileExporter {
 		return (plugin.getClass().getResourceAsStream("/" + fileName) != null);
 	}
 
-	/**
-	 * Export a resource embedded into a Jar file to the local file path without
-	 * creating error logs.
-	 *
-	 * @param resourceName
-	 *            ie.: "SmartLibrary.dll"
-	 * @return The path to the exported resource
-	 * @throws IOException
-	 * @throws Exception
-	 */
 	public void ExportResourceSilent(String resourceName, String destinationPath) {
 		ExportResource(resourceName, destinationPath, true);
 	}
 
-	/**
-	 * Export a resource embedded into a Jar file to the local file path.
-	 *
-	 * @param resourceName
-	 *            ie.: "SmartLibrary.dll"
-	 */
 	public void ExportResource(String resourceName, String destinationPath) {
 		ExportResource(resourceName, destinationPath, false);
 	}
 
-	/**
-	 * Export a resource embedded into a Jar file to the local file path.
-	 *
-	 * @param resourceName
-	 *            ie.: "SmartLibrary.dll"
-	 */
 	public void ExportResource(String resourceName) {
 		String location = plugin.getDataFolder().getParentFile().getPath() + File.separator + resourceName;
 		ExportResource(resourceName, location, false);

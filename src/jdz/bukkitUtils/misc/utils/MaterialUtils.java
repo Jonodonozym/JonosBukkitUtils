@@ -49,12 +49,6 @@ public class MaterialUtils {
 		return armour.contains(material);
 	}
 
-	/**
-	 * 
-	 * @requires isArmour(material) || isTool(material)
-	 * @param material
-	 * @return
-	 */
 	public static ResourceType getResource(Material material) {
 		if (!isArmour(material) && !isTool(material))
 			throw new IllegalArgumentException("getResourceTier requires either armour or tools");
@@ -62,11 +56,6 @@ public class MaterialUtils {
 		return ResourceType.valueOf(material.name().split("_")[0]);
 	}
 
-	/**
-	 * @requires isTool(material)
-	 * @param material
-	 * @return
-	 */
 	public static ToolType getToolType(Material material) {
 		if (!isTool(material))
 			throw new IllegalArgumentException("getToolType requires tools to be passed in");
@@ -74,11 +63,6 @@ public class MaterialUtils {
 		return ToolType.valueOf(material.name().split("_")[1]);
 	}
 
-	/**
-	 * @requires isArmour(material)
-	 * @param material
-	 * @return
-	 */
 	public static ArmourType getArmourType(Material material) {
 		if (!isArmour(material))
 			throw new IllegalArgumentException("getArmourType requires armour to be passed in");

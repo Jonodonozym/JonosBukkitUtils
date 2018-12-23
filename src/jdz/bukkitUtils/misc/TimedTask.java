@@ -14,7 +14,7 @@ import org.bukkit.plugin.Plugin;
 
 /**
  * Asynchronosly runs a task on a loop for you
- * e.g. new TimedTask(20, ()-> {do stuff here}).start();
+ * e.g. {new TimedTask(20, () -> {do stuff here}).start();}
  * 
  * can .start() and .stop() at will, or just .run() to run it once.
  * 
