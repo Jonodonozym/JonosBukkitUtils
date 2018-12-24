@@ -94,7 +94,7 @@ public class AutoConfigFieldParsers {
 				m = Material.getMaterial(c.getString(s));
 			}
 			if (m == null)
-				throw new IllegalArgumentException(s + " is not a valid material or material id");
+				new IllegalArgumentException(s + " is not a valid material or material id").printStackTrace();
 			return m;
 		}, Material.class);
 

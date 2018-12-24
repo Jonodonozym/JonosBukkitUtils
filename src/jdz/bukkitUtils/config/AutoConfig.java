@@ -41,7 +41,7 @@ public abstract class AutoConfig implements Listener {
 		this.fileName = file;
 
 		for (Field field : getClass().getDeclaredFields())
-			if (field.getAnnotation(NotConfig.class) != null) {
+			if (field.getAnnotation(NotConfig.class) == null) {
 				field.setAccessible(true);
 				fields.add(field);
 			}
