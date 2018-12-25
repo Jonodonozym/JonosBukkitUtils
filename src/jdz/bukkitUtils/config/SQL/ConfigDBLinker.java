@@ -1,4 +1,4 @@
-package jdz.bukkitUtils.config;
+package jdz.bukkitUtils.config.SQL;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
@@ -11,6 +11,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
+import jdz.bukkitUtils.config.AutoConfig;
 import jdz.bukkitUtils.sql.SQLColumn;
 import jdz.bukkitUtils.sql.SQLColumnType;
 import jdz.bukkitUtils.sql.SQLRow;

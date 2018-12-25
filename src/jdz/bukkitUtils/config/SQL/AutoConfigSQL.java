@@ -1,7 +1,9 @@
 
-package jdz.bukkitUtils.config;
+package jdz.bukkitUtils.config.SQL;
 
 import org.bukkit.plugin.Plugin;
+
+import jdz.bukkitUtils.config.AutoConfig;
 
 public abstract class AutoConfigSQL extends AutoConfig {
 	protected AutoConfigSQL(Plugin plugin) {

@@ -12,6 +12,7 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.Plugin;
 
+import jdz.bukkitUtils.config.YML.AutoConfigIO;
 import jdz.bukkitUtils.events.Listener;
 import jdz.bukkitUtils.events.custom.ConfigReloadEvent;
 import jdz.bukkitUtils.events.custom.ConfigSaveEvent;
@@ -46,7 +47,7 @@ public abstract class AutoConfig implements Listener {
 				fields.add(field);
 			}
 	}
-	
+
 	public void register() {
 		Bukkit.getPluginManager().registerEvents(this, plugin);
 	}
@@ -98,7 +99,7 @@ public abstract class AutoConfig implements Listener {
 		try {
 			for (Field field : fields) {
 				if (section.contains(field.getName())) {
-					Object val = AutoConfigFieldParsers.parse(field.getType(), section, field.getName());
+					Object val = AutoConfigIO.parse(field.getGenericType(), field.getType(), section, field.getName());
 					field.set(this, val);
 				}
 			}
@@ -112,7 +113,7 @@ public abstract class AutoConfig implements Listener {
 		try {
 			for (Field field : fields) {
 				Object val = field.get(this);
-				AutoConfigFieldParsers.save(field.getType(), section, field.getName(), val);
+				AutoConfigIO.save(field.getGenericType(), field.getType(), section, field.getName(), val);
 			}
 		}
 		catch (ReflectiveOperationException e) {

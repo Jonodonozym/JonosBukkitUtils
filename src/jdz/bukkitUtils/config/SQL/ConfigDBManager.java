@@ -1,5 +1,5 @@
 
-package jdz.bukkitUtils.config;
+package jdz.bukkitUtils.config.SQL;
 
 import java.util.HashMap;
 import java.util.Map;
