@@ -80,13 +80,17 @@ public final class HelpCommand extends SubCommand {
 		if (messages == null)
 			reload();
 
-		for (SubCommand command : executor.getSubCommands())
-			if (command.getClass().getAnnotation(CommandNoHelp.class) == null)
-				if (command.labelMatches(commandName))
-					if (!command.getClass().equals(HelpCommand.class)) {
-						sender.sendMessage(getCommandDesc(command, false));
-						return;
-					}
+		for (SubCommand command : executor.getSubCommands()) {
+			if (command.getClass().getAnnotation(CommandNoHelp.class) != null)
+				continue;
+
+			if (command.labelMatches(commandName)) {
+				if (command instanceof HelpCommand)
+					continue;
+				sender.sendMessage(getCommandDesc(command, false));
+				return;
+			}
+		}
 	}
 
 	public void reload() {
@@ -98,32 +102,36 @@ public final class HelpCommand extends SubCommand {
 		if (usage != null && executor.getDefaultCommand().getClass().getAnnotation(CommandNoHelp.class) == null)
 			messages.add(getCommandDesc(executor.getDefaultCommand(), true));
 
-		for (SubCommand command : executor.getSubCommands()) {
-			Class<? extends SubCommand> c = command.getClass();
-
-			if (c.getAnnotation(CommandNoHelp.class) != null)
-				continue;
-
-			messages.add(getCommandDesc(command, true));
-		}
-
+		addMessages(executor);
 
 		numPages = (extraMessages.size() + messages.size() + linesPerPage - 1) / linesPerPage;
 	}
 
+	private void addMessages(CommandExecutor executor) {
+		for (SubCommand command : executor.getSubCommands()) {
+			if (command.getClass().getAnnotation(CommandNoHelp.class) != null)
+				continue;
+
+			if (command instanceof ParentCommand)
+				addMessages(((ParentCommand) command).getChildCommandExecutor());
+			else
+				messages.add(getCommandDesc(command, executor.getLabel(), true));
+		}
+	}
+
 	public String getCommandDesc(SubCommand command, boolean isShort) {
-		String usage = command.getUsage();
+		return getCommandDesc(command, executor.getLabel(), isShort);
+	}
+
+	public String getCommandDesc(SubCommand command, String executorLabel, boolean isShort) {
+		String returnValue = usageColor + "/" + executorLabel + " " + command.getLabel();
+		if (!command.getUsage().equals(""))
+			returnValue += " " + command.getUsage();
+
+		returnValue += descColor;
 		String description = isShort ? command.getShortDescription() : command.getLongDescription();
 		if (description.equals(""))
 			description = command.getShortDescription();
-
-		String returnValue = usageColor + "/" + (executor.getLabel().equals("") ? "" : executor.getLabel() + " ");
-		if (usage.equals(""))
-			returnValue += command.getLabel();
-		else
-			returnValue += usage;
-
-		returnValue += descColor;
 		if (!description.equals(""))
 			returnValue += " - " + description;
 

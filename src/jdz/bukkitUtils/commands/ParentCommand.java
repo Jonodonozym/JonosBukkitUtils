@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
+import lombok.Getter;
 
 /**
  * SubCommand that acts as a parent for more sub-commands
@@ -17,11 +19,12 @@ import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
  */
 @CommandRequiredArgs(1)
 public abstract class ParentCommand extends SubCommand {
-	private final ParentCommandExecutor childCommandExecutor = new ParentCommandExecutor(this);
+	@Getter private final ParentCommandExecutor childCommandExecutor;
 	private final CommandExecutor commandExecutor;
 
 	public ParentCommand(CommandExecutor commandExecutor) {
 		this.commandExecutor = commandExecutor;
+		this.childCommandExecutor = new ParentCommandExecutor(commandExecutor.getPlugin(), this);
 	}
 
 	@Override
@@ -45,8 +48,8 @@ public abstract class ParentCommand extends SubCommand {
 	private final class ParentCommandExecutor extends CommandExecutor {
 		private final ParentCommand command;
 
-		public ParentCommandExecutor(ParentCommand command) {
-			super(null, command.getLabel(), false);
+		public ParentCommandExecutor(JavaPlugin plugin, ParentCommand command) {
+			super(plugin, command.getLabel(), false);
 			this.command = command;
 		}
 

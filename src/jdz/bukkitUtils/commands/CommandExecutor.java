@@ -26,6 +26,7 @@ import jdz.bukkitUtils.commands.annotations.CommandExecutorPlayerOnly;
 import jdz.bukkitUtils.commands.annotations.CommandSync;
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.StringUtils;
+import lombok.Getter;
 import lombok.Setter;
 
 public abstract class CommandExecutor implements org.bukkit.command.CommandExecutor {
@@ -34,7 +35,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
 	private static final Map<Plugin, FileLogger> loggers = new HashMap<Plugin, FileLogger>();
 
-	protected final JavaPlugin plugin;
+	@Getter protected final JavaPlugin plugin;
 	@Setter protected boolean logging;
 	protected final String label;
 	protected final List<String> aliases;
@@ -222,10 +223,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	private final void executeIfHasPerms(SubCommand command, CommandSender sender, String... args) {
 		logCommand(sender, command.getLabel(), args);
 		if (command.hasRequiredPermissions(sender))
-			if (command.getClass().getAnnotation(CommandSync.class) != null)
-				command.execute(sender, args);
-			else
+			if (command.getClass().getAnnotation(CommandSync.class) == null)
 				es.execute(() -> {
+					command.execute(sender, args);
+				});
+			else
+				Bukkit.getScheduler().runTask(plugin, () -> {
 					command.execute(sender, args);
 				});
 		else
