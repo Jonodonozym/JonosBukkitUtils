@@ -21,13 +21,19 @@ public abstract class GuiMenuPlayer extends GuiMenu {
 	@Override
 	public void open(Player player) {
 		if (!invs.containsKey(player))
-			invs.put(player, Bukkit.createInventory(player, 54, "Kit Shop"));
+			reset(player);
 
 		Bukkit.getScheduler().runTaskAsynchronously(JonosBukkitUtils.getInstance(), () -> {
-			reloadInv(player, invs.get(player));
+			update(invs.get(player));
 			player.openInventory(invs.get(player));
 		});
 	}
 
-	protected abstract void reloadInv(Player player, Inventory inv);
+	public void reset(Player player) {
+		if (invs.containsKey(player))
+			pages.remove(invs.get(player));
+		invs.put(player, createInventory(player));
+	}
+
+	protected abstract Inventory createInventory(Player player);
 }

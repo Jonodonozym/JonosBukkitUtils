@@ -3,6 +3,7 @@ package jdz.bukkitUtils.guiMenu.guis;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
@@ -18,7 +19,7 @@ import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 
 public abstract class GuiMenu implements Listener {
-	private final Map<Inventory, Map<Integer, ClickableStack>> pages = new HashMap<Inventory, Map<Integer, ClickableStack>>();
+	protected final Map<Inventory, Map<Integer, ClickableStack>> pages = new HashMap<Inventory, Map<Integer, ClickableStack>>();
 
 	protected GuiMenu(Plugin plugin) {
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);
@@ -60,7 +61,7 @@ public abstract class GuiMenu implements Listener {
 			p.closeInventory();
 
 		Bukkit.getScheduler().runTaskLater(JonosBukkitUtils.getInstance(), () -> {
-			clickable.onClick(this, e);
+			clickable.onClick((Player) e.getWhoClicked(), this, e);
 		}, 1);
 	}
 
@@ -98,6 +99,27 @@ public abstract class GuiMenu implements Listener {
 		pages.get(inv).put(slot, item);
 		inv.setItem(slot, item.getStack());
 		return true;
+	}
+
+	public void updateAll() {
+		for (Inventory inv : pages.keySet())
+			updateItems(inv);
+	}
+
+	public void updateOpen() {
+		for (Inventory inv : pages.keySet())
+			if (!inv.getViewers().isEmpty())
+				updateItems(inv);
+	}
+
+	public void updateItems(Inventory inv) {
+		if (!pages.containsKey(inv))
+			return;
+
+		for (Entry<Integer, ClickableStack> entry : pages.get(inv).entrySet()) {
+			entry.getValue().update();
+			inv.setItem(entry.getKey(), entry.getValue().getStack());
+		}
 	}
 
 	public abstract void open(Player player);

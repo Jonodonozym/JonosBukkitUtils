@@ -4,6 +4,7 @@ package jdz.bukkitUtils.guiMenu.itemStacks;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -25,6 +26,6 @@ public class ClickableStackNothing extends ClickableStack {
 
 
 	@Override
-	public void onClick(GuiMenu menu, InventoryClickEvent event) {}
+	public void onClick(Player player, GuiMenu menu, InventoryClickEvent event) {}
 
 }

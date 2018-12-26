@@ -29,7 +29,7 @@ public class ClickableStackLinkedMenu extends ClickableStack {
 	}
 
 	@Override
-	public void onClick(GuiMenu menu, InventoryClickEvent event) {
+	public void onClick(Player player, GuiMenu menu, InventoryClickEvent event) {
 		targetGuiMenu.open((Player) event.getWhoClicked());
 	}
 

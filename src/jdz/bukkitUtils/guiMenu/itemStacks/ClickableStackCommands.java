@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
 
@@ -34,16 +35,15 @@ public class ClickableStackCommands extends ClickableStack {
 	}
 
 	@Override
-	public void onClick(GuiMenu menu, InventoryClickEvent event) {
+	public void onClick(Player player, GuiMenu menu, InventoryClickEvent event) {
 		if (isConsole)
 			for (String command : commands)
 				Bukkit.getServer().dispatchCommand(Bukkit.getConsoleSender(),
-						insertPlayerName(command, event.getWhoClicked().getName()));
+						insertPlayerName(command, player.getName()));
 
 		else
 			for (String command : commands)
-				Bukkit.getServer().dispatchCommand(event.getWhoClicked(),
-						insertPlayerName(command, event.getWhoClicked().getName()));
+				Bukkit.getServer().dispatchCommand(player, insertPlayerName(command, player.getName()));
 	}
 
 	private static final String insertPlayerName(String string, String name) {

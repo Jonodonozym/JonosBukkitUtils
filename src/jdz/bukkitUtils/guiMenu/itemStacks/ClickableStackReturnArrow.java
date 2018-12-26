@@ -33,8 +33,7 @@ public class ClickableStackReturnArrow extends ClickableStack {
 	}
 
 	@Override
-	public void onClick(GuiMenu menu, InventoryClickEvent event) {
-		Player player = (Player) event.getWhoClicked();
+	public void onClick(Player player, GuiMenu menu, InventoryClickEvent event) {
 		if (returnCommand != null && !returnCommand.equals(""))
 			Bukkit.dispatchCommand(player, returnCommand);
 		else if (superMenu != null)

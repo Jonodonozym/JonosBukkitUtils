@@ -5,16 +5,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.bukkit.Material;
+import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import jdz.bukkitUtils.guiMenu.guis.GuiMenu;
+import jdz.bukkitUtils.misc.utils.ItemUtils;
 import lombok.Getter;
 
 public abstract class ClickableStack {
 	@Getter private boolean closeOnClick = false;
-	private final ItemStack stack;
+	@Getter private final ItemStack stack;
+
+	public ClickableStack() {
+		this(new ItemStack(Material.AIR));
+	}
+
+	public ClickableStack(Material material) {
+		this(new ItemStack(material));
+	}
 
 	public ClickableStack(ItemStack stack) {
 		this.stack = stack;
@@ -25,25 +34,32 @@ public abstract class ClickableStack {
 	};
 
 	public ClickableStack(Material material, String name, List<String> lore) {
-		stack = new ItemStack(Material.AIR);
-		setInfo(material, name, lore);
+		this(material);
+		setName(name);
+		setLore(lore);
 	};
 
 	public void closeOnClick() {
 		closeOnClick = true;
 	}
 
-	public ItemStack getStack() {
-		return stack;
-	}
-
-	public void setInfo(Material material, String name, List<String> lore) {
+	public void setMaterial(Material material) {
 		stack.setType(material);
-		ItemMeta im = stack.getItemMeta();
-		im.setDisplayName(name);
-		im.setLore(lore);
-		stack.setItemMeta(im);
 	}
 
-	public abstract void onClick(GuiMenu menu, InventoryClickEvent event);
+	public void setData(short data) {
+		stack.setDurability(data);
+	}
+
+	public void setName(String name) {
+		ItemUtils.setName(stack, name);
+	}
+
+	public void setLore(List<String> lore) {
+		ItemUtils.setLore(stack, lore);
+	}
+
+	public void update() {}
+
+	public abstract void onClick(Player player, GuiMenu menu, InventoryClickEvent event);
 }

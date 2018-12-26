@@ -25,16 +25,16 @@ public abstract class GuiMenuConfirmDialogue extends GuiMenu {
 
 		confirmStack = new ClickableStack(Material.WOOL, ChatColor.GREEN + "Confim") {
 			@Override
-			public void onClick(GuiMenu menu, InventoryClickEvent event) {
-				onConfirm((Player) event.getWhoClicked());
+			public void onClick(Player player, GuiMenu menu, InventoryClickEvent event) {
+				onConfirm(player);
 			}
 		};
 		confirmStack.getStack().setDurability(DyeColor.LIME.getWoolData());
 
 		cancelStack = new ClickableStack(Material.WOOL, ChatColor.RED + "Cancel") {
 			@Override
-			public void onClick(GuiMenu menu, InventoryClickEvent event) {
-				onCancel((Player) event.getWhoClicked());
+			public void onClick(Player player, GuiMenu menu, InventoryClickEvent event) {
+				onCancel(player);
 			}
 		};
 		cancelStack.getStack().setDurability(DyeColor.RED.getWoolData());
