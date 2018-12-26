@@ -10,6 +10,7 @@ import java.util.Set;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
@@ -37,10 +38,12 @@ public class CombatTimer implements Listener {
 
 	@Getter(value = AccessLevel.PROTECTED) private final int timerTicks;
 	private final Map<Player, Player> lastAttacker = new HashMap<Player, Player>();
+	private final Map<Player, LivingEntity> lastMobAttacker = new HashMap<Player, LivingEntity>();
 	private final Map<Player, Integer> timers = new HashMap<Player, Integer>();
-	
+
 	@Getter @Setter public boolean doMessages = false;
 	private final Set<Player> messages = new HashSet<Player>();
+	@Getter @Setter public boolean triggeredByMobs = false;
 
 	public CombatTimer(Plugin plugin, int timerTicks) {
 		registerEvents(plugin);
@@ -72,6 +75,10 @@ public class CombatTimer implements Listener {
 		return lastAttacker.get(player);
 	}
 
+	public LivingEntity getLastMobAttackerr(Player player) {
+		return lastMobAttacker.get(player);
+	}
+
 	@EventHandler(priority = EventPriority.MONITOR)
 	public void onLogout(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
@@ -88,20 +95,21 @@ public class CombatTimer implements Listener {
 
 		if (!timers.containsKey(event.getDamager()))
 			new CombatEnterEvent(this, event.getDamager(), event.getPlayer()).call();
-			
-		timers.put(event.getPlayer(), getTimerTicks());
-		timers.put(event.getDamager(), getTimerTicks());
-		
-		if (doMessages) {
-			messages.add(event.getPlayer());
-			messages.add(event.getDamager());
-		}
-		
+
+		add(event.getPlayer());
+		add(event.getDamager());
+
 		lastAttacker.put(event.getPlayer(), event.getDamager());
 	}
 
+	private void add(Player player) {
+		timers.put(player, getTimerTicks());
+		if (doMessages)
+			messages.add(player);
+	}
+
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
-	public void onHit(EntityDamageByEntityEvent event) {
+	public void onProjectileHit(EntityDamageByEntityEvent event) {
 		if (!(event.getEntity() instanceof Player && event.getDamager() instanceof Projectile))
 			return;
 
@@ -112,14 +120,27 @@ public class CombatTimer implements Listener {
 		Player player = (Player) event.getEntity();
 		Player damager = (Player) source;
 
-		timers.put(player, getTimerTicks());
-		timers.put(damager, getTimerTicks());
-		if (doMessages) {
-			messages.add(player);
-			messages.add(damager);
-		}
-		
+
+		add(player);
+		add(damager);
+
 		lastAttacker.put(player, damager);
+	}
+
+	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
+	public void onMobHit(EntityDamageByEntityEvent event) {
+		if (!triggeredByMobs)
+			return;
+
+		if (!(event.getEntity() instanceof Player))
+			return;
+
+		if (event.getDamager() instanceof Player || !(event.getDamager() instanceof LivingEntity))
+			return;
+
+		Player player = (Player) event.getEntity();
+		add(player);
+		lastMobAttacker.put(player, (LivingEntity) event.getDamager());
 	}
 
 	public void sendMessageOnEnd(Player player) {
