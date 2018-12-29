@@ -132,10 +132,10 @@ public class CombatTimer implements Listener {
 		if (!triggeredByMobs)
 			return;
 
-		if (!(event.getEntity() instanceof Player))
+		if (event.getEntity() instanceof Player)
 			return;
 
-		if (event.getDamager() instanceof Player || !(event.getDamager() instanceof LivingEntity))
+		if (!(event.getDamager() instanceof Player && event.getDamager() instanceof LivingEntity))
 			return;
 
 		Player player = (Player) event.getEntity();
