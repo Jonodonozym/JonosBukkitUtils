@@ -24,6 +24,37 @@ public class SQLDataClass {
 		return select(database, clazz, "");
 	}
 
+	/**
+	 * Finds an instance which matches specific primary key
+	 * a key with multiple columns requires key values to be passed in the order
+	 * they are declared in the SQLDataClass
+	 * @param database
+	 * @param clazz
+	 * @param values
+	 * @return
+	 */
+	public static <T extends SQLDataClass> List<T> findByPrimaryKey(Database database, Class<T> clazz, Object... values) {
+		List<String> keys = getPrimaryKeys(clazz);
+		if (keys.size() != values.length)
+			throw new IllegalArgumentException("class contains " + keys.size() + " primary key columns, but only"
+					+ values.length + " values were provided");
+
+		String whereClause = "WHERE ";
+		for (int i = 0; i < values.length; i++)
+			whereClause += keys.get(i) + "='" + values[i] + "' AND";
+		whereClause = whereClause.substring(0, whereClause.length() - 4);
+
+		return select(database, clazz, false, whereClause);
+	}
+
+	private static List<String> getPrimaryKeys(Class<? extends SQLDataClass> clazz) {
+		List<String> fields = new ArrayList<>();
+		for (Field field : clazz.getDeclaredFields())
+			if (field.getAnnotation(PrimaryKey.class) != null)
+				fields.add(field.getName());
+		return fields;
+	}
+
 	public static <T extends SQLDataClass> List<T> select(Database database, Class<T> clazz, String whereClause) {
 		return select(database, clazz, false, whereClause);
 	}
