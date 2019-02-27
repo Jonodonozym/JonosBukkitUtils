@@ -527,4 +527,16 @@ public abstract class Database {
 	public static interface Transaction {
 		public boolean execute() throws SQLException;
 	}
+
+	protected void addIndex(String table, String indexName, SQLColumn... columns) {
+		if (columns.length == 0)
+			throw new IllegalArgumentException("an index must have at least 1 column");
+
+		String update = "IF NOT EXISTS(SELECT * FROM sys.indexes WHERE Name = '" + indexName + "')\n" + "CREATE INDEX "
+				+ indexName + " ON " + table + " (";
+		for (SQLColumn column : columns)
+			update += column.getName() + ",";
+		update = update.substring(0, update.length() - 1) + ");";
+		updateAsync(update);
+	}
 }
