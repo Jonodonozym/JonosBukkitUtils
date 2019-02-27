@@ -4,6 +4,9 @@ package jdz.bukkitUtils.test;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.powermock.api.mockito.PowerMockito.mock;
+import static org.powermock.api.mockito.PowerMockito.mockStatic;
+import static org.powermock.api.mockito.PowerMockito.when;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,40 +31,32 @@ import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.interactableObject.InteractableObject;
 import jdz.bukkitUtils.interactableObject.InteractableObjectFactory;
 import jdz.bukkitUtils.interactableObject.InteractableObjectListener;
-
-import static org.powermock.api.mockito.PowerMockito.*;
-
+import jdz.bukkitUtils.sql.ORM.NoSave;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest(JonosBukkitUtils.class)
 public class InteractableObjectTests {
-
-	private InteractableObjectFactory<InterObj> getFactory() {
-		return new InteractableObjectFactory<InterObj>(InterObj.class, (metadata) -> {
-			return new InterObj(metadata);
-		});
-	}
-
 	private Metadatable meta = new Meta();
 	private Plugin plugin = mock(Plugin.class);
-	private InteractableObjectFactory<InterObj> factory = getFactory();
-	
+	private InteractableObjectFactory<InterObj> factory = new InteractableObjectFactory<InterObj>(InterObj.class);
+
 	@Before
 	public void setup() {
-	    mockStatic(JonosBukkitUtils.class);
-	    when(JonosBukkitUtils.getInstance()).thenReturn(plugin);
+		mockStatic(JonosBukkitUtils.class);
+		when(JonosBukkitUtils.getInstance()).thenReturn(plugin);
 	}
 
 	@Test
-	public void checkAssigned() {
+	public void checkAssigned() throws ReflectiveOperationException {
 		int a = 1, b = 4;
 
 		InterObj obj = new InterObj(meta, a, b);
 		assertEquals(a, obj.getA());
 		assertEquals(b, obj.getB());
 
-		InterObj obj2 = factory.getMaker().make(meta);
+		InterObj obj2 = factory.makeFrom(meta);
 
 		assertEquals(a, obj2.getA());
 		assertEquals(b, obj2.getB());
@@ -75,8 +70,10 @@ public class InteractableObjectTests {
 
 		Player player = mock(Player.class);
 		Entity entity = mock(Entity.class);
+
+		when(entity.hasMetadata("interactType")).thenReturn(true);
 		when(entity.getMetadata("interactType"))
-				.thenReturn(Arrays.asList(new FixedMetadataValue(plugin, InterObj.class.getSimpleName())));
+				.thenReturn(Arrays.asList(new FixedMetadataValue(plugin, InterObj.class.getName())));
 
 		when(entity.hasMetadata("a")).thenReturn(true);
 		when(entity.hasMetadata("b")).thenReturn(true);
@@ -93,25 +90,20 @@ public class InteractableObjectTests {
 	public void checkThrowsOnMultiRegister() {
 		Plugin plugin1 = mock(Plugin.class);
 		Plugin plugin2 = mock(Plugin.class);
-		getFactory().register(plugin1);
+		factory.register(plugin1);
 		assertThrows(Exception.class, () -> {
-			getFactory().register(plugin2);
+			factory.register(plugin2);
 		});
-		getFactory().unregister();
+		factory.unregister();
 	}
 
+	@NoArgsConstructor
 	private static class InterObj extends InteractableObject {
-		@Getter private static boolean interacted;
-		@Getter private int a;
-		@Getter private int b;
-
-		protected InterObj(Metadatable object) {
-			super(object);
-			readMetadata(object);
-		}
+		@NoSave @Getter private static boolean interacted = false;
+		@Getter private int a = 0;
+		@Getter private int b = 0;
 
 		protected InterObj(Metadatable object, int a, int b) {
-			super(object);
 			this.a = a;
 			this.b = b;
 			writeMetadata(object);
@@ -120,11 +112,6 @@ public class InteractableObjectTests {
 		@Override
 		public void onInteract(Player player) {
 			interacted = true;
-		}
-
-		@Override
-		public String[] getFields() {
-			return new String[] { "a", "b" };
 		}
 	}
 

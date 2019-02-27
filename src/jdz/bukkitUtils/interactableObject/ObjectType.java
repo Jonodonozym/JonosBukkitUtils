@@ -10,7 +10,5 @@ import java.lang.annotation.Target;
 @Retention(RUNTIME)
 @Target(TYPE)
 public @interface ObjectType {
-	public String value();
-
 	public boolean canBreak() default false;
 }

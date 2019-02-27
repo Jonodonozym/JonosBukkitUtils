@@ -1,7 +1,6 @@
 
 package jdz.bukkitUtils.interactableObject;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -34,9 +33,8 @@ public class InteractableObjectFactory<T extends InteractableObject> {
 	@Getter private final Class<T> type;
 	@Getter private final String typeName;
 
-	@SuppressWarnings("unchecked")
-	public InteractableObjectFactory() {
-		this.type = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
+	public InteractableObjectFactory(Class<T> type) {
+		this.type = type;
 		this.typeName = InteractableObject.getTypeName(type);
 	}
 

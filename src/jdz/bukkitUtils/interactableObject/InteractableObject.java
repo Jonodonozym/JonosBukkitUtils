@@ -27,7 +27,7 @@ public abstract class InteractableObject {
 	private List<Field> getFields(Class<?> c) {
 		List<Field> fields = new ArrayList<>();
 		for (Field field : getClass().getDeclaredFields())
-			if (field.getAnnotation(NoSave.class) != null) {
+			if (field.getAnnotation(NoSave.class) == null) {
 				fields.add(field);
 				field.setAccessible(true);
 			}
@@ -64,9 +64,6 @@ public abstract class InteractableObject {
 	public abstract void onInteract(Player player);
 
 	public static String getTypeName(Class<? extends InteractableObject> c) {
-		ObjectType annotation = c.getAnnotation(ObjectType.class);
-		if (annotation == null)
-			return c.getSimpleName();
-		return annotation.value();
+		return c.getName();
 	}
 }
