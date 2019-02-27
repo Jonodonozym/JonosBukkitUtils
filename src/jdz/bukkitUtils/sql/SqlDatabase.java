@@ -8,9 +8,10 @@ import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.fileIO.FileLogger;
 import jdz.bukkitUtils.misc.Config;
+import lombok.Getter;
 
 public class SqlDatabase extends Database {
-	private final Plugin plugin;
+	@Getter private final Plugin plugin;
 	private boolean doFileLogging = false;
 	private boolean doConsoleLogging = false;
 	private final FileLogger logger;

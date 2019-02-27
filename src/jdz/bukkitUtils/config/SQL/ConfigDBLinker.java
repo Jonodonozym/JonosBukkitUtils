@@ -13,14 +13,15 @@ import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.config.AutoConfig;
 import jdz.bukkitUtils.sql.SQLColumn;
-import jdz.bukkitUtils.sql.SQLColumnType;
+import static jdz.bukkitUtils.sql.SQLColumnType.STRING;
+import static jdz.bukkitUtils.sql.SQLColumnType.STRING_32;
 import jdz.bukkitUtils.sql.SQLRow;
 import jdz.bukkitUtils.sql.SqlDatabase;
 import jdz.bukkitUtils.sql.ORM.SQLDataSerialiser;
 
 public class ConfigDBLinker extends SqlDatabase {
-	private static final SQLColumn[] columns = { new SQLColumn("Key", SQLColumnType.STRING_32),
-			new SQLColumn("Value", SQLColumnType.STRING) };
+	private static final SQLColumn[] columns = { new SQLColumn("Section", STRING_32), new SQLColumn("Key", STRING_32),
+			new SQLColumn("Value", STRING) };
 
 	private final String tableName;
 
@@ -35,7 +36,8 @@ public class ConfigDBLinker extends SqlDatabase {
 	}
 
 	public void reloadConfig(AutoConfig config) {
-		List<SQLRow> rows = query("SELECT Key, Value from " + tableName + ";");
+		List<SQLRow> rows = query(
+				"SELECT Key, Value from " + tableName + " WHERE section='" + config.getSection() + "';");
 		Map<String, String> keyToValue = new HashMap<>();
 		for (SQLRow row : rows)
 			keyToValue.put(row.get(0), row.get(1));
@@ -60,14 +62,15 @@ public class ConfigDBLinker extends SqlDatabase {
 		Bukkit.getScheduler().runTaskAsynchronously(JonosBukkitUtils.getInstance(), () -> {
 			try {
 				PreparedStatement s = dbConnection
-						.prepareStatement("REPLACE INTO " + tableName + " (Key, Value) VALUES(?,?);");
+						.prepareStatement("REPLACE INTO " + tableName + " (Section, Key, Value) VALUES(?,?,?);");
 
+				s.setString(0, config.getSection());
 				try {
 					for (Field field : config.getFields()) {
 						String key = config.getSection() + field.getName();
 						String val = SQLDataSerialiser.getSerialiser(field.getClass()).serialise(field.get(config));
-						s.setString(0, key);
-						s.setString(1, val);
+						s.setString(1, key);
+						s.setString(2, val);
 						updateAsync(s);
 					}
 				}
