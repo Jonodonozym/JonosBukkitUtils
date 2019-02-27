@@ -90,19 +90,15 @@ public class CombatTimer implements Listener {
 
 	@EventHandler(priority = EventPriority.MONITOR, ignoreCancelled = true)
 	public void onHit(PlayerDamagedByPlayer event) {
-		if (!timers.containsKey(event.getPlayer()))
-			new CombatEnterEvent(this, event.getPlayer(), event.getDamager()).call();
-
-		if (!timers.containsKey(event.getDamager()))
-			new CombatEnterEvent(this, event.getDamager(), event.getPlayer()).call();
-
-		add(event.getPlayer());
-		add(event.getDamager());
+		add(event.getPlayer(), event.getDamager());
+		add(event.getDamager(), event.getPlayer());
 
 		lastAttacker.put(event.getPlayer(), event.getDamager());
 	}
 
-	private void add(Player player) {
+	private void add(Player player, Player opponent) {
+		if (!timers.containsKey(player))
+			new CombatEnterEvent(this, player, opponent).call();
 		timers.put(player, getTimerTicks());
 		if (doMessages)
 			messages.add(player);
@@ -120,9 +116,8 @@ public class CombatTimer implements Listener {
 		Player player = (Player) event.getEntity();
 		Player damager = (Player) source;
 
-
-		add(player);
-		add(damager);
+		add(player, damager);
+		add(damager, player);
 
 		lastAttacker.put(player, damager);
 	}
@@ -132,15 +127,22 @@ public class CombatTimer implements Listener {
 		if (!triggeredByMobs)
 			return;
 
-		if (event.getEntity() instanceof Player)
+		Player player;
+		LivingEntity entity;
+
+		if (event.getEntity() instanceof Player && event.getDamager() instanceof LivingEntity) {
+			player = (Player) event.getEntity();
+			entity = (LivingEntity) event.getDamager();
+		}
+		if (event.getDamager() instanceof Player && event.getEntity() instanceof LivingEntity) {
+			player = (Player) event.getDamager();
+			entity = (LivingEntity) event.getEntity();
+		}
+		else
 			return;
 
-		if (!(event.getDamager() instanceof Player && event.getDamager() instanceof LivingEntity))
-			return;
-
-		Player player = (Player) event.getEntity();
-		add(player);
-		lastMobAttacker.put(player, (LivingEntity) event.getDamager());
+		add(player, null);
+		lastMobAttacker.put(player, entity);
 	}
 
 	public void sendMessageOnEnd(Player player) {

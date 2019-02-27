@@ -52,6 +52,7 @@ public final class FileExporter {
 			}
 		}
 		catch (Exception ex) {
+			ex.printStackTrace();
 			if (!isSilent)
 				new FileLogger(JonosBukkitUtils.getInstance()).createErrorLog(ex);
 		}
@@ -60,7 +61,9 @@ public final class FileExporter {
 				stream.close();
 				resStreamOut.close();
 			}
-			catch (Exception ex2) {}
+			catch (Exception ex2) {
+				ex2.printStackTrace();
+			}
 		}
 	}
 

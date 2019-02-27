@@ -37,7 +37,6 @@ public interface ConfigSerializer<E> {
 		final ConfigSerializer<?> nestedSerialiser = getSerializer(nestedClass);
 		return (config, path, value) -> {
 			config.set(path + ".type", value.getClass().getName());
-			System.out.println(value.getClass());
 			int i = 0;
 			for (Object element : (Collection) value)
 				nestedSerialiser.save(config, path + "." + (i++), element);
