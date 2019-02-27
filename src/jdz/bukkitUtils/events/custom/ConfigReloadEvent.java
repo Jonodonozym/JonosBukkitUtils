@@ -1,6 +1,8 @@
 
 package jdz.bukkitUtils.events.custom;
 
+import java.io.File;
+
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.EventHandler;
@@ -32,6 +34,10 @@ public class ConfigReloadEvent extends Event implements Cancellable {
 		if (!fileName.endsWith(".yml"))
 			fileName = fileName + ".yml";
 		name = fileName;
+	}
+
+	public File getConfigFile() {
+		return Config.getConfigFile(plugin, name);
 	}
 
 	public static HandlerList getHandlerList() {
