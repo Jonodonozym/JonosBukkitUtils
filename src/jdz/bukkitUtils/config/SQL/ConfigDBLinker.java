@@ -32,6 +32,7 @@ public class ConfigDBLinker extends SqlDatabase {
 
 		runOnConnect(() -> {
 			addTable(tableName, columns);
+			addIndex(tableName, "sectionIndex", columns[0]);
 		});
 	}
 
