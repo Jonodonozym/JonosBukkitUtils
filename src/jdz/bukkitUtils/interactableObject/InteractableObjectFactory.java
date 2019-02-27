@@ -1,6 +1,7 @@
 
 package jdz.bukkitUtils.interactableObject;
 
+import java.lang.reflect.ParameterizedType;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,12 +33,11 @@ public class InteractableObjectFactory<T extends InteractableObject> {
 
 	@Getter private final Class<T> type;
 	@Getter private final String typeName;
-	@Getter private final ObjectMaker<T> maker;
 
-	public InteractableObjectFactory(Class<T> type, ObjectMaker<T> maker) {
-		this.type = type;
+	@SuppressWarnings("unchecked")
+	public InteractableObjectFactory() {
+		this.type = (Class<T>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[0];
 		this.typeName = InteractableObject.getTypeName(type);
-		this.maker = maker;
 	}
 
 	public void register(Plugin plugin) {
@@ -57,7 +57,9 @@ public class InteractableObjectFactory<T extends InteractableObject> {
 				pluginToFactories.get(plugin).remove(this);
 	}
 
-	public static interface ObjectMaker<T extends InteractableObject> {
-		public T make(Metadatable object);
+	public T makeFrom(Metadatable object) throws ReflectiveOperationException {
+		T instance = type.newInstance();
+		instance.readMetadata(object);
+		return instance;
 	}
 }
