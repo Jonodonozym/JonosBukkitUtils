@@ -35,13 +35,12 @@ public final class JonosBukkitUtils extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		instance = this;
+
+		new JarUtils(this).extractLibs("libs/lombok.jar", "libs/exp4j.jar", "libs/mockito.jar");
 	}
 
 	@Override
 	public void onEnable() {
-		new JarUtils(this).extractLibs("libs/lombok.jar");
-		new JarUtils(this).extractLibs("libs/exp4j.jar");
-		new JarUtils(this).extractLibs("libs/mockito.jar");
 
 		ArgumentParsers.initDefaults();
 		SQLDataClassBukkitParser.initDefaults();

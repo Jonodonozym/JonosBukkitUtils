@@ -35,23 +35,18 @@ public final class JarUtils {
 
 	public void extractLibs(String... libNames) {
 		try {
+			File libFolder = new File(plugin.getDataFolder().getAbsoluteFile().getParentFile(), "Libs");
+			if (!libFolder.exists())
+				libFolder.mkdirs();
+
 			for (final String libName : libNames) {
-				File lib = new File(plugin.getDataFolder(), libName);
+				File lib = new File(libFolder, libName);
+				lib = new File(libFolder, lib.getName());
 				if (!lib.exists())
 					extractFromJar(libName, lib.getAbsolutePath());
 			}
-			for (final String libName : libNames) {
-				File lib = new File(plugin.getDataFolder(), libName);
-				if (!lib.exists()) {
-					String errorMessage = "There was a critical error loading " + plugin.getName()
-							+ "! Could not find lib: " + libName
-							+ ". If the problem persists, add it manually to your plugins directory";
-					Bukkit.getLogger().warning(errorMessage);
-					Bukkit.getServer().getPluginManager().disablePlugin(plugin);
-					return;
-				}
-				addClassPath(getJarUrl(lib));
-			}
+
+			loadLibs(libFolder, libNames);
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
@@ -65,8 +60,23 @@ public final class JarUtils {
 		return true;
 	}
 
+	private void loadLibs(File folder, String... libNames) throws IOException {
+		for (final String libName : libNames) {
+			File lib = new File(folder, libName);
+			if (!lib.exists()) {
+				String errorMessage = "There was a critical error loading " + plugin.getName()
+						+ "! Could not find lib: " + libName
+						+ ". If the problem persists, add it manually to your plugins directory";
+				Bukkit.getLogger().warning(errorMessage);
+				Bukkit.getServer().getPluginManager().disablePlugin(plugin);
+				return;
+			}
+			addClassPath(getJarUrl(lib));
+		}
+	}
+
 	private void addClassPath(final URL url) throws IOException {
-		final URLClassLoader sysloader = new URLClassLoader(new URL[] {url}, ClassLoader.getSystemClassLoader());
+		final URLClassLoader sysloader = new URLClassLoader(new URL[] { url }, ClassLoader.getSystemClassLoader());
 		final Class<URLClassLoader> sysclass = URLClassLoader.class;
 		try {
 			final Method method = sysclass.getDeclaredMethod("addURL", new Class[] { URL.class });
