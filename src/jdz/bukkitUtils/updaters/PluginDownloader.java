@@ -15,13 +15,12 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 
 public abstract class PluginDownloader {
 	private static final int BYTE_SIZE = 1024;
 
-	@Getter(value = AccessLevel.PACKAGE) private final List<UpdateListener> listeners = new ArrayList<UpdateListener>();
+	@Getter private final List<UpdateListener> listeners = new ArrayList<UpdateListener>();
 	protected PluginUpdateResult result = PluginUpdateResult.NO_UPDATE;
 
 	public void addListener(UpdateListener listener) {

@@ -23,9 +23,8 @@ import jdz.bukkitUtils.updaters.PluginUpdater;
 import lombok.Getter;
 
 /**
- * Jono's (or Java, I don't give a damn what you think) Utilities for Bukkit to
- * make your coding life
- * easier and less copy-pasty copy-pasty from old projects and the internet
+ * Jono's Utilities for Bukkit to make your coding life easier
+ * and less copy-pasty copy-pasty from old projects and the internet
  *
  * @author Jonodonozym
  */

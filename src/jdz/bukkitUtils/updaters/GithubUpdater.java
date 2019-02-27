@@ -10,13 +10,12 @@ import org.kohsuke.github.GHRelease;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 
 public class GithubUpdater extends PluginDownloader {
-	@Getter(value = AccessLevel.PACKAGE) private final Plugin plugin;
-	@Getter(value = AccessLevel.PACKAGE) private final PluginUpdateType type;
-	@Getter(value = AccessLevel.PACKAGE) private final PluginUpdateResult result = PluginUpdateResult.DISABLED;
+	@Getter private final Plugin plugin;
+	@Getter private final PluginUpdateType type;
+	@Getter private final PluginUpdateResult result = PluginUpdateResult.DISABLED;
 
 	private final Thread dataFetchThread;
 

@@ -15,7 +15,6 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
-import lombok.AccessLevel;
 import lombok.Getter;
 
 /**
@@ -51,8 +50,8 @@ public class BukkitDevUpdater extends PluginDownloader {
 	private static final String[] NO_UPDATE_TAG = { "-DEV", "-PRE", "-SNAPSHOT" };
 
 	// Plugin running Updater
-	@Getter(value = AccessLevel.PACKAGE) private final Plugin plugin;
-	@Getter(value = AccessLevel.PACKAGE) private final PluginUpdateType type;
+	@Getter private final Plugin plugin;
+	@Getter private final PluginUpdateType type;
 
 	private int curseID = -1;
 	private String BukkitAPIKey = null;
