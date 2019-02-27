@@ -21,7 +21,7 @@ import jdz.bukkitUtils.misc.Config;
 import jdz.bukkitUtils.sql.ORM.SQLDataClass;
 
 public class OfflineMessengerYML implements Listener, OfflineMessenger {
-	private static final Map<Plugin, OfflineMessengerYML> messengers = new HashMap<Plugin, OfflineMessengerYML>();
+	private static final Map<Plugin, OfflineMessengerYML> messengers = new HashMap<>();
 
 	public static OfflineMessengerYML get(Plugin plugin) {
 		if (!messengers.containsKey(plugin))
@@ -29,7 +29,7 @@ public class OfflineMessengerYML implements Listener, OfflineMessenger {
 		return messengers.get(plugin);
 	}
 
-	private final Map<UUID, List<Message>> playerToMessages = new HashMap<UUID, List<Message>>();
+	private final Map<UUID, List<Message>> playerToMessages = new HashMap<>();
 	private final Plugin plugin;
 
 	public OfflineMessengerYML(Plugin plugin) {
@@ -71,7 +71,7 @@ public class OfflineMessengerYML implements Listener, OfflineMessenger {
 	@Override
 	public void setQueuedMessages(OfflinePlayer offlinePlayer, List<String> messages) {
 		clearQueuedMessages(offlinePlayer);
-		List<Message> newMessages = new ArrayList<Message>();
+		List<Message> newMessages = new ArrayList<>();
 		for (int i = 0; i < messages.size(); i++)
 			newMessages.add(new Message(plugin.getName(), offlinePlayer.getUniqueId(), messages.get(i), i));
 		playerToMessages.put(offlinePlayer.getUniqueId(), newMessages);
@@ -93,7 +93,7 @@ public class OfflineMessengerYML implements Listener, OfflineMessenger {
 			FileConfiguration config = new YamlConfiguration();
 			for (UUID player : playerToMessages.keySet())
 				if (!playerToMessages.get(player).isEmpty()) {
-					List<String> stringList = new ArrayList<String>();
+					List<String> stringList = new ArrayList<>();
 					for (Message m : playerToMessages.get(player))
 						stringList.add(m.toString());
 					config.set(player.toString(), stringList);
@@ -109,7 +109,7 @@ public class OfflineMessengerYML implements Listener, OfflineMessenger {
 		FileConfiguration config = Config.getConfig(plugin, "offlineMessages.yml");
 		playerToMessages.clear();
 		for (String player : config.getKeys(false)) {
-			List<Message> messageList = new ArrayList<Message>();
+			List<Message> messageList = new ArrayList<>();
 			for (String s : config.getStringList(player))
 				messageList.add(SQLDataClass.fromString(Message.class, s));
 			playerToMessages.put(UUID.fromString(player), messageList);

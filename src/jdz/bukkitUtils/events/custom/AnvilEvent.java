@@ -15,7 +15,6 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
-
 import org.bukkit.inventory.AnvilInventory;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryView;
@@ -136,13 +135,13 @@ public abstract class AnvilEvent extends Event implements Cancellable {
 		}
 
 		private void fixCustomEnchants(AnvilEvent event) {
-			Map<Enchantment, Integer> customsLeft = event.getLeftItem() == null ? new HashMap<Enchantment, Integer>()
+			Map<Enchantment, Integer> customsLeft = event.getLeftItem() == null ? new HashMap<>()
 					: ItemUtils.getCustomEnchants(event.getLeftItem());
-			Map<Enchantment, Integer> customsRight = event.getRightItem() == null ? new HashMap<Enchantment, Integer>()
+			Map<Enchantment, Integer> customsRight = event.getRightItem() == null ? new HashMap<>()
 					: ItemUtils.getCustomEnchants(event.getRightItem());
 
-			Map<Enchantment, Integer> results = new HashMap<Enchantment, Integer>(customsLeft);
-			for (Entry<Enchantment, Integer> entry : customsRight.entrySet()) {
+			Map<Enchantment, Integer> results = new HashMap<>(customsLeft);
+			for (Entry<Enchantment, Integer> entry : customsRight.entrySet())
 				if (results.containsKey(entry.getKey())) {
 					if (results.get(entry.getKey()) < entry.getValue())
 						results.put(entry.getKey(), entry.getValue());
@@ -152,15 +151,14 @@ public abstract class AnvilEvent extends Event implements Cancellable {
 				}
 				else
 					results.put(entry.getKey(), entry.getValue());
-			}
 
 			for (Entry<Enchantment, Integer> entry : results.entrySet())
 				event.getResult().addUnsafeEnchantment(entry.getKey(), entry.getValue());
 
 			// adding lore
-			List<String> leftLore = event.getLeftItem() == null ? new ArrayList<String>()
+			List<String> leftLore = event.getLeftItem() == null ? new ArrayList<>()
 					: event.getLeftItem().getItemMeta().getLore();
-			leftLore = leftLore == null ? new ArrayList<String>() : leftLore;
+			leftLore = leftLore == null ? new ArrayList<>() : leftLore;
 
 			List<String> newLore = ItemUtils.getCustomEnchantsLore(event.getResult());
 			for (int i = customsLeft.size(); i < leftLore.size(); i++)

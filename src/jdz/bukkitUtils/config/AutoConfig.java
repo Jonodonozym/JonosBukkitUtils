@@ -39,7 +39,7 @@ public abstract class AutoConfig implements Listener {
 	@Getter private final String fileName;
 	@Getter private final String section;
 
-	@Getter private final List<Field> fields = new ArrayList<Field>();
+	@Getter private final List<Field> fields = new ArrayList<>();
 
 	protected AutoConfig(Plugin plugin) {
 		this(plugin, "", "config.yml");
@@ -51,10 +51,10 @@ public abstract class AutoConfig implements Listener {
 
 	protected AutoConfig(Plugin plugin, String configSection, String file) {
 		this.plugin = plugin;
-		this.section = configSection;
+		section = configSection;
 		if (!file.endsWith(".yml"))
 			file = file + ".yml";
-		this.fileName = file;
+		fileName = file;
 
 		for (Field field : getClass().getDeclaredFields())
 			if (field.getAnnotation(NotConfig.class) == null)

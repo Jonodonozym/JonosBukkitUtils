@@ -3,7 +3,7 @@
  *
  * Created by Jonodonozym on god knows when
  * Copyright © 2017. All rights reserved.
- * 
+ *
  * Last modified on Oct 5, 2017 9:22:58 PM
  */
 
@@ -58,14 +58,14 @@ public class FileLogger implements Listener {
 	public FileLogger(Plugin plugin, String logName, boolean newLogFileEachRun) {
 		this.plugin = plugin;
 		this.logName = logName;
-		this.logDirectory = plugin.getDataFolder() + File.separator + "Logs";
-		this.newLog = newLogFileEachRun;
+		logDirectory = plugin.getDataFolder() + File.separator + "Logs";
+		newLog = newLogFileEachRun;
 		registerEvents(plugin);
 	}
 
 	/**
 	 * Starts a new log file
-	 * 
+	 *
 	 * you probably never need to do this, I just use it for a few methods myself
 	 * and thought I should share.
 	 * Aren't I a wonderful developer?
@@ -93,7 +93,7 @@ public class FileLogger implements Listener {
 	/**
 	 * Logs a message to the current log file
 	 * creates a new log file if one isn't already in use
-	 * 
+	 *
 	 * @param message
 	 */
 	public void log(String message) {
@@ -122,7 +122,7 @@ public class FileLogger implements Listener {
 
 	@EventHandler
 	public void onUnload(PluginDisableEvent event) {
-		if (event.getPlugin().equals(plugin)) {
+		if (event.getPlugin().equals(plugin))
 			try {
 				if (bufferedWriter != null)
 					bufferedWriter.flush();
@@ -130,13 +130,12 @@ public class FileLogger implements Listener {
 			catch (IOException exception) {
 				exception.printStackTrace();
 			}
-		}
 	}
 
 	/**
 	 * Writes an exception's stack trace to an error log file, given an exception
 	 * and extra information you might want to tack on to help debugging
-	 * 
+	 *
 	 * @param exception
 	 * @param extraData
 	 */
@@ -152,17 +151,18 @@ public class FileLogger implements Listener {
 		}
 		pw.flush();
 		String exceptionAsString = sw.toString();
-		createErrorLog(getLogDirectory() + File.separator + "Errors" + File.separator + exception.getClass().getSimpleName()
-				+ getTimestamp() + ".txt", exceptionAsString);
+		createErrorLog(getLogDirectory() + File.separator + "Errors" + File.separator
+				+ exception.getClass().getSimpleName() + getTimestamp() + ".txt", exceptionAsString);
 	}
 
 	/**
 	 * Writes an error message to an error log file
-	 * 
+	 *
 	 * @param error
 	 */
 	public void createErrorLog(String error) {
-		createErrorLog(getLogDirectory() + File.separator + "Errors" + File.separator + "Error " + getTimestamp() + ".txt",
+		createErrorLog(
+				getLogDirectory() + File.separator + "Errors" + File.separator + "Error " + getTimestamp() + ".txt",
 				error);
 	}
 

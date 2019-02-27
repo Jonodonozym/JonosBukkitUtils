@@ -55,7 +55,7 @@ public class ItemUtils {
 	}
 
 	public static void give(Player player, ItemStack item, int amount) {
-		List<ItemStack> stacks = new ArrayList<ItemStack>();
+		List<ItemStack> stacks = new ArrayList<>();
 
 		ItemStack newStack = item.clone();
 		newStack.setAmount(item.getType().getMaxStackSize());
@@ -83,7 +83,7 @@ public class ItemUtils {
 
 	public static List<ItemStack> addAllItems(Inventory inv, Collection<ItemStack> items) {
 		HashMap<Integer, ItemStack> itemOverflow = inv.addItem(items.toArray(new ItemStack[1]));
-		return new ArrayList<ItemStack>(itemOverflow.values());
+		return new ArrayList<>(itemOverflow.values());
 	}
 
 	public static void remove(Inventory inv, Material m, int quantity) {
@@ -109,7 +109,7 @@ public class ItemUtils {
 	}
 
 	public static Map<Enchantment, Integer> getCustomEnchants(ItemStack stack) {
-		Map<Enchantment, Integer> customEnchants = new HashMap<Enchantment, Integer>();
+		Map<Enchantment, Integer> customEnchants = new HashMap<>();
 
 		if (stack.getEnchantments() == null)
 			return customEnchants;
@@ -122,7 +122,7 @@ public class ItemUtils {
 	}
 
 	public static List<String> getCustomEnchantsLore(ItemStack stack) {
-		List<String> lore = new ArrayList<String>();
+		List<String> lore = new ArrayList<>();
 		for (Entry<Enchantment, Integer> entry : getCustomEnchants(stack).entrySet())
 			lore.add(ChatColor.GRAY + entry.getKey().getName()
 					+ (entry.getValue() <= 1 ? "" : " " + RomanNumber.of(entry.getValue())));

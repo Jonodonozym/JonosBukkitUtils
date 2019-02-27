@@ -34,15 +34,15 @@ import lombok.Getter;
 import lombok.Setter;
 
 public class CombatTimer implements Listener {
-	private static final Map<Plugin, List<CombatTimer>> pluginToTimers = new HashMap<Plugin, List<CombatTimer>>();
+	private static final Map<Plugin, List<CombatTimer>> pluginToTimers = new HashMap<>();
 
 	@Getter(value = AccessLevel.PROTECTED) private final int timerTicks;
-	private final Map<Player, Player> lastAttacker = new HashMap<Player, Player>();
-	private final Map<Player, LivingEntity> lastMobAttacker = new HashMap<Player, LivingEntity>();
-	private final Map<Player, Integer> timers = new HashMap<Player, Integer>();
+	private final Map<Player, Player> lastAttacker = new HashMap<>();
+	private final Map<Player, LivingEntity> lastMobAttacker = new HashMap<>();
+	private final Map<Player, Integer> timers = new HashMap<>();
 
 	@Getter @Setter public boolean doMessages = false;
-	private final Set<Player> messages = new HashSet<Player>();
+	private final Set<Player> messages = new HashSet<>();
 	@Getter @Setter public boolean triggeredByMobs = false;
 
 	public CombatTimer(Plugin plugin, int timerTicks) {

@@ -8,9 +8,9 @@ import org.bukkit.inventory.ItemStack;
 import lombok.Getter;
 
 /**
- * 
+ *
  * https://bukkit.org/threads/inventory-anvil-events.142990/
- * 
+ *
  * @authors Zelnehlun, Jonodonozym
  */
 public class AnvilRenameEvent extends AnvilEvent {
@@ -18,8 +18,8 @@ public class AnvilRenameEvent extends AnvilEvent {
 
 	private AnvilRenameEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem, int cost) {
 		super(player, leftItem, rightItem, resultItem, cost);
-		this.oldName = leftItem.getItemMeta().getDisplayName();
-		this.newName = resultItem.getItemMeta().getDisplayName();
+		oldName = leftItem.getItemMeta().getDisplayName();
+		newName = resultItem.getItemMeta().getDisplayName();
 	}
 
 	public static HandlerList getHandlerList() {

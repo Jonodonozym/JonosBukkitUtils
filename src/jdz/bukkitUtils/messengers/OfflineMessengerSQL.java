@@ -3,7 +3,7 @@
  *
  * Created by Jonodonozym on god knows when
  * Copyright © 2017. All rights reserved.
- * 
+ *
  * Last modified on Oct 5, 2017 9:22:58 PM
  */
 
@@ -27,14 +27,14 @@ import jdz.bukkitUtils.sql.ORM.SQLDataClass;
 /**
  * Allows you to queue messages for players who may or may not be online
  * Requires an sql database, hence requires an SqlApi instance
- * 
+ *
  * if they're online, sends them the message. Otherwise, sends them the message
  * the next time they log-on
  *
  * @author Jonodonozym
  */
 public final class OfflineMessengerSQL extends SqlDatabase implements AbstractMessenger {
-	private static final Map<String, OfflineMessengerSQL> messengers = new HashMap<String, OfflineMessengerSQL>();
+	private static final Map<String, OfflineMessengerSQL> messengers = new HashMap<>();
 
 	public static OfflineMessengerSQL get(Plugin plugin, String serverGrounp) {
 		if (!messengers.containsKey(serverGrounp))
@@ -97,7 +97,7 @@ public final class OfflineMessengerSQL extends SqlDatabase implements AbstractMe
 	@Override
 	public List<Message> getQueuedMessages(OfflinePlayer offlinePlayer) {
 		if (!isConnected())
-			return new ArrayList<Message>();
+			return new ArrayList<>();
 
 		return SQLDataClass.select(this, Message.class, "WHERE player = " + offlinePlayer.getName()
 				+ " AND serverName = " + serverName + " ORDER BY priority asc;");

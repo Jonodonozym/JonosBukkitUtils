@@ -32,7 +32,7 @@ public class ColorUtils {
 	}
 
 	public static List<String> colorizeLines(ChatColor color, List<String> lines) {
-		List<String> retLines = new ArrayList<String>();
+		List<String> retLines = new ArrayList<>();
 		for (String s : lines)
 			retLines.add(color + s);
 		return retLines;

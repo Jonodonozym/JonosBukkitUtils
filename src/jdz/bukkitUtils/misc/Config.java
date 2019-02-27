@@ -3,7 +3,7 @@
  *
  * Created by Jonodonozym on god knows when
  * Copyright © 2017. All rights reserved.
- * 
+ *
  * Last modified on Oct 5, 2017 9:22:58 PM
  */
 
@@ -28,7 +28,7 @@ import jdz.bukkitUtils.sql.SQLDriver;
 public final class Config {
 	/**
 	 * Gets the config as a FileConfiguration
-	 * 
+	 *
 	 * @return
 	 */
 	public static FileConfiguration getConfig(Plugin plugin) {
@@ -38,7 +38,7 @@ public final class Config {
 	/**
 	 * Goes back in time to assassinate Hitler
 	 * what do you think this method does?
-	 * 
+	 *
 	 * @return
 	 */
 	public static File getConfigFile(Plugin plugin) {
@@ -47,7 +47,7 @@ public final class Config {
 
 	/**
 	 * Gets the config as a FileConfiguration
-	 * 
+	 *
 	 * @return
 	 */
 	public static FileConfiguration getConfig(Plugin plugin, String fileName) {

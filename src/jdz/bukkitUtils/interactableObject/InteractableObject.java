@@ -35,7 +35,7 @@ public abstract class InteractableObject {
 	}
 
 	protected void readMetadata(Metadatable object) {
-		for (Field field : fields) {
+		for (Field field : fields)
 			if (object.hasMetadata(field.getName()))
 				try {
 					field.set(this, object.getMetadata(field.getName()).get(0).value());
@@ -43,14 +43,13 @@ public abstract class InteractableObject {
 				catch (ReflectiveOperationException e) {
 					e.printStackTrace();
 				}
-		}
 	}
 
 	protected void writeMetadata(Metadatable object) {
 		object.setMetadata("interactType",
 				new FixedMetadataValue(JonosBukkitUtils.getInstance(), getTypeName(getClass())));
 
-		for (Field field : fields) {
+		for (Field field : fields)
 			try {
 				object.setMetadata(field.getName(),
 						new FixedMetadataValue(JonosBukkitUtils.getInstance(), field.get(this)));
@@ -58,7 +57,6 @@ public abstract class InteractableObject {
 			catch (ReflectiveOperationException e) {
 				e.printStackTrace();
 			}
-		}
 	}
 
 	public abstract void onInteract(Player player);

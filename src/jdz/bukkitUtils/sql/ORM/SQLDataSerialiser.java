@@ -9,18 +9,18 @@ import java.util.Map;
 import java.util.UUID;
 
 public class SQLDataSerialiser {
-	private static final Map<Class<?>, ParserMethod<?>> parserMethods = new HashMap<Class<?>, ParserMethod<?>>();
-	@SuppressWarnings("rawtypes") private static final Map<Class<?>, Serialiser> serialiserMethods = new HashMap<Class<?>, Serialiser>();
+	private static final Map<Class<?>, ParserMethod<?>> parserMethods = new HashMap<>();
+	@SuppressWarnings("rawtypes") private static final Map<Class<?>, Serialiser> serialiserMethods = new HashMap<>();
 
 	public static boolean hasMethods(Class<?> c) {
 		return parserMethods.containsKey(c) && serialiserMethods.containsKey(c);
 	}
-	
+
 	@SuppressWarnings("unchecked")
-	public static <T>  ParserMethod<T> getParser(Class<T> c) {
+	public static <T> ParserMethod<T> getParser(Class<T> c) {
 		return (ParserMethod<T>) parserMethods.get(c);
 	}
-	
+
 	@SuppressWarnings("rawtypes")
 	public static Serialiser getSerialiser(Class<?> c) {
 		return serialiserMethods.get(c);
@@ -46,7 +46,7 @@ public class SQLDataSerialiser {
 	public static interface Serialiser<E> {
 		public String serialise(E object);
 	}
-	
+
 	static {
 		addParser(int.class, (s) -> {
 			return Integer.parseInt(s);

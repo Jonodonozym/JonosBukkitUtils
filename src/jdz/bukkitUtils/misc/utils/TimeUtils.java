@@ -9,9 +9,9 @@ public class TimeUtils {
 
 	public static String timeFromSeconds(int totalSeconds) {
 		int days = totalSeconds / 86400;
-		int hours = (totalSeconds % 86400) / 3600;
-		int minutes = ((totalSeconds % 86400) % 3600) / 60;
-		int seconds = ((totalSeconds % 86400) % 3600) % 60;
+		int hours = totalSeconds % 86400 / 3600;
+		int minutes = totalSeconds % 86400 % 3600 / 60;
+		int seconds = totalSeconds % 86400 % 3600 % 60;
 
 		String rs = "";
 		if (days > 0)

@@ -82,19 +82,17 @@ public class PluginUnzipper {
 				final File[] oList = listFilesOrError(oFile);
 				for (File cFile : dList) {
 					boolean found = false;
-					for (final File xFile : oList) {
+					for (final File xFile : oList)
 						if (xFile.getName().equals(cFile.getName())) {
 							found = true;
 							break;
 						}
-					}
 					if (!found) {
 						File output = new File(oFile, cFile.getName());
 						fileIOOrError(output, cFile.renameTo(output), true);
 					}
-					else {
+					else
 						fileIOOrError(cFile, cFile.delete(), false);
-					}
 				}
 			}
 			fileIOOrError(dFile, dFile.delete(), false);
@@ -115,10 +113,9 @@ public class PluginUnzipper {
 	}
 
 	private static void fileIOOrError(File file, boolean result, boolean create) {
-		if (!result) {
+		if (!result)
 			Bukkit.getLogger().severe(
 					"The updater could not " + (create ? "create" : "delete") + " file at: " + file.getAbsolutePath());
-		}
 	}
 
 	private static File[] listFilesOrError(File folder) {
@@ -127,8 +124,7 @@ public class PluginUnzipper {
 			Bukkit.getLogger().severe("The updater could not access files at: " + folder.getAbsolutePath());
 			return new File[0];
 		}
-		else {
+		else
 			return contents;
-		}
 	}
 }

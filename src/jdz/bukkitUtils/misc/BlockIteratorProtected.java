@@ -18,7 +18,7 @@ public class BlockIteratorProtected extends org.bukkit.util.BlockIterator {
 
 	@Override
 	public boolean hasNext() {
-		if (last == null || (last.getY() > 1 && last.getY() < 255))
+		if (last == null || last.getY() > 1 && last.getY() < 255)
 			return super.hasNext();
 		return false;
 	}

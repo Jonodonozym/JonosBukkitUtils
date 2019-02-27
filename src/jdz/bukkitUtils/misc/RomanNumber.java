@@ -3,7 +3,7 @@
  *
  * Created by Jonodonozym on god knows when
  * Copyright © 2017. All rights reserved.
- * 
+ *
  * Last modified on Oct 5, 2017 9:22:58 PM
  */
 
@@ -19,8 +19,8 @@ import java.util.TreeMap;
 public final class RomanNumber {
 
 
-	private static final TreeMap<String, Integer> StringToInt = new TreeMap<String, Integer>();
-	private static final TreeMap<Integer, String> IntToString = new TreeMap<Integer, String>();
+	private static final TreeMap<String, Integer> StringToInt = new TreeMap<>();
+	private static final TreeMap<Integer, String> IntToString = new TreeMap<>();
 
 
 	static {
@@ -53,7 +53,7 @@ public final class RomanNumber {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param number
 	 * @return
 	 */
@@ -62,9 +62,8 @@ public final class RomanNumber {
 			return "";
 
 		int l = IntToString.floorKey(number);
-		if (number == l) {
+		if (number == l)
 			return IntToString.get(number);
-		}
 		return IntToString.get(l) + of(number - l);
 	}
 

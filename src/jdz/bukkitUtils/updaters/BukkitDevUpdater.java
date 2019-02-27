@@ -68,27 +68,26 @@ public class BukkitDevUpdater extends PluginDownloader {
 		this.plugin = plugin;
 		this.type = type;
 		this.curseID = curseID;
-		this.BukkitAPIKey = APIKey;
-		this.version = new Version(plugin);
+		BukkitAPIKey = APIKey;
+		version = new Version(plugin);
 
 		try {
-			this.BukkitPluginURL = new URL(BukkitDevUpdater.HOST + BukkitDevUpdater.QUERY + this.curseID);
+			BukkitPluginURL = new URL(BukkitDevUpdater.HOST + BukkitDevUpdater.QUERY + this.curseID);
 		}
 		catch (final MalformedURLException e) {
 			Bukkit.getLogger().log(Level.SEVERE,
 					"The project ID provided for updating, " + this.curseID + " is invalid.", e);
-			this.result = PluginUpdateResult.FAIL_BADID;
+			result = PluginUpdateResult.FAIL_BADID;
 		}
 
-		if (this.result != PluginUpdateResult.FAIL_BADID) {
-			this.dataFetchThread = new Thread(() -> {
+		if (result != PluginUpdateResult.FAIL_BADID) {
+			dataFetchThread = new Thread(() -> {
 				fetchData();
 			});
-			this.dataFetchThread.start();
+			dataFetchThread.start();
 		}
-		else {
+		else
 			fetchData();
-		}
 	}
 
 	@Override
@@ -123,14 +122,13 @@ public class BukkitDevUpdater extends PluginDownloader {
 	}
 
 	private void waitForDataFetch() {
-		if ((dataFetchThread != null) && dataFetchThread.isAlive()) {
+		if (dataFetchThread != null && dataFetchThread.isAlive())
 			try {
 				dataFetchThread.join();
 			}
 			catch (final InterruptedException e) {
 				plugin.getLogger().log(Level.SEVERE, null, e);
 			}
-		}
 	}
 
 	/**
@@ -140,12 +138,11 @@ public class BukkitDevUpdater extends PluginDownloader {
 	 */
 	private boolean fetchData() {
 		try {
-			final URLConnection conn = this.BukkitPluginURL.openConnection();
+			final URLConnection conn = BukkitPluginURL.openConnection();
 			conn.setConnectTimeout(5000);
 
-			if (this.BukkitAPIKey != null) {
-				conn.addRequestProperty("X-API-Key", this.BukkitAPIKey);
-			}
+			if (BukkitAPIKey != null)
+				conn.addRequestProperty("X-API-Key", BukkitAPIKey);
 			conn.addRequestProperty("User-Agent", BukkitDevUpdater.USER_AGENT);
 
 			conn.setDoOutput(true);
@@ -156,15 +153,15 @@ public class BukkitDevUpdater extends PluginDownloader {
 			final JSONArray array = (JSONArray) JSONValue.parse(response);
 
 			if (array.isEmpty()) {
-				Bukkit.getLogger().warning("The updater could not find any files for the project id " + this.curseID);
-				this.result = PluginUpdateResult.FAIL_BADID;
+				Bukkit.getLogger().warning("The updater could not find any files for the project id " + curseID);
+				result = PluginUpdateResult.FAIL_BADID;
 				return false;
 			}
 
 			JSONObject latestUpdate = (JSONObject) array.get(array.size() - 1);
-			this.version = new Version((String) latestUpdate.get(BukkitDevUpdater.TITLE_VALUE));
-			this.versionLink = (String) latestUpdate.get(BukkitDevUpdater.LINK_VALUE);
-			this.versionGameVersion = (String) latestUpdate.get(BukkitDevUpdater.VERSION_VALUE);
+			version = new Version((String) latestUpdate.get(BukkitDevUpdater.TITLE_VALUE));
+			versionLink = (String) latestUpdate.get(BukkitDevUpdater.LINK_VALUE);
+			versionGameVersion = (String) latestUpdate.get(BukkitDevUpdater.VERSION_VALUE);
 
 			return true;
 		}
@@ -172,13 +169,13 @@ public class BukkitDevUpdater extends PluginDownloader {
 			if (e.getMessage().contains("HTTP response code: 403")) {
 				Bukkit.getLogger().severe("dev.bukkit.org rejected the API key provided in plugins/Updater/config.yml");
 				Bukkit.getLogger().severe("Please double-check your configuration to ensure it is correct.");
-				this.result = PluginUpdateResult.FAIL_APIKEY;
+				result = PluginUpdateResult.FAIL_APIKEY;
 			}
 			else {
 				Bukkit.getLogger().severe("The updater could not contact dev.bukkit.org for updating.");
 				Bukkit.getLogger().severe(
 						"If you have not recently modified your configuration and this is the first time you are seeing this message, the site may be experiencing temporary downtime.");
-				this.result = PluginUpdateResult.FAIL_CONNECTION;
+				result = PluginUpdateResult.FAIL_CONNECTION;
 			}
 			Bukkit.getLogger().severe(e.getClass().getName());
 			return false;
@@ -188,7 +185,7 @@ public class BukkitDevUpdater extends PluginDownloader {
 	@Override
 	public File download(File targetFolder) {
 		try {
-			return (download(new URL(this.versionLink), targetFolder));
+			return download(new URL(versionLink), targetFolder);
 		}
 		catch (IOException e) {
 			e.printStackTrace();

@@ -26,7 +26,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 		new EnchantTableListener().registerEvents(JonosBukkitUtils.getInstance());
 	}
 
-	private static final Set<Enchantment> enchantments = new HashSet<Enchantment>();
+	private static final Set<Enchantment> enchantments = new HashSet<>();
 
 	public Enchantment(Plugin plugin, int id) {
 		super(1000 + id % 7153);
@@ -58,7 +58,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 
 	@Override
 	public boolean equals(Object other) {
-		return (other).getClass().equals(getClass());
+		return other.getClass().equals(getClass());
 	}
 
 	@Override
@@ -69,7 +69,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 	/**
 	 * Adds the enchantment to the item Also adds the enchantment to the lore, like
 	 * a normal enchantment
-	 * 
+	 *
 	 * @param item
 	 * @param level
 	 */
@@ -78,7 +78,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 
 		ItemMeta im = item.getItemMeta();
 		List<String> lore = im.getLore();
-		lore = lore == null ? new ArrayList<String>() : lore;
+		lore = lore == null ? new ArrayList<>() : lore;
 		lore.add(0, ChatColor.GRAY + getName() + (getMaxLevel() <= 1 ? "" : " " + RomanNumber.of(level)));
 		im.setLore(lore);
 
@@ -99,7 +99,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 
 	@SuppressWarnings("deprecation")
 	public static boolean isCustom(org.bukkit.enchantments.Enchantment e) {
-		return (59999 < e.getId() && e.getId() < 67153) || (999 < e.getId() && e.getId() < 8153);
+		return 59999 < e.getId() && e.getId() < 67153 || 999 < e.getId() && e.getId() < 8153;
 	}
 
 	@Override
@@ -116,7 +116,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 		public void onEnchant(EnchantItemEvent event) {
 			int cost = event.getExpLevelCost();
 			Material material = event.getItem().getType();
-			for (Enchantment ench : enchantments) {
+			for (Enchantment ench : enchantments)
 				if (ench instanceof EnchantTableAddition) {
 					EnchantTableAddition enchAdd = (EnchantTableAddition) ench;
 					if (enchAdd.useOnTable() && enchAdd.getEnchantChance(cost, material) > Math.random()) {
@@ -124,7 +124,6 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 						ench.addTo(event.getItem(), level);
 					}
 				}
-			}
 		}
 	}
 }

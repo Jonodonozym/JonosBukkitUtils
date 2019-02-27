@@ -19,7 +19,7 @@ import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 
 public abstract class GuiMenu implements Listener {
-	protected final Map<Inventory, Map<Integer, ClickableStack>> pages = new HashMap<Inventory, Map<Integer, ClickableStack>>();
+	protected final Map<Inventory, Map<Integer, ClickableStack>> pages = new HashMap<>();
 
 	protected GuiMenu(Plugin plugin) {
 		Bukkit.getServer().getPluginManager().registerEvents(this, plugin);

@@ -12,8 +12,8 @@ import org.bukkit.configuration.ConfigurationSection;
 public interface ConfigSerializer<E> {
 	public void save(ConfigurationSection section, String path, Object value);
 
-	public static final Map<Class<?>, ConfigSerializer<?>> serializers = new HashMap<Class<?>, ConfigSerializer<?>>();
-	
+	public static final Map<Class<?>, ConfigSerializer<?>> serializers = new HashMap<>();
+
 	public static <E> void add(Class<E> clazz, ConfigSerializer<E> serializer) {
 		ConfigSerializer.serializers.put(clazz, serializer);
 	}
@@ -39,7 +39,7 @@ public interface ConfigSerializer<E> {
 			config.set(path + ".type", value.getClass().getName());
 			int i = 0;
 			for (Object element : (Collection) value)
-				nestedSerialiser.save(config, path + "." + (i++), element);
+				nestedSerialiser.save(config, path + "." + i++, element);
 		};
 	}
 

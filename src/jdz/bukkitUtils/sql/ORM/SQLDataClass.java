@@ -2,7 +2,6 @@
 package jdz.bukkitUtils.sql.ORM;
 
 import java.lang.reflect.Field;
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -39,7 +38,7 @@ public class SQLDataClass {
 		String query = asSelectQuery(clazz, forUpdate, whereClause);
 		List<SQLRow> rows = database.query(query);
 
-		List<T> instances = new ArrayList<T>();
+		List<T> instances = new ArrayList<>();
 		for (SQLRow row : rows)
 			instances.add(parse(clazz, row));
 		return instances;
@@ -114,7 +113,7 @@ public class SQLDataClass {
 	public static void createTable(Class<? extends SQLDataClass> clazz, Database database) {
 		String tableName = getTableName(clazz);
 
-		List<SQLColumn> columns = new ArrayList<SQLColumn>();
+		List<SQLColumn> columns = new ArrayList<>();
 		for (Field field : clazz.getDeclaredFields()) {
 			if (field.getAnnotation(NoSave.class) != null)
 				continue;
@@ -272,7 +271,7 @@ public class SQLDataClass {
 	}
 
 	private Map<Field, String> getFieldValues(Predicate<Field> shouldFetch) {
-		Map<Field, String> fields = new LinkedHashMap<Field, String>();
+		Map<Field, String> fields = new LinkedHashMap<>();
 		for (Field field : getClass().getDeclaredFields())
 			if (shouldFetch.test(field)) {
 				if (!field.isAccessible())
@@ -334,7 +333,7 @@ public class SQLDataClass {
 		return !nonQuotedClass.contains(clazz);
 	}
 
-	private static final Set<Class<?>> nonQuotedClass = new HashSet<Class<?>>(
+	private static final Set<Class<?>> nonQuotedClass = new HashSet<>(
 			Arrays.asList(int.class, short.class, double.class, float.class, long.class, boolean.class, Integer.class,
 					Short.class, Double.class, Float.class, Long.class, Boolean.class));
 
@@ -354,7 +353,7 @@ public class SQLDataClass {
 
 	/**
 	 * Does not work with nested types
-	 * 
+	 *
 	 * @param c
 	 * @param s
 	 * @return

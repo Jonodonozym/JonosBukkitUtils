@@ -3,7 +3,7 @@
  *
  * Created by Jonodonozym on god knows when
  * Copyright © 2017. All rights reserved.
- * 
+ *
  * Last modified on Oct 5, 2017 9:22:58 PM
  */
 
@@ -35,13 +35,13 @@ public enum SQLColumnType {
 
 	private SQLColumnType(String sqlSyntax, Class<?>... classes) {
 		this.sqlSyntax = sqlSyntax;
-		this.javaClasses = Arrays.asList(classes);
+		javaClasses = Arrays.asList(classes);
 	}
 
 	String getDefaultStatement() {
 		if (this == STRING || this == STRING_LARGE)
 			return "";
-		if (this.name().startsWith("STRING"))
+		if (name().startsWith("STRING"))
 			return " DEFAULT ''";
 		return " DEFAULT 0";
 	}
@@ -51,7 +51,7 @@ public enum SQLColumnType {
 	}
 
 	public String format(String s) {
-		if (this.name().startsWith("STRING"))
+		if (name().startsWith("STRING"))
 			return "'" + s + "'";
 		return s;
 	}

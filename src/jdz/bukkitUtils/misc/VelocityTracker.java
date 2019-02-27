@@ -47,7 +47,7 @@ public class VelocityTracker implements Listener {
 		}
 	}
 
-	private final Map<Player, MoveData> moveData = new HashMap<Player, MoveData>();
+	private final Map<Player, MoveData> moveData = new HashMap<>();
 
 	private VelocityTracker() {
 		registerEvents(JonosBukkitUtils.getInstance());

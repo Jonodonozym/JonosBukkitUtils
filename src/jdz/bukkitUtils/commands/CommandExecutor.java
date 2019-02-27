@@ -33,7 +33,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	private static final Executor es = Executors.newCachedThreadPool();
 
 	private static final DateTimeFormatter dtf = DateTimeFormatter.ofPattern("HH:mm:ss");
-	private static final Map<Plugin, FileLogger> loggers = new HashMap<Plugin, FileLogger>();
+	private static final Map<Plugin, FileLogger> loggers = new HashMap<>();
 
 	@Getter protected final JavaPlugin plugin;
 	@Setter protected boolean logging;
@@ -44,7 +44,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 
 	protected final HelpCommand helpCommand;
 	protected SubCommand defaultCommand = null;
-	protected final Map<SubCommand, Plugin> extraCommands = new HashMap<SubCommand, Plugin>();
+	protected final Map<SubCommand, Plugin> extraCommands = new HashMap<>();
 
 	protected boolean isHelpEnabled = true;
 	protected boolean isRegistered = false;
@@ -58,13 +58,13 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 	}
 
 	public CommandExecutor(JavaPlugin plugin, String label, boolean logCommands) {
-		this.logging = logCommands;
+		logging = logCommands;
 		this.label = label;
 
 		CommandExecutorAliases commandAliases = this.getClass().getAnnotation(CommandExecutorAliases.class);
 		CommandExecutorAlias alias = this.getClass().getAnnotation(CommandExecutorAlias.class);
 
-		List<String> aliases = new ArrayList<String>(commandAliases == null ? 1 : commandAliases.value().length);
+		List<String> aliases = new ArrayList<>(commandAliases == null ? 1 : commandAliases.value().length);
 
 		if (commandAliases != null)
 			for (CommandExecutorAlias l : commandAliases.value())
@@ -78,7 +78,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		CommandExecutorPermissions commandPerms = this.getClass().getAnnotation(CommandExecutorPermissions.class);
 		CommandExecutorPermission perm = this.getClass().getAnnotation(CommandExecutorPermission.class);
 
-		List<String> perms = new ArrayList<String>(commandPerms == null ? 1 : commandPerms.value().length);
+		List<String> perms = new ArrayList<>(commandPerms == null ? 1 : commandPerms.value().length);
 
 		if (commandPerms != null)
 			for (CommandExecutorPermission l : commandPerms.value())
@@ -86,7 +86,7 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 		else if (perm != null)
 			perms.add(perm.value());
 
-		this.permissions = Collections.unmodifiableList(perms);
+		permissions = Collections.unmodifiableList(perms);
 
 		this.plugin = plugin;
 
@@ -113,13 +113,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			return;
 		}
 
-		for (String label : aliases) {
+		for (String label : aliases)
 			if (plugin.getCommand(label) == null)
 				new FileLogger(plugin).createErrorLog(new IllegalArgumentException(),
 						"No command found in " + plugin.getName() + "'s plugin.yml file labeled '" + label + "'");
 			else
 				plugin.getCommand(label).setExecutor(this);
-		}
 		isRegistered = true;
 	}
 
@@ -165,12 +164,12 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 			return true;
 		}
 
-		List<SubCommand> commands = new ArrayList<SubCommand>(getSubCommands());
+		List<SubCommand> commands = new ArrayList<>(getSubCommands());
 
 		if (isHelpEnabled)
 			commands.add(helpCommand);
 
-		for (SubCommand command : commands) {
+		for (SubCommand command : commands)
 			if (command.labelMatches(args[0])) {
 				String[] subArgs = new String[args.length - 1];
 				for (int j = 0; j < subArgs.length; j++)
@@ -178,10 +177,9 @@ public abstract class CommandExecutor implements org.bukkit.command.CommandExecu
 				execute(command, sender, subArgs);
 				return true;
 			}
-		}
 
 		// extra commands
-		List<SubCommand> extraCommands = new ArrayList<SubCommand>(this.extraCommands.keySet());
+		List<SubCommand> extraCommands = new ArrayList<>(this.extraCommands.keySet());
 		for (SubCommand command : extraCommands) {
 
 			if (Bukkit.getPluginManager().getPlugin(this.extraCommands.get(command).getName()) == null) {

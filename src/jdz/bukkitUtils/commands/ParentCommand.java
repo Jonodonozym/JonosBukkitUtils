@@ -24,7 +24,7 @@ public abstract class ParentCommand extends SubCommand {
 
 	public ParentCommand(CommandExecutor commandExecutor) {
 		this.commandExecutor = commandExecutor;
-		this.childCommandExecutor = new ParentCommandExecutor(commandExecutor.getPlugin(), this);
+		childCommandExecutor = new ParentCommandExecutor(commandExecutor.getPlugin(), this);
 	}
 
 	@Override

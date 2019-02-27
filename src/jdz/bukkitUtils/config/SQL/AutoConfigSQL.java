@@ -17,7 +17,7 @@ public abstract class AutoConfigSQL extends AutoConfig {
 	protected AutoConfigSQL(Plugin plugin, String configSection, String file) {
 		super(plugin, configSection, file);
 	}
-	
+
 	@Override
 	public void saveChanges() {
 		super.saveChanges();

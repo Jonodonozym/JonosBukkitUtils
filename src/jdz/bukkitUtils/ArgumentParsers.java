@@ -15,7 +15,7 @@ public class ArgumentParsers {
 		public E parse(String s);
 	}
 
-	private static final Map<Class<?>, ArgumentParser<?>> parsers = new HashMap<Class<?>, ArgumentParser<?>>();
+	private static final Map<Class<?>, ArgumentParser<?>> parsers = new HashMap<>();
 
 	public static <E> void addParser(Class<E> clazz, ArgumentParser<E> parser) {
 		parsers.put(clazz, parser);

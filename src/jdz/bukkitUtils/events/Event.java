@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 
 public abstract class Event extends org.bukkit.event.Event {
-	private static final Map<String, HandlerList> handlers = new HashMap<String, HandlerList>();
+	private static final Map<String, HandlerList> handlers = new HashMap<>();
 
 	@Override
 	public HandlerList getHandlers() {

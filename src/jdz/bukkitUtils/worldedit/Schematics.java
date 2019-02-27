@@ -13,7 +13,7 @@ import com.sk89q.worldedit.world.DataException;
 
 @SuppressWarnings("deprecation")
 public class Schematics {
-	private final Map<String, CuboidClipboard> schemas = new HashMap<String, CuboidClipboard>();
+	private final Map<String, CuboidClipboard> schemas = new HashMap<>();
 
 	public CuboidClipboard getSchema(String name) {
 		return schemas.get(name);
@@ -31,7 +31,7 @@ public class Schematics {
 			for (File file : files)
 				if (file.isDirectory())
 					loadSchematics(file);
-				else if (file.getName().endsWith(".schematic")) {
+				else if (file.getName().endsWith(".schematic"))
 					try {
 						CuboidClipboard cc = CuboidClipboard.loadSchematic(file);
 						schemas.put(file.getName().replace(".schematic", ""), cc);
@@ -39,7 +39,6 @@ public class Schematics {
 					catch (IOException | DataException e) {
 						Bukkit.getLogger().info("Error loading schematic: " + e);
 					}
-				}
 		}
 	}
 }

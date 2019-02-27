@@ -12,7 +12,7 @@ import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.JonosBukkitUtils;
 
 public abstract class GuiMenuPlayer extends GuiMenu {
-	private final Map<Player, Inventory> invs = new HashMap<Player, Inventory>();
+	private final Map<Player, Inventory> invs = new HashMap<>();
 
 	protected GuiMenuPlayer(Plugin plugin) {
 		super(plugin);

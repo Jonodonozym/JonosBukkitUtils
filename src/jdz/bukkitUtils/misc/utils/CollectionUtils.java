@@ -16,7 +16,7 @@ public class CollectionUtils {
 	}
 
 	public static <K, T extends Number> Set<K> removeNonPositive(Map<K, T> map) {
-		Set<K> toRemove = new HashSet<K>();
+		Set<K> toRemove = new HashSet<>();
 		for (K key : map.keySet())
 			if (map.get(key) == null || map.get(key).doubleValue() <= 0)
 				toRemove.add(key);

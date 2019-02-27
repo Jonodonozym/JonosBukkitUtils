@@ -7,7 +7,7 @@ public interface Listener extends org.bukkit.event.Listener {
 	public default boolean isRegistered(Plugin plugin) {
 		return ListenerManager.getInstance().isRegistered(this, plugin);
 	}
-	
+
 	public default boolean registerEvents(Plugin plugin) {
 		return ListenerManager.getInstance().register(this, plugin);
 	}

@@ -27,7 +27,7 @@ public class GithubUpdater extends PluginDownloader {
 		this.plugin = plugin;
 		this.type = type;
 
-		this.dataFetchThread = new Thread(() -> {
+		dataFetchThread = new Thread(() -> {
 			try {
 				fetchData(repository, login, oauthAccessToken);
 			}
@@ -36,7 +36,7 @@ public class GithubUpdater extends PluginDownloader {
 				latestVersion = new Version(plugin);
 			}
 		});
-		this.dataFetchThread.start();
+		dataFetchThread.start();
 	}
 
 	private void fetchData(String repoName, String login, String oauthAccessToken) throws Exception {
@@ -71,14 +71,13 @@ public class GithubUpdater extends PluginDownloader {
 	}
 
 	private void waitForDataFetch() {
-		if ((dataFetchThread != null) && dataFetchThread.isAlive()) {
+		if (dataFetchThread != null && dataFetchThread.isAlive())
 			try {
 				dataFetchThread.join();
 			}
 			catch (final InterruptedException e) {
 				plugin.getLogger().log(Level.SEVERE, null, e);
 			}
-		}
 	}
 
 }

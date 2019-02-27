@@ -51,7 +51,7 @@ public abstract class SubCommand {
 			throw new RuntimeException(
 					getClass().getName() + " command doesn't have the required @CommandLabel annotation!");
 
-		List<String> labels = new ArrayList<String>();
+		List<String> labels = new ArrayList<>();
 
 		if (commandLabels != null)
 			for (CommandLabel l : commandLabels.value())
@@ -62,7 +62,7 @@ public abstract class SubCommand {
 	}
 
 	private List<String> loadPermissions() {
-		List<String> permissions = new ArrayList<String>();
+		List<String> permissions = new ArrayList<>();
 		CommandPermissions perms = getClass().getAnnotation(CommandPermissions.class);
 		if (perms != null)
 			for (CommandPermission p : perms.value())
@@ -75,7 +75,7 @@ public abstract class SubCommand {
 	}
 
 	private List<Method> loadMethods() {
-		List<Method> methods = new ArrayList<Method>();
+		List<Method> methods = new ArrayList<>();
 		for (Method method : getClass().getDeclaredMethods())
 			if (method.getAnnotation(CommandMethod.class) != null && method.getModifiers() == Modifier.PUBLIC)
 				methods.add(method);
@@ -122,7 +122,7 @@ public abstract class SubCommand {
 	}
 
 	private List<Method> getBestMethods(String... args) {
-		List<Method> methods = new ArrayList<Method>();
+		List<Method> methods = new ArrayList<>();
 		for (Method method : this.methods) {
 			Class<?>[] parameterTypes = method.getParameterTypes();
 			CommandMethod annotation = method.getAnnotation(CommandMethod.class);
@@ -178,7 +178,7 @@ public abstract class SubCommand {
 				throw new IllegalArgumentException(
 						"Method " + method.getName() + " Must have a Set<String> argument for parsing flags");
 
-		for (int i = startParsingIndex; i < parameterTypes.length; i++) {
+		for (int i = startParsingIndex; i < parameterTypes.length; i++)
 			try {
 				newArgs[i] = ArgumentParsers.getParser(parameterTypes[i]).parse(args[i - startParsingIndex]);
 			}
@@ -187,7 +187,6 @@ public abstract class SubCommand {
 					sender.sendMessage(ChatColor.RED + e.getMessage());
 				return false;
 			}
-		}
 
 		try {
 			method.invoke(this, newArgs);
@@ -200,8 +199,8 @@ public abstract class SubCommand {
 	}
 
 	private Pair<String[], Set<String>> parseFlags(String... args) {
-		Set<String> flags = new HashSet<String>();
-		List<String> newArgs = new ArrayList<String>();
+		Set<String> flags = new HashSet<>();
+		List<String> newArgs = new ArrayList<>();
 
 		for (String arg : args)
 			if (arg.startsWith("-"))
@@ -209,6 +208,6 @@ public abstract class SubCommand {
 			else
 				newArgs.add(arg);
 
-		return new Pair<String[], Set<String>>(newArgs.toArray(new String[newArgs.size()]), flags);
+		return new Pair<>(newArgs.toArray(new String[newArgs.size()]), flags);
 	}
 }

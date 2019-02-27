@@ -5,7 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 public interface Cancellable extends org.bukkit.event.Cancellable {
-	static Set<Cancellable> set = new HashSet<Cancellable>();
+	static Set<Cancellable> set = new HashSet<>();
 
 	@Override
 	public default boolean isCancelled() {

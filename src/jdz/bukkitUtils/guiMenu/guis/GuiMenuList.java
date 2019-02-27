@@ -12,9 +12,9 @@ import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.guiMenu.itemStacks.ClickableStack;
 
 public class GuiMenuList extends GuiMenu {
-	private List<GuiMenuListPage> pages = new ArrayList<GuiMenuListPage>();
+	private List<GuiMenuListPage> pages = new ArrayList<>();
 
-	private List<ClickableStack> items = new ArrayList<ClickableStack>();
+	private List<ClickableStack> items = new ArrayList<>();
 
 	private final Plugin plugin;
 	private final String name;
@@ -23,7 +23,7 @@ public class GuiMenuList extends GuiMenu {
 	public GuiMenuList(Plugin plugin, String name) {
 		this(plugin, name, Arrays.asList(), null);
 	}
-	
+
 	public GuiMenuList(Plugin plugin, String name, List<ClickableStack> items) {
 		this(plugin, name, items, null);
 	}
@@ -35,7 +35,7 @@ public class GuiMenuList extends GuiMenu {
 		this.name = name;
 		this.superMenu = superMenu;
 
-		setItems(new ArrayList<ClickableStack>(items));
+		setItems(new ArrayList<>(items));
 	}
 
 	public void setItems(List<ClickableStack> items) {
@@ -66,8 +66,8 @@ public class GuiMenuList extends GuiMenu {
 		items.remove(stack);
 		setItems(items);
 	}
-	
-	protected List<GuiMenuListPage> getPages(){
+
+	protected List<GuiMenuListPage> getPages() {
 		return Collections.unmodifiableList(pages);
 	}
 

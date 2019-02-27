@@ -17,7 +17,7 @@ public class SqlDatabase extends Database {
 
 	public SqlDatabase(Plugin plugin) {
 		this.plugin = plugin;
-		this.logger = new FileLogger(plugin);
+		logger = new FileLogger(plugin);
 		logger.setWriteToLog(false);
 		logger.setPrintToConsole(false);
 		Bukkit.getScheduler().runTaskAsynchronously(plugin, () -> {

@@ -8,7 +8,7 @@ import java.util.Map.Entry;
 
 public class SQLRow {
 	private final LinkedHashMap<String, String> columnToValue;
-	private final List<String> values = new ArrayList<String>();
+	private final List<String> values = new ArrayList<>();
 
 	SQLRow(LinkedHashMap<String, String> columnToValue) {
 		this.columnToValue = columnToValue;

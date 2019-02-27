@@ -22,7 +22,7 @@ public final class HelpCommand extends SubCommand {
 	private ChatColor titleColor, usageColor, descColor;
 	private int linesPerPage = 10;
 
-	private List<String> extraMessages = new ArrayList<String>();
+	private List<String> extraMessages = new ArrayList<>();
 	private List<String> messages = null;
 
 	private int numPages = 1;
@@ -39,16 +39,16 @@ public final class HelpCommand extends SubCommand {
 	}
 
 	public void setTitleColor(ChatColor color) {
-		this.titleColor = color;
+		titleColor = color;
 	}
 
 	public void setUsageColor(ChatColor color) {
-		this.usageColor = color;
+		usageColor = color;
 		reload();
 	}
 
 	public void setDescriptionColor(ChatColor color) {
-		this.descColor = color;
+		descColor = color;
 		reload();
 	}
 
@@ -95,7 +95,7 @@ public final class HelpCommand extends SubCommand {
 
 	public void reload() {
 		if (messages == null)
-			messages = new ArrayList<String>();
+			messages = new ArrayList<>();
 		messages.clear();
 
 		CommandUsage usage = executor.getDefaultCommand().getClass().getAnnotation(CommandUsage.class);
@@ -148,7 +148,7 @@ public final class HelpCommand extends SubCommand {
 
 		String[] lines = new String[numLines + 2];
 		lines[0] = ChatColor.GRAY + "============[ " + titleColor + executor.getLabel() + " Help"
-				+ (numPages <= 1 ? "" : (" " + (1 + pageNumber) + "/" + numPages)) + ChatColor.GRAY + " ]============";
+				+ (numPages <= 1 ? "" : " " + (1 + pageNumber) + "/" + numPages) + ChatColor.GRAY + " ]============";
 
 		lines[numLines + 1] = ChatColor.GRAY + StringUtils.repeat("=", lines[0].length() - 8);
 

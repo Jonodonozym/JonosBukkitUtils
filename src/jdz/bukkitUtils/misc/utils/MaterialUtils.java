@@ -28,13 +28,13 @@ public class MaterialUtils {
 	//
 
 
-	private static final Set<Material> tools = new HashSet<Material>(Arrays.asList(Material.DIAMOND_PICKAXE,
+	private static final Set<Material> tools = new HashSet<>(Arrays.asList(Material.DIAMOND_PICKAXE,
 			Material.IRON_PICKAXE, Material.STONE_PICKAXE, Material.GOLD_PICKAXE, Material.WOOD_PICKAXE,
 			Material.DIAMOND_SPADE, Material.IRON_SPADE, Material.STONE_SPADE, Material.GOLD_SPADE, Material.WOOD_SPADE,
 			Material.DIAMOND_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.GOLD_AXE, Material.WOOD_AXE,
 			Material.DIAMOND_HOE, Material.IRON_HOE, Material.STONE_HOE, Material.GOLD_HOE, Material.WOOD_HOE));
 
-	private static final Set<Material> armour = new HashSet<Material>(Arrays.asList(Material.LEATHER_BOOTS,
+	private static final Set<Material> armour = new HashSet<>(Arrays.asList(Material.LEATHER_BOOTS,
 			Material.LEATHER_CHESTPLATE, Material.LEATHER_HELMET, Material.LEATHER_LEGGINGS, Material.GOLD_BOOTS,
 			Material.GOLD_CHESTPLATE, Material.GOLD_HELMET, Material.GOLD_LEGGINGS, Material.CHAINMAIL_BOOTS,
 			Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.CHAINMAIL_LEGGINGS, Material.IRON_BOOTS,
@@ -139,7 +139,7 @@ public class MaterialUtils {
 
 
 
-	private static final Set<Material> crops = new HashSet<Material>(
+	private static final Set<Material> crops = new HashSet<>(
 			Arrays.asList(Material.CARROT, Material.POTATO, Material.NETHER_STALK, Material.CROPS));
 
 	public static boolean isCrop(Material material) {
@@ -150,7 +150,7 @@ public class MaterialUtils {
 		if (block.getState() == null || !(block.getState() instanceof Crops))
 			return false;
 		Crops crops = (Crops) block.getState();
-		return (crops.getState() == CropState.RIPE);
+		return crops.getState() == CropState.RIPE;
 	}
 
 
@@ -159,9 +159,9 @@ public class MaterialUtils {
 	//
 
 	// https://minecraft.gamepedia.com/Breaking
-	public static final Map<Material, Double> blockHardness = new HashMap<Material, Double>();
-	public static final Map<Material, ToolType> blockTool = new HashMap<Material, ToolType>();
-	public static final Map<Material, Integer> requiredTier = new HashMap<Material, Integer>();
+	public static final Map<Material, Double> blockHardness = new HashMap<>();
+	public static final Map<Material, ToolType> blockTool = new HashMap<>();
+	public static final Map<Material, Integer> requiredTier = new HashMap<>();
 
 	static {
 		/*
@@ -171,17 +171,17 @@ public class MaterialUtils {
 		 * blockHardness.put(Material.ENDER_PORTAL, Double.MAX_VALUE);
 		 * blockHardness.put(Material.ENDER_PORTAL_FRAME, Double.MAX_VALUE);
 		 * blockHardness.put(Material.PORTAL, Double.MAX_VALUE);
-		 * 
+		 *
 		 * try { blockHardness.put(Material.STRUCTURE_BLOCK, Double.MAX_VALUE); }
 		 * catch (Throwable e) {}
-		 * 
+		 *
 		 * blockHardness.put(Material.LAVA, 100.0);
 		 * blockHardness.put(Material.WATER, 100.0);
-		 * 
+		 *
 		 * blockHardness.put(Material.OBSIDIAN, 50.0);
-		 * 
+		 *
 		 * blockHardness.put(Material.ENDER_CHEST, 22.5);
-		 * 
+		 *
 		 * blockHardness.put(Material.ANVIL, 5.0);
 		 * blockHardness.put(Material.COAL_BLOCK, 5.0);
 		 * blockHardness.put(Material.DIAMOND_BLOCK, 5.0);
@@ -193,13 +193,13 @@ public class MaterialUtils {
 		 * blockHardness.put(Material.IRON_DOOR, 5.0);
 		 * blockHardness.put(Material.IRON_TRAPDOOR, 5.0);
 		 * blockHardness.put(Material.MOB_SPAWNER, 5.0);
-		 * 
+		 *
 		 * blockHardness.put(Material.WEB, 4.0);
-		 * 
+		 *
 		 * blockHardness.put(Material.DISPENSER, 3.5);
 		 * blockHardness.put(Material.DROPPER, 3.5);
 		 * blockHardness.put(Material.FURNACE, 3.5);
-		 * 
+		 *
 		 * blockHardness.put(Material.BEACON, 3.0);
 		 * blockHardness.put(Material.GOLD_BLOCK, 3.0);
 		 * blockHardness.put(Material.COAL_ORE, 3.0);
@@ -215,7 +215,7 @@ public class MaterialUtils {
 		 * blockHardness.put(Material.QUARTZ_ORE, 3.0);
 		 * blockHardness.put(Material.REDSTONE_ORE, 3.0);
 		 * blockHardness.put(Material.TRAP_DOOR, 3.0);
-		 * 
+		 *
 		 * blockHardness.put(Material.WOOD_DOOR, 3.0);
 		 * blockHardness.put(Material.WOODEN_DOOR, 3.0);
 		 * blockHardness.put(Material.SPRUCE_DOOR, 3.0);
@@ -223,11 +223,11 @@ public class MaterialUtils {
 		 * blockHardness.put(Material.JUNGLE_DOOR, 3.0);
 		 * blockHardness.put(Material.ACACIA_DOOR, 3.0);
 		 * blockHardness.put(Material.DARK_OAK_DOOR, 3.0);
-		 * 
+		 *
 		 * blockHardness.put(Material.CHEST, 2.5);
 		 * blockHardness.put(Material.TRAPPED_CHEST, 2.5);
 		 * blockHardness.put(Material.WORKBENCH, 2.5);
-		 * 
+		 *
 		 * blockHardness.put(Material.BONE_BLOCK, 2.0);
 		 * blockHardness.put(Material.BRICK_STAIRS, 2.0);
 		 * blockHardness.put(Material.BRICK, 2.0);
@@ -271,13 +271,13 @@ public class MaterialUtils {
 
 
 
-	private static final Set<Material> fortuneDropPercents = new HashSet<Material>(Arrays.asList(Material.COAL_ORE,
+	private static final Set<Material> fortuneDropPercents = new HashSet<>(Arrays.asList(Material.COAL_ORE,
 			Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.QUARTZ_ORE, Material.LAPIS_ORE));
 
-	private static final Set<Material> fortuneMaxDrops = new HashSet<Material>();
-	private static final Map<Material, Integer> fortuneMaxDropsLimit = new HashMap<Material, Integer>();
-	private static final Map<Material, Integer> defaultDropMin = new HashMap<Material, Integer>();
-	private static final Map<Material, Integer> defaultDropMax = new HashMap<Material, Integer>();
+	private static final Set<Material> fortuneMaxDrops = new HashSet<>();
+	private static final Map<Material, Integer> fortuneMaxDropsLimit = new HashMap<>();
+	private static final Map<Material, Integer> defaultDropMin = new HashMap<>();
+	private static final Map<Material, Integer> defaultDropMax = new HashMap<>();
 
 	static {
 		fortuneMaxDrops.add(Material.REDSTONE);
@@ -316,7 +316,7 @@ public class MaterialUtils {
 
 		Collection<ItemStack> drops = block.getDrops(tool);
 
-		List<ItemStack> newDrops = new ArrayList<ItemStack>();
+		List<ItemStack> newDrops = new ArrayList<>();
 
 		if (isCrop(block.getType()) && !isCropMature(block))
 			return newDrops;
@@ -340,9 +340,8 @@ public class MaterialUtils {
 		if (fortuneDropPercents.contains(mat)) {
 			if (fortuneLevel > 0) {
 				int drops = random.nextInt(fortuneLevel + 2) - 1;
-				if (drops < 0) {
+				if (drops < 0)
 					drops = 0;
-				}
 				return a(mat, random) * (drops + 1);
 			}
 			return a(mat, random);
@@ -351,7 +350,7 @@ public class MaterialUtils {
 		else if (fortuneMaxDrops.contains(mat)) {
 			int dropDifference = defaultDropMax.get(mat) - defaultDropMin.get(mat);
 
-			int drops = defaultDropMin.get(mat) + (random.nextInt(fortuneLevel + dropDifference));
+			int drops = defaultDropMin.get(mat) + random.nextInt(fortuneLevel + dropDifference);
 
 			if (fortuneMaxDropsLimit.containsKey(mat))
 				return Math.max(drops, fortuneMaxDropsLimit.get(mat));

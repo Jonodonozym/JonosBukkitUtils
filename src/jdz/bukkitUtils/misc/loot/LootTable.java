@@ -8,7 +8,7 @@ import java.util.Set;
 import lombok.Getter;
 
 public abstract class LootTable {
-	private final Map<Loot, Double> weighting = new HashMap<Loot, Double>();
+	private final Map<Loot, Double> weighting = new HashMap<>();
 	@Getter private static double totalWeight = 0;
 
 	public void addLoot(Loot loot) {

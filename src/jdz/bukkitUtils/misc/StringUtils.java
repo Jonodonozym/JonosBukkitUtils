@@ -72,7 +72,7 @@ public final class StringUtils {
 		if (s == null || s.equals(""))
 			return new String[] { "" };
 
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 
 		for (String line : s.split("\n")) {
 			String buffer = "";

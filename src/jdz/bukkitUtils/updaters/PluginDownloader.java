@@ -20,7 +20,7 @@ import lombok.Getter;
 public abstract class PluginDownloader {
 	private static final int BYTE_SIZE = 1024;
 
-	@Getter private final List<UpdateListener> listeners = new ArrayList<UpdateListener>();
+	@Getter private final List<UpdateListener> listeners = new ArrayList<>();
 	protected PluginUpdateResult result = PluginUpdateResult.NO_UPDATE;
 
 	public void addListener(UpdateListener listener) {
@@ -74,7 +74,7 @@ public abstract class PluginDownloader {
 		catch (Exception ex) {
 			Bukkit.getLogger().log(Level.WARNING,
 					"The auto-updater tried to download a new update, but was unsuccessful.", ex);
-			this.result = PluginUpdateResult.FAIL_DOWNLOAD;
+			result = PluginUpdateResult.FAIL_DOWNLOAD;
 		}
 		finally {
 			try {

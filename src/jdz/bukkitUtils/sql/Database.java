@@ -3,7 +3,7 @@
  *
  * Created by Jonodonozym on god knows when
  * Copyright © 2017. All rights reserved.
- * 
+ *
  * Last modified on Oct 5, 2017 9:22:58 PM
  */
 
@@ -23,14 +23,14 @@ import java.util.concurrent.Executors;
 
 /**
  * Utility class with static methods to interact with the sql database
- * 
+ *
  * @author Jonodonozym
  */
 public abstract class Database {
 	protected Connection dbConnection = null;
 	private boolean isAutoReconnecting = false;
 
-	private final List<Runnable> runOnConnect = new ArrayList<Runnable>();
+	private final List<Runnable> runOnConnect = new ArrayList<>();
 
 	protected SQLConfig config;
 
@@ -69,12 +69,12 @@ public abstract class Database {
 
 	/**
 	 * Executes a query, returning the rows if the database responds with them
-	 * 
+	 *
 	 * @param query
 	 * @return
 	 */
 	public List<SQLRow> query(String query) {
-		List<SQLRow> rows = new ArrayList<SQLRow>();
+		List<SQLRow> rows = new ArrayList<>();
 
 		if (!isConnected())
 			return rows;
@@ -85,7 +85,7 @@ public abstract class Database {
 			ResultSet rs = stmt.executeQuery(query);
 			int columns = rs.getMetaData().getColumnCount();
 			while (rs.next()) {
-				LinkedHashMap<String, String> row = new LinkedHashMap<String, String>();
+				LinkedHashMap<String, String> row = new LinkedHashMap<>();
 				for (int i = 1; i <= columns; i++) {
 					String str = rs.getString(i);
 					if ("null".equals(str))
@@ -100,14 +100,13 @@ public abstract class Database {
 			onError(e, query);
 		}
 		finally {
-			if (stmt != null) {
+			if (stmt != null)
 				try {
 					stmt.close();
 				}
 				catch (SQLException e) {
 					onError(e, query);
 				}
-			}
 		}
 		return rows;
 	}
@@ -132,7 +131,7 @@ public abstract class Database {
 	}
 
 	protected List<String> getColumns(String table) {
-		List<String> columns = new ArrayList<String>();
+		List<String> columns = new ArrayList<>();
 		if (!isConnected())
 			return columns;
 
@@ -148,21 +147,20 @@ public abstract class Database {
 			onError(e, query);
 		}
 		finally {
-			if (stmt != null) {
+			if (stmt != null)
 				try {
 					stmt.close();
 				}
 				catch (SQLException e) {
 					onError(e, query);
 				}
-			}
 		}
 		return columns;
 	}
 
 	/**
 	 * Executes a database update
-	 * 
+	 *
 	 * @param update
 	 */
 	public boolean update(String update) {
@@ -196,7 +194,7 @@ public abstract class Database {
 
 	/**
 	 * Executes a database update asynchronously be wary of concurrency issues
-	 * 
+	 *
 	 * @param update
 	 */
 	protected void updateAsync(String update) {
@@ -223,7 +221,7 @@ public abstract class Database {
 
 	/**
 	 * Checks to see if the database has a table
-	 * 
+	 *
 	 * @param tableName
 	 * @return
 	 */
@@ -240,7 +238,7 @@ public abstract class Database {
 
 	/**
 	 * Creates a new table, if it doesn't already exist
-	 * 
+	 *
 	 * @param tableName
 	 * @param columns
 	 */
@@ -279,7 +277,7 @@ public abstract class Database {
 
 	/**
 	 * Adds a single column to the table, if it doesn't exist
-	 * 
+	 *
 	 * @param tableName
 	 * @param column
 	 */
@@ -289,7 +287,7 @@ public abstract class Database {
 
 	/**
 	 * Adds multiple columns to the table, if they don't exist
-	 * 
+	 *
 	 * @param tableName
 	 * @param columns
 	 */
@@ -307,14 +305,13 @@ public abstract class Database {
 		String update = "ALTER TABLE " + tableName + " ";
 		List<String> existingColumns = getColumns(tableName);
 		List<String> primaryKeys = getPrimaryKeys(tableName);
-		for (SQLColumn c : columns) {
+		for (SQLColumn c : columns)
 			if (!containsEqualsIgnoreCase(existingColumns, c.getName())) {
 				update += "ADD COLUMN " + c.getName() + " " + c.getType().getSqlSyntax() + " NOT NULL" + c.getDefault()
 						+ ", ";
 				if (c.isPrimary())
 					primaryKeys.add(c.getName());
 			}
-		}
 
 		if (update.contains(",")) {
 			update = update.substring(0, update.length() - 2);
@@ -334,7 +331,7 @@ public abstract class Database {
 
 	/**
 	 * drops a column from a table
-	 * 
+	 *
 	 * @param tableName
 	 * @param column
 	 */
@@ -344,7 +341,7 @@ public abstract class Database {
 
 	/**
 	 * drops multiple columns from a table
-	 * 
+	 *
 	 * @param tableName
 	 * @param columns
 	 */
@@ -373,7 +370,7 @@ public abstract class Database {
 	}
 
 	protected List<String> getPrimaryKeys(String table) {
-		List<String> keys = new ArrayList<String>();
+		List<String> keys = new ArrayList<>();
 		if (!isConnected())
 			return keys;
 
@@ -385,7 +382,7 @@ public abstract class Database {
 	}
 
 	protected void updatePrimaryKeys(String table, SQLColumn... columns) {
-		List<String> keys = new ArrayList<String>();
+		List<String> keys = new ArrayList<>();
 		for (SQLColumn c : columns)
 			if (c.isPrimary())
 				keys.add(c.getName());
@@ -418,7 +415,7 @@ public abstract class Database {
 	/**
 	 * Opens a new connection to a specified SQL database If it fails 3 times,
 	 * writes the error to a log file in the plugin's directory
-	 * 
+	 *
 	 * @param doLogging whether or not to log errors
 	 * @return the opened connection, or null if one couldn't be created
 	 */
@@ -434,7 +431,7 @@ public abstract class Database {
 
 			// updateAsync("SET SESSION wait_timeout = 999999;");
 
-			for (Runnable r : new ArrayList<Runnable>(runOnConnect)) {
+			for (Runnable r : new ArrayList<>(runOnConnect)) {
 				if (r == null)
 					continue;
 				r.run();
@@ -460,14 +457,13 @@ public abstract class Database {
 	 * Closes a given connection, catching any errors
 	 */
 	protected boolean closeConnection() {
-		if (dbConnection != null) {
+		if (dbConnection != null)
 			try {
 				dbConnection.close();
 				dbConnection = null;
 				return true;
 			}
 			catch (SQLException e) {}
-		}
 		return false;
 	}
 

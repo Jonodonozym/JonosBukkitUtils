@@ -98,14 +98,13 @@ public class InteractableObjectListener implements Listener {
 
 	private void onInteract(Player player, Metadatable object) {
 		InteractableObjectFactory<?> f = InteractableObjectFactory.get(object);
-		if (f != null) {
+		if (f != null)
 			try {
 				f.makeFrom(object).onInteract(player);
 			}
 			catch (ReflectiveOperationException e) {
 				throw new RuntimeException(e);
 			}
-		}
 	}
 
 }

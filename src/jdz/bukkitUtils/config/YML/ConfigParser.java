@@ -14,7 +14,7 @@ import org.bukkit.configuration.ConfigurationSection;
 public interface ConfigParser<E> {
 	public E parse(ConfigurationSection section, String path);
 
-	public static final Map<Class<?>, ConfigParser<?>> parsers = new HashMap<Class<?>, ConfigParser<?>>();
+	public static final Map<Class<?>, ConfigParser<?>> parsers = new HashMap<>();
 
 	public static <E> void add(Class<?> clazz, ConfigParser<?> parser) {
 		ConfigParser.parsers.put(clazz, parser);
@@ -23,7 +23,7 @@ public interface ConfigParser<E> {
 	@SuppressWarnings("unchecked")
 	public static <E> E parse(Type t, Class<E> c, ConfigurationSection section, String path) {
 		if (t instanceof ParameterizedType)
-			return (E) getCollectionParser((ParameterizedType) t, c).parse(section, path);
+			return getCollectionParser((ParameterizedType) t, c).parse(section, path);
 		return getParser((Class<E>) t).parse(section, path);
 	}
 
@@ -39,7 +39,7 @@ public interface ConfigParser<E> {
 			for (String key : section.getKeys(false)) {
 				if (key.equals("type"))
 					continue;
-				objects.add((Object) nestedParser.parse(section, key));
+				objects.add(nestedParser.parse(section, key));
 			}
 
 			try {

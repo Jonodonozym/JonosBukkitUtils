@@ -16,14 +16,13 @@ public class Version {
 
 		String[] args = versionName.split(".|,|-| ");
 		versionNumbers = new int[args.length];
-		for (int i = 0; i < args.length; i++) {
+		for (int i = 0; i < args.length; i++)
 			try {
 				versionNumbers[i] = Integer.parseInt(args[i].replaceAll("\\D+", ""));
 			}
 			catch (NumberFormatException e) {
 				versionNumbers[i] = 0;
 			}
-		}
 	}
 
 	public boolean isNewerThan(Version other) {

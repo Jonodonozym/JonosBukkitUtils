@@ -36,13 +36,13 @@ public class ConfigDBLinker extends SqlDatabase {
 
 	public void reloadConfig(AutoConfig config) {
 		List<SQLRow> rows = query("SELECT Key, Value from " + tableName + ";");
-		Map<String, String> keyToValue = new HashMap<String, String>();
+		Map<String, String> keyToValue = new HashMap<>();
 		for (SQLRow row : rows)
 			keyToValue.put(row.get(0), row.get(1));
 
 		try {
 			for (Field field : config.getFields()) {
-				String key = config.getSection()+field.getName();
+				String key = config.getSection() + field.getName();
 				if (keyToValue.containsKey(key)) {
 					String stringValue = keyToValue.get(key);
 					Object val = SQLDataSerialiser.getParser(field.getType()).parse(stringValue);
@@ -64,7 +64,7 @@ public class ConfigDBLinker extends SqlDatabase {
 
 				try {
 					for (Field field : config.getFields()) {
-						String key = config.getSection()+field.getName();
+						String key = config.getSection() + field.getName();
 						String val = SQLDataSerialiser.getSerialiser(field.getClass()).serialise(field.get(config));
 						s.setString(0, key);
 						s.setString(1, val);

@@ -29,7 +29,7 @@ public abstract class Command extends SubCommand {
 		CommandExecutor executor = new CommandExecutor(plugin, getLabel(), doLogging) {
 			@Override
 			protected List<SubCommand> getSubCommands() {
-				return new ArrayList<SubCommand>();
+				return new ArrayList<>();
 			}
 		};
 

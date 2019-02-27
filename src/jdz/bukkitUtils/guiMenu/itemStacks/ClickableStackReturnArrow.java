@@ -27,7 +27,7 @@ public class ClickableStackReturnArrow extends ClickableStack {
 
 	public ClickableStackReturnArrow(GuiMenu superMenu, String returnCommand) {
 		super(Material.ARROW, ChatColor.AQUA
-				+ ((superMenu == null && (returnCommand == null || returnCommand.equals(""))) ? "Exit" : "Return"));
+				+ (superMenu == null && (returnCommand == null || returnCommand.equals("")) ? "Exit" : "Return"));
 		this.superMenu = superMenu;
 		this.returnCommand = returnCommand;
 	}

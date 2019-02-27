@@ -32,7 +32,7 @@ public class AboutPluginCommand extends SubCommand {
 	}
 
 	public AboutPluginCommand(String fullName, String description, String version, Collection<String> authors) {
-		List<String> lines = new ArrayList<String>();
+		List<String> lines = new ArrayList<>();
 
 		lines.add(ChatColor.GRAY + "============[ " + titleColor + fullName + ChatColor.GRAY + " ]============");
 		if (!description.equals(""))

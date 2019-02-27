@@ -3,7 +3,7 @@
  *
  * Created by Jonodonozym on god knows when
  * Copyright © 2017. All rights reserved.
- * 
+ *
  * Last modified on Oct 5, 2017 9:22:58 PM
  */
 
@@ -40,16 +40,14 @@ public final class FileExporter {
 		OutputStream resStreamOut = null;
 		try {
 			stream = plugin.getClass().getResourceAsStream("/" + resourceName);
-			if (stream == null) {
+			if (stream == null)
 				throw new Exception("Cannot get resource \"/" + resourceName + "\" from Jar file.");
-			}
 
 			int readBytes;
 			byte[] buffer = new byte[4096];
 			resStreamOut = new FileOutputStream(destinationPath);
-			while ((readBytes = stream.read(buffer)) > 0) {
+			while ((readBytes = stream.read(buffer)) > 0)
 				resStreamOut.write(buffer, 0, readBytes);
-			}
 		}
 		catch (Exception ex) {
 			ex.printStackTrace();
@@ -68,7 +66,7 @@ public final class FileExporter {
 	}
 
 	public boolean hasResource(String fileName) {
-		return (plugin.getClass().getResourceAsStream("/" + fileName) != null);
+		return plugin.getClass().getResourceAsStream("/" + fileName) != null;
 	}
 
 	public void ExportResourceSilent(String resourceName, String destinationPath) {
@@ -85,9 +83,8 @@ public final class FileExporter {
 	}
 
 	public JarFile getRunningJar() throws IOException {
-		if (!RUNNING_FROM_JAR) {
+		if (!RUNNING_FROM_JAR)
 			return null; // null if not running from jar
-		}
 		String path = new File(FileExporter.class.getProtectionDomain().getCodeSource().getLocation().getPath())
 				.getAbsolutePath();
 		path = URLDecoder.decode(path, "UTF-8");
@@ -96,8 +93,7 @@ public final class FileExporter {
 
 	static {
 		final URL resource = FileExporter.class.getClassLoader().getResource("plugin.yml");
-		if (resource != null) {
+		if (resource != null)
 			RUNNING_FROM_JAR = true;
-		}
 	}
 }

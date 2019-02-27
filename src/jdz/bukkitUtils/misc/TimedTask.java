@@ -3,7 +3,7 @@
  *
  * Created by Jonodonozym on god knows when
  * Copyright © 2017. All rights reserved.
- * 
+ *
  * Last modified on Oct 5, 2017 9:22:58 PM
  */
 
@@ -15,9 +15,9 @@ import org.bukkit.plugin.Plugin;
 /**
  * Asynchronosly runs a task on a loop for you
  * e.g. {new TimedTask(20, () -> {do stuff here}).start();}
- * 
+ *
  * can .start() and .stop() at will, or just .run() to run it once.
- * 
+ *
  * Though if all you're doing is .run() with this class,
  * you're a special kind of retard.
  *
