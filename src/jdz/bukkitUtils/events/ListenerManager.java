@@ -12,16 +12,11 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 
-import jdz.bukkitUtils.JonosBukkitUtils;
 import lombok.Getter;
 
 public class ListenerManager implements Listener {
 	@Getter private static final ListenerManager instance = new ListenerManager();
 	private final Map<Plugin, Set<org.bukkit.event.Listener>> registered = new HashMap<>();
-
-	private ListenerManager() {
-		register(this, JonosBukkitUtils.getInstance());
-	}
 
 	boolean isRegistered(org.bukkit.event.Listener l, Plugin plugin) {
 		return registered.containsKey(plugin) && registered.get(plugin).contains(l);

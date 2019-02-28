@@ -14,6 +14,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import jdz.bukkitUtils.commands.JBU.ReloadConfigCommand;
 import jdz.bukkitUtils.commands.JBU.SaveConfigCommand;
+import jdz.bukkitUtils.events.ListenerManager;
 import jdz.bukkitUtils.events.custom.JBUEvents;
 import jdz.bukkitUtils.fileIO.JarUtils;
 import jdz.bukkitUtils.interactableObject.InteractableObjectListener;
@@ -40,7 +41,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 
 	@Override
 	public void onEnable() {
-
+		ListenerManager.getInstance().registerEvents(this);
 		ArgumentParsers.initDefaults();
 		SQLDataClassBukkitParser.initDefaults();
 		new ReloadConfigCommand().register(this);
