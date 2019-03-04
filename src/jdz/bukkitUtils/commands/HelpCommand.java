@@ -11,7 +11,7 @@ import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandMethod;
 import jdz.bukkitUtils.commands.annotations.CommandNoHelp;
 import jdz.bukkitUtils.commands.annotations.CommandUsage;
-import jdz.bukkitUtils.misc.StringUtils;
+import jdz.bukkitUtils.utils.StringUtils;
 
 @CommandLabel("help")
 @CommandLabel("?")

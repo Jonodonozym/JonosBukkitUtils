@@ -25,7 +25,7 @@ import org.bukkit.event.server.PluginDisableEvent;
 import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
-import jdz.bukkitUtils.events.Listener;
+import jdz.bukkitUtils.components.events.Listener;
 import lombok.Getter;
 import lombok.Setter;
 

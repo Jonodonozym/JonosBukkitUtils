@@ -11,7 +11,7 @@ import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
-import jdz.bukkitUtils.misc.StringUtils;
+import jdz.bukkitUtils.utils.StringUtils;
 
 @CommandLabel("about")
 @CommandShortDescription("Gives information about the plugin")

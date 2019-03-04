@@ -13,7 +13,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.entity.Player;
 
-import jdz.bukkitUtils.ArgumentParsers;
 import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandLabels;
 import jdz.bukkitUtils.commands.annotations.CommandLongDescription;
@@ -25,7 +24,7 @@ import jdz.bukkitUtils.commands.annotations.CommandPlayerOnly;
 import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 import jdz.bukkitUtils.commands.annotations.CommandShortDescription;
 import jdz.bukkitUtils.commands.annotations.CommandUsage;
-import jdz.bukkitUtils.misc.Pair;
+import jdz.bukkitUtils.components.Pair;
 import lombok.Getter;
 
 public abstract class SubCommand {
@@ -180,7 +179,7 @@ public abstract class SubCommand {
 
 		for (int i = startParsingIndex; i < parameterTypes.length; i++)
 			try {
-				newArgs[i] = ArgumentParsers.getParser(parameterTypes[i]).parse(args[i - startParsingIndex]);
+				newArgs[i] = CommandArgumentParsers.getParser(parameterTypes[i]).parse(args[i - startParsingIndex]);
 			}
 			catch (IllegalArgumentException e) {
 				if (showErrors)

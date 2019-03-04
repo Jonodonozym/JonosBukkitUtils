@@ -12,15 +12,16 @@ package jdz.bukkitUtils;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import jdz.bukkitUtils.commands.CommandArgumentParsers;
 import jdz.bukkitUtils.commands.JBU.ReloadConfigCommand;
 import jdz.bukkitUtils.commands.JBU.SaveConfigCommand;
-import jdz.bukkitUtils.events.ListenerManager;
-import jdz.bukkitUtils.events.custom.JBUEvents;
+import jdz.bukkitUtils.components.ServerTimer;
+import jdz.bukkitUtils.components.events.ListenerManager;
+import jdz.bukkitUtils.components.events.custom.JBUEvents;
+import jdz.bukkitUtils.components.interactableObject.InteractableObjectListener;
 import jdz.bukkitUtils.fileIO.JarUtils;
-import jdz.bukkitUtils.interactableObject.InteractableObjectListener;
-import jdz.bukkitUtils.misc.ServerTimer;
-import jdz.bukkitUtils.sql.minecraft.SQLDataClassBukkitParser;
-import jdz.bukkitUtils.updaters.PluginUpdater;
+import jdz.bukkitUtils.persistence.minecraft.SQLDataClassBukkitParser;
+import jdz.bukkitUtils.pluginUpdaters.PluginUpdater;
 import lombok.Getter;
 
 /**
@@ -42,7 +43,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		ListenerManager.getInstance().registerEvents(this);
-		ArgumentParsers.initDefaults();
+		CommandArgumentParsers.initDefaults();
 		SQLDataClassBukkitParser.initDefaults();
 		new ReloadConfigCommand().register(this);
 		new SaveConfigCommand().register(this);

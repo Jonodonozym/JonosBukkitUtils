@@ -28,10 +28,10 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
-import jdz.bukkitUtils.interactableObject.InteractableObject;
-import jdz.bukkitUtils.interactableObject.InteractableObjectFactory;
-import jdz.bukkitUtils.interactableObject.InteractableObjectListener;
-import jdz.bukkitUtils.sql.ORM.NoSave;
+import jdz.bukkitUtils.components.interactableObject.InteractableObject;
+import jdz.bukkitUtils.components.interactableObject.InteractableObjectFactory;
+import jdz.bukkitUtils.components.interactableObject.InteractableObjectListener;
+import jdz.bukkitUtils.persistence.ORM.NoSave;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

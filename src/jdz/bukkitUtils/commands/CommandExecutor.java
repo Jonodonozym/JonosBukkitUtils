@@ -25,7 +25,7 @@ import jdz.bukkitUtils.commands.annotations.CommandExecutorPermissions;
 import jdz.bukkitUtils.commands.annotations.CommandExecutorPlayerOnly;
 import jdz.bukkitUtils.commands.annotations.CommandSync;
 import jdz.bukkitUtils.fileIO.FileLogger;
-import jdz.bukkitUtils.misc.StringUtils;
+import jdz.bukkitUtils.utils.StringUtils;
 import lombok.Getter;
 import lombok.Setter;
 

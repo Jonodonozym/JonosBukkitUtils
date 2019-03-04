@@ -16,8 +16,8 @@ import org.bukkit.plugin.Plugin;
 import org.junit.Before;
 import org.junit.Test;
 
-import jdz.bukkitUtils.config.AutoConfig;
-import jdz.bukkitUtils.config.YML.AutoConfigIO;
+import jdz.bukkitUtils.configuration.AutoConfig;
+import jdz.bukkitUtils.configuration.YML.AutoConfigIO;
 
 public class AutoConfigTests {
 	private static Field field = AutoConfigClass.class.getDeclaredFields()[0];
