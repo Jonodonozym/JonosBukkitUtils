@@ -1,6 +1,6 @@
 main: jdz.bukkitUtils.JonosBukkitUtils
 name: JBU
-version: 0.11
+version: 1.0
 author: Jonodonozym
 description: Bunch of utilities to fast-track plugin development
 softdepend: [Vault, WorldEdit]
