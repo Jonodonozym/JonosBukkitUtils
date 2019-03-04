@@ -5,6 +5,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 
+import jdz.bukkitUtils.misc.utils.ItemUtils;
+
 public class AnvilRepairEvent extends AnvilEvent {
 
 	private AnvilRepairEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem, int cost) {
@@ -20,7 +22,7 @@ public class AnvilRepairEvent extends AnvilEvent {
 		@Override
 		protected AnvilEvent onEvent(Player player, ItemStack leftItem, ItemStack rightItem, ItemStack resultItem,
 				int cost) {
-			if (resultItem.getDurability() > leftItem.getDurability())
+			if (ItemUtils.getDamage(resultItem) > ItemUtils.getDamage(leftItem))
 				return new AnvilRepairEvent(player, leftItem, rightItem, resultItem, cost);
 			return null;
 		}

@@ -47,8 +47,8 @@ public abstract class ClickableStack {
 		stack.setType(material);
 	}
 
-	public void setData(short data) {
-		stack.setDurability(data);
+	public void setData(int data) {
+		ItemUtils.setDamage(stack, data);
 	}
 
 	public void setName(String name) {

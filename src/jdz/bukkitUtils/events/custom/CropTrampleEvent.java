@@ -35,7 +35,7 @@ public class CropTrampleEvent extends Event implements Cancellable {
 				return;
 
 			Block block = event.getClickedBlock();
-			if (block != null && block.getType() == Material.SOIL) {
+			if (block != null && block.getType() == Material.FARMLAND) {
 				CropTrampleEvent newEvent = new CropTrampleEvent(event.getPlayer(), block);
 				newEvent.call();
 				if (newEvent.isCancelled()) {

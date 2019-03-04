@@ -29,14 +29,14 @@ public class MaterialUtils {
 
 
 	private static final Set<Material> tools = new HashSet<>(Arrays.asList(Material.DIAMOND_PICKAXE,
-			Material.IRON_PICKAXE, Material.STONE_PICKAXE, Material.GOLD_PICKAXE, Material.WOOD_PICKAXE,
-			Material.DIAMOND_SPADE, Material.IRON_SPADE, Material.STONE_SPADE, Material.GOLD_SPADE, Material.WOOD_SPADE,
-			Material.DIAMOND_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.GOLD_AXE, Material.WOOD_AXE,
-			Material.DIAMOND_HOE, Material.IRON_HOE, Material.STONE_HOE, Material.GOLD_HOE, Material.WOOD_HOE));
+			Material.IRON_PICKAXE, Material.STONE_PICKAXE, Material.GOLDEN_PICKAXE, Material.WOODEN_PICKAXE,
+			Material.DIAMOND_SHOVEL, Material.IRON_SHOVEL, Material.STONE_SHOVEL, Material.GOLDEN_SHOVEL, Material.WOODEN_SHOVEL,
+			Material.DIAMOND_AXE, Material.IRON_AXE, Material.STONE_AXE, Material.GOLDEN_AXE, Material.WOODEN_AXE,
+			Material.DIAMOND_HOE, Material.IRON_HOE, Material.STONE_HOE, Material.GOLDEN_HOE, Material.WOODEN_HOE));
 
 	private static final Set<Material> armour = new HashSet<>(Arrays.asList(Material.LEATHER_BOOTS,
-			Material.LEATHER_CHESTPLATE, Material.LEATHER_HELMET, Material.LEATHER_LEGGINGS, Material.GOLD_BOOTS,
-			Material.GOLD_CHESTPLATE, Material.GOLD_HELMET, Material.GOLD_LEGGINGS, Material.CHAINMAIL_BOOTS,
+			Material.LEATHER_CHESTPLATE, Material.LEATHER_HELMET, Material.LEATHER_LEGGINGS, Material.GOLDEN_BOOTS,
+			Material.GOLDEN_CHESTPLATE, Material.GOLDEN_HELMET, Material.GOLDEN_LEGGINGS, Material.CHAINMAIL_BOOTS,
 			Material.CHAINMAIL_CHESTPLATE, Material.CHAINMAIL_HELMET, Material.CHAINMAIL_LEGGINGS, Material.IRON_BOOTS,
 			Material.IRON_CHESTPLATE, Material.IRON_HELMET, Material.IRON_LEGGINGS, Material.DIAMOND_BOOTS,
 			Material.DIAMOND_CHESTPLATE, Material.DIAMOND_HELMET, Material.DIAMOND_LEGGINGS));
@@ -71,7 +71,7 @@ public class MaterialUtils {
 	}
 
 	public static enum ToolType {
-		PICKAXE, AXE, HOE, SPADE;
+		PICKAXE, AXE, HOE, SHOVEL;
 		public ItemStack asItemStack(ResourceType type) {
 			try {
 				return new ItemStack(Material.valueOf(type.name() + "_" + name()));
@@ -97,7 +97,7 @@ public class MaterialUtils {
 
 	@AllArgsConstructor
 	public static enum ResourceType {
-		LEATHER(0), WOOD(0), GOLD(0), STONE(1), CHAINMAIL(2), IRON(2), DIAMOND(3);
+		LEATHER(0), WOODEN(0), GOLDEN(0), STONE(1), CHAINMAIL(2), IRON(2), DIAMOND(3);
 
 		@Getter private final int tier;
 
@@ -105,11 +105,11 @@ public class MaterialUtils {
 			switch (this) {
 			case LEATHER:
 				return Material.LEATHER;
-			case WOOD:
-				return Material.WOOD;
+			case WOODEN:
+				return Material.OAK_PLANKS;
 			case STONE:
 				return Material.COBBLESTONE;
-			case GOLD:
+			case GOLDEN:
 				return Material.GOLD_INGOT;
 			case IRON:
 				return Material.IRON_INGOT;
@@ -140,7 +140,7 @@ public class MaterialUtils {
 
 
 	private static final Set<Material> crops = new HashSet<>(
-			Arrays.asList(Material.CARROT, Material.POTATO, Material.NETHER_STALK, Material.CROPS));
+			Arrays.asList(Material.CARROT, Material.POTATO, Material.NETHER_WART, Material.WHEAT));
 
 	public static boolean isCrop(Material material) {
 		return crops.contains(material);
@@ -201,7 +201,7 @@ public class MaterialUtils {
 		 * blockHardness.put(Material.FURNACE, 3.5);
 		 *
 		 * blockHardness.put(Material.BEACON, 3.0);
-		 * blockHardness.put(Material.GOLD_BLOCK, 3.0);
+		 * blockHardness.put(Material.GOLDEN_BLOCK, 3.0);
 		 * blockHardness.put(Material.COAL_ORE, 3.0);
 		 * blockHardness.put(Material.DRAGON_EGG, 3.0);
 		 * blockHardness.put(Material.DIAMOND_ORE, 3.0);
@@ -216,8 +216,8 @@ public class MaterialUtils {
 		 * blockHardness.put(Material.REDSTONE_ORE, 3.0);
 		 * blockHardness.put(Material.TRAP_DOOR, 3.0);
 		 *
-		 * blockHardness.put(Material.WOOD_DOOR, 3.0);
 		 * blockHardness.put(Material.WOODEN_DOOR, 3.0);
+		 * blockHardness.put(Material.WOODENEN_DOOR, 3.0);
 		 * blockHardness.put(Material.SPRUCE_DOOR, 3.0);
 		 * blockHardness.put(Material.BIRCH_DOOR, 3.0);
 		 * blockHardness.put(Material.JUNGLE_DOOR, 3.0);
@@ -272,7 +272,7 @@ public class MaterialUtils {
 
 
 	private static final Set<Material> fortuneDropPercents = new HashSet<>(Arrays.asList(Material.COAL_ORE,
-			Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.QUARTZ_ORE, Material.LAPIS_ORE));
+			Material.DIAMOND_ORE, Material.EMERALD_ORE, Material.NETHER_QUARTZ_ORE, Material.LAPIS_ORE));
 
 	private static final Set<Material> fortuneMaxDrops = new HashSet<>();
 	private static final Map<Material, Integer> fortuneMaxDropsLimit = new HashMap<>();
@@ -281,10 +281,10 @@ public class MaterialUtils {
 
 	static {
 		fortuneMaxDrops.add(Material.REDSTONE);
-		fortuneMaxDrops.add(Material.CARROT_ITEM);
-		fortuneMaxDrops.add(Material.POTATO_ITEM);
+		fortuneMaxDrops.add(Material.CARROT);
+		fortuneMaxDrops.add(Material.POTATO);
 		fortuneMaxDrops.add(Material.MELON);
-		fortuneMaxDrops.add(Material.NETHER_WARTS);
+		fortuneMaxDrops.add(Material.NETHER_WART);
 		fortuneMaxDrops.add(Material.GLOWSTONE_DUST);
 		fortuneMaxDrops.add(Material.PRISMARINE_CRYSTALS);
 
@@ -293,20 +293,20 @@ public class MaterialUtils {
 		fortuneMaxDropsLimit.put(Material.MELON, 9);
 
 		defaultDropMin.put(Material.REDSTONE, 4);
-		defaultDropMin.put(Material.CARROT_ITEM, 1);
-		defaultDropMin.put(Material.POTATO_ITEM, 1);
+		defaultDropMin.put(Material.CARROT, 1);
+		defaultDropMin.put(Material.POTATO, 1);
 		defaultDropMin.put(Material.GLOWSTONE_DUST, 2);
 		defaultDropMin.put(Material.PRISMARINE_CRYSTALS, 2);
 		defaultDropMin.put(Material.MELON, 3);
-		defaultDropMin.put(Material.NETHER_WARTS, 2);
+		defaultDropMin.put(Material.NETHER_WART, 2);
 
 		defaultDropMax.put(Material.REDSTONE, 5);
-		defaultDropMax.put(Material.CARROT_ITEM, 4);
-		defaultDropMin.put(Material.POTATO_ITEM, 4);
+		defaultDropMax.put(Material.CARROT, 4);
+		defaultDropMin.put(Material.POTATO, 4);
 		defaultDropMax.put(Material.GLOWSTONE_DUST, 4);
 		defaultDropMin.put(Material.PRISMARINE_CRYSTALS, 3);
 		defaultDropMin.put(Material.MELON, 7);
-		defaultDropMin.put(Material.NETHER_WARTS, 4);
+		defaultDropMin.put(Material.NETHER_WART, 4);
 	}
 
 	@SuppressWarnings("deprecation")

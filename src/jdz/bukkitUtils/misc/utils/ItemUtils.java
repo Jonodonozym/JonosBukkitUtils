@@ -16,6 +16,7 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import jdz.bukkitUtils.misc.RomanNumber;
@@ -39,6 +40,28 @@ public class ItemUtils {
 		meta.setDisplayName(name);
 		itemStack.setItemMeta(meta);
 		return itemStack;
+	}
+
+	public static ItemStack setData(ItemStack itemStack, int data) {
+		return setDamage(itemStack, data);
+	}
+
+	public static ItemStack setDamage(ItemStack itemStack, int damage) {
+		ItemMeta meta = itemStack.getItemMeta();
+		if (meta == null)
+			meta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
+		if (!(meta instanceof Damageable))
+			return itemStack;
+		((Damageable) meta).setDamage(damage);
+		itemStack.setItemMeta(meta);
+		return itemStack;
+	}
+
+	public static int getDamage(ItemStack itemStack) {
+		ItemMeta meta = itemStack.getItemMeta();
+		if (meta == null || !(meta instanceof Damageable))
+			return 0;
+		return ((Damageable) meta).getDamage();
 	}
 
 	public static ItemStack setLore(ItemStack itemStack, List<String> lore) {
@@ -124,7 +147,7 @@ public class ItemUtils {
 	public static List<String> getCustomEnchantsLore(ItemStack stack) {
 		List<String> lore = new ArrayList<>();
 		for (Entry<Enchantment, Integer> entry : getCustomEnchants(stack).entrySet())
-			lore.add(ChatColor.GRAY + entry.getKey().getName()
+			lore.add(ChatColor.GRAY + entry.getKey().getKey().getKey()
 					+ (entry.getValue() <= 1 ? "" : " " + RomanNumber.of(entry.getValue())));
 		return lore;
 	}

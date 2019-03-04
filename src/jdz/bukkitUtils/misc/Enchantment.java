@@ -1,7 +1,6 @@
 
 package jdz.bukkitUtils.misc;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,6 +10,7 @@ import java.util.Set;
 
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
+import org.bukkit.NamespacedKey;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.enchantment.EnchantItemEvent;
 import org.bukkit.inventory.ItemStack;
@@ -19,7 +19,6 @@ import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.events.Listener;
-import jdz.bukkitUtils.fileIO.FileLogger;
 
 public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 	static {
@@ -29,41 +28,17 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 	private static final Set<Enchantment> enchantments = new HashSet<>();
 
 	public Enchantment(Plugin plugin, int id) {
-		super(1000 + id % 7153);
+		super(new NamespacedKey(plugin, id + ""));
 
 		if (!enchantments.contains(this)) {
 			enchantments.add(this);
-			register(plugin);
-		}
-	}
-
-	@SuppressWarnings("deprecation")
-	private void register(Plugin plugin) {
-		try {
-			Field f = org.bukkit.enchantments.Enchantment.class.getDeclaredField("acceptingNew");
-			f.setAccessible(true);
-			f.set(null, true);
-			org.bukkit.enchantments.Enchantment.registerEnchantment(this);
-		}
-		catch (IllegalArgumentException e) {
-			if (org.bukkit.enchantments.Enchantment.getById(getId()).equals(this))
-				return;
-			plugin.getLogger().severe("Enchantment " + getName() + "'s ID Conflicts with "
-					+ org.bukkit.enchantments.Enchantment.getById(getId()).getName());
-		}
-		catch (Exception e) {
-			new FileLogger(plugin).createErrorLog(e);
+			registerEnchantment(this);
 		}
 	}
 
 	@Override
 	public boolean equals(Object other) {
 		return other.getClass().equals(getClass());
-	}
-
-	@Override
-	public int hashCode() {
-		return getId();
 	}
 
 	/**
@@ -79,7 +54,7 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 		ItemMeta im = item.getItemMeta();
 		List<String> lore = im.getLore();
 		lore = lore == null ? new ArrayList<>() : lore;
-		lore.add(0, ChatColor.GRAY + getName() + (getMaxLevel() <= 1 ? "" : " " + RomanNumber.of(level)));
+		lore.add(0, ChatColor.GRAY + getKey().getKey() + (getMaxLevel() <= 1 ? "" : " " + RomanNumber.of(level)));
 		im.setLore(lore);
 
 		item.setItemMeta(im);
@@ -97,18 +72,9 @@ public abstract class Enchantment extends org.bukkit.enchantments.Enchantment {
 		return Collections.unmodifiableSet(enchantments);
 	}
 
-	@SuppressWarnings("deprecation")
 	public static boolean isCustom(org.bukkit.enchantments.Enchantment e) {
-		return 59999 < e.getId() && e.getId() < 67153 || 999 < e.getId() && e.getId() < 8153;
-	}
-
-	@Override
-	@SuppressWarnings("deprecation")
-	public int getId() {
-		int id = super.getId();
-		if (id > 59999)
-			return id - 59000;
-		return id;
+		return e.getKey().getNamespace() != NamespacedKey.BUKKIT
+				&& e.getKey().getNamespace() != NamespacedKey.MINECRAFT;
 	}
 
 	private static class EnchantTableListener implements Listener {
