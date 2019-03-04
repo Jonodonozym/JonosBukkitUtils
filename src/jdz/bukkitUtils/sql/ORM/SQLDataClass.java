@@ -28,12 +28,14 @@ public class SQLDataClass {
 	 * Finds an instance which matches specific primary key
 	 * a key with multiple columns requires key values to be passed in the order
 	 * they are declared in the SQLDataClass
+	 * 
 	 * @param database
 	 * @param clazz
 	 * @param values
 	 * @return
 	 */
-	public static <T extends SQLDataClass> List<T> findByPrimaryKey(Database database, Class<T> clazz, Object... values) {
+	public static <T extends SQLDataClass> List<T> findByPrimaryKey(Database database, Class<T> clazz,
+			Object... values) {
 		List<String> keys = getPrimaryKeys(clazz);
 		if (keys.size() != values.length)
 			throw new IllegalArgumentException("class contains " + keys.size() + " primary key columns, but only"

@@ -85,13 +85,7 @@ public class ArgumentParsers {
 		});
 
 		addParser(Material.class, (s) -> {
-			Material m;
-			try {
-				m = Material.getMaterial(Integer.parseInt(s));
-			}
-			catch (NumberFormatException e) {
-				m = Material.getMaterial(s);
-			}
+			Material m = Material.getMaterial(s);
 			if (m == null)
 				throw new IllegalArgumentException(s + " is not a valid material or material id");
 			return m;

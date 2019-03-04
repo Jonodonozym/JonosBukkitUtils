@@ -1,5 +1,8 @@
 package jdz.bukkitUtils.config.SQL;
 
+import static jdz.bukkitUtils.sql.SQLColumnType.STRING;
+import static jdz.bukkitUtils.sql.SQLColumnType.STRING_32;
+
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -13,8 +16,6 @@ import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.config.AutoConfig;
 import jdz.bukkitUtils.sql.SQLColumn;
-import static jdz.bukkitUtils.sql.SQLColumnType.STRING;
-import static jdz.bukkitUtils.sql.SQLColumnType.STRING_32;
 import jdz.bukkitUtils.sql.SQLRow;
 import jdz.bukkitUtils.sql.SqlDatabase;
 import jdz.bukkitUtils.sql.ORM.SQLDataSerialiser;

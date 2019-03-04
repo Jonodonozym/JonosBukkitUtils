@@ -6,7 +6,6 @@ import java.lang.reflect.Type;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
-@SuppressWarnings("deprecation")
 public class AutoConfigIO {
 	public static <E> E parse(Type t, Class<E> c, ConfigurationSection section, String path) {
 		return ConfigParser.parse(t, c, section, path);
@@ -46,13 +45,7 @@ public class AutoConfigIO {
 		}, String.class);
 
 		addAll((c, s) -> {
-			Material m;
-			try {
-				m = Material.getMaterial(Integer.parseInt(c.getString(s)));
-			}
-			catch (NumberFormatException e) {
-				m = Material.getMaterial(c.getString(s));
-			}
+			Material m = Material.getMaterial(c.getString(s));
 			if (m == null)
 				new IllegalArgumentException(s + " is not a valid material or material id").printStackTrace();
 			return m;
