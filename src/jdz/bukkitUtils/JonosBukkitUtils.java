@@ -19,6 +19,7 @@ import jdz.bukkitUtils.components.ServerTimer;
 import jdz.bukkitUtils.components.events.ListenerManager;
 import jdz.bukkitUtils.components.events.custom.JBUEvents;
 import jdz.bukkitUtils.components.interactableObject.InteractableObjectListener;
+import jdz.bukkitUtils.configuration.ConfigReloadEvent;
 import jdz.bukkitUtils.fileIO.JarUtils;
 import jdz.bukkitUtils.persistence.minecraft.SQLDataClassBukkitParser;
 import jdz.bukkitUtils.pluginUpdaters.PluginUpdater;
@@ -48,6 +49,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 		new ReloadConfigCommand().register(this);
 		new SaveConfigCommand().register(this);
 		new InteractableObjectListener().registerEvents(this);
+		new ConfigReloadEvent.ConfigReloadOnLaunch().registerEvents(this);
 
 		PluginUpdater.updateAll();
 

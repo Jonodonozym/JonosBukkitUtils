@@ -14,8 +14,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.components.events.Listener;
-import jdz.bukkitUtils.components.events.custom.ConfigReloadEvent;
-import jdz.bukkitUtils.components.events.custom.ConfigSaveEvent;
 import jdz.bukkitUtils.configuration.YML.AutoConfigIO;
 import lombok.Getter;
 

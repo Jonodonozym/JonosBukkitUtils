@@ -16,6 +16,5 @@ public class JBUEvents {
 		pm.registerEvents(new PotionDrinkEvent.PotionDrinkEventListener(), plugin);
 		pm.registerEvents(new PlayerDamagedByPlayer.PlayerDamagedByPlayerListener(), plugin);
 		pm.registerEvents(new CropTrampleEvent.CropTrampleListener(), plugin);
-		pm.registerEvents(new ConfigReloadEvent.ConfigReloadOnLaunch(), plugin);
 	}
 }

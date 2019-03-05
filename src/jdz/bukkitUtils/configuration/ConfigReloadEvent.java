@@ -1,5 +1,5 @@
 
-package jdz.bukkitUtils.components.events.custom;
+package jdz.bukkitUtils.configuration;
 
 import java.io.File;
 
@@ -13,7 +13,6 @@ import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.components.events.Cancellable;
 import jdz.bukkitUtils.components.events.Event;
 import jdz.bukkitUtils.components.events.Listener;
-import jdz.bukkitUtils.configuration.Config;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -44,7 +43,7 @@ public class ConfigReloadEvent extends Event implements Cancellable {
 		return getHandlers(ConfigReloadEvent.class);
 	}
 
-	static class ConfigReloadOnLaunch implements Listener {
+	public static class ConfigReloadOnLaunch implements Listener {
 		@EventHandler
 		public void onLoad(PluginEnableEvent event) {
 			Bukkit.getScheduler().runTask(event.getPlugin(), () -> {

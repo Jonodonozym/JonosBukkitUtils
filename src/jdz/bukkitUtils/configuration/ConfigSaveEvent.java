@@ -1,5 +1,5 @@
 
-package jdz.bukkitUtils.components.events.custom;
+package jdz.bukkitUtils.configuration;
 
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.HandlerList;
@@ -7,7 +7,6 @@ import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.components.events.Cancellable;
 import jdz.bukkitUtils.components.events.Event;
-import jdz.bukkitUtils.configuration.Config;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

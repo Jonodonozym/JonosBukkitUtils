@@ -10,7 +10,7 @@ import jdz.bukkitUtils.commands.annotations.CommandLabel;
 import jdz.bukkitUtils.commands.annotations.CommandOpOnly;
 import jdz.bukkitUtils.commands.annotations.CommandRequiredArgs;
 import jdz.bukkitUtils.commands.annotations.CommandUsage;
-import jdz.bukkitUtils.components.events.custom.ConfigSaveEvent;
+import jdz.bukkitUtils.configuration.ConfigSaveEvent;
 
 @CommandLabel("saveConfig")
 @CommandLabel("sc")
