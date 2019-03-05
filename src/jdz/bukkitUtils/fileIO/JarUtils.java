@@ -38,7 +38,7 @@ public final class JarUtils {
 			for (final String libName : libNames) {
 				File lib = getExportLocation(libName);
 				if (!lib.exists())
-					extractFromJar("/" + libName, lib.getAbsolutePath());
+					extractFromJar(libName, lib.getAbsolutePath());
 			}
 
 			loadLibs(libNames);

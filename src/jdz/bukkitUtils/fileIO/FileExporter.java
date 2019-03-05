@@ -39,7 +39,7 @@ public final class FileExporter {
 		InputStream stream = null;
 		OutputStream resStreamOut = null;
 		try {
-			stream = plugin.getClass().getResourceAsStream(resourceName);
+			stream = plugin.getClass().getResourceAsStream("/" + resourceName);
 			if (stream == null)
 				throw new Exception("Cannot get resource " + resourceName + " from Jar file.");
 
@@ -66,7 +66,7 @@ public final class FileExporter {
 	}
 
 	public boolean hasResource(String fileName) {
-		return plugin.getClass().getResourceAsStream(fileName) != null;
+		return plugin.getClass().getResourceAsStream("/" + fileName) != null;
 	}
 
 	public void ExportResourceSilent(String resourceName, String destinationPath) {
@@ -92,7 +92,7 @@ public final class FileExporter {
 	}
 
 	static {
-		final URL resource = FileExporter.class.getClassLoader().getResource("plugin.yml");
+		final URL resource = FileExporter.class.getClassLoader().getResource("/" + "plugin.yml");
 		if (resource != null)
 			RUNNING_FROM_JAR = true;
 	}

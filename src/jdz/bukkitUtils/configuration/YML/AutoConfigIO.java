@@ -2,6 +2,7 @@
 package jdz.bukkitUtils.configuration.YML;
 
 import java.lang.reflect.Type;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -47,16 +48,23 @@ public class AutoConfigIO {
 			return c.getString(s);
 		}, String.class);
 
-		addAll((c, s) -> {
+		ConfigParser.add(Material.class, (c, s) -> {
 			Material m = Material.getMaterial(c.getString(s));
 			if (m == null)
-				new IllegalArgumentException(s + " is not a valid material or material id").printStackTrace();
+				new IllegalArgumentException(c.getString(s) + " is not a valid material or material id").printStackTrace();
 			return m;
-		}, Material.class);
+		});
+		ConfigSerializer.add(Material.class, (c, s, mat) -> {
+			c.set(s, ((Material) mat).name());
+		});
 
-		addAll((c, s) -> {
-			return new SimpleDateFormat().parse(c.getString(s));
-		}, Date.class);
+		DateFormat format = new SimpleDateFormat();
+		ConfigParser.add(Date.class, (c, s) -> {
+			return format.parse(c.getString(s));
+		});
+		ConfigSerializer.add(Date.class, (c, s, date) -> {
+			c.set(s, format.format(date));
+		});
 	}
 
 	private static void addAll(ConfigParser<?> parser, Class<?>... classes) {
