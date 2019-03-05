@@ -35,18 +35,13 @@ public final class JarUtils {
 
 	public void extractLibs(String... libNames) {
 		try {
-			File libFolder = new File(plugin.getDataFolder().getAbsoluteFile().getParentFile(), "Libs");
-			if (!libFolder.exists())
-				libFolder.mkdirs();
-
 			for (final String libName : libNames) {
-				File lib = new File(libFolder, libName);
-				lib = new File(libFolder, lib.getName());
+				File lib = getExportLocation(libName);
 				if (!lib.exists())
-					extractFromJar(libName, lib.getAbsolutePath());
+					extractFromJar("/" + libName, lib.getAbsolutePath());
 			}
 
-			loadLibs(libFolder, libNames);
+			loadLibs(libNames);
 		}
 		catch (final Exception e) {
 			e.printStackTrace();
@@ -60,9 +55,9 @@ public final class JarUtils {
 		return true;
 	}
 
-	private void loadLibs(File folder, String... libNames) throws IOException {
+	private void loadLibs(String... libNames) throws IOException {
 		for (final String libName : libNames) {
-			File lib = new File(folder, libName);
+			File lib = getExportLocation(libName);
 			if (!lib.exists()) {
 				String errorMessage = "There was a critical error loading " + plugin.getName()
 						+ "! Could not find lib: " + libName
@@ -73,6 +68,18 @@ public final class JarUtils {
 			}
 			addClassPath(getJarUrl(lib));
 		}
+	}
+
+	private File getExportLocation(String libName) {
+		File libFolder = new File(plugin.getDataFolder().getAbsoluteFile().getParentFile(), "Libs");
+		if (!libFolder.exists())
+			libFolder.mkdirs();
+
+		File lib = new File(libFolder, libName);
+		if (libName.contains("/"))
+			lib = new File(libFolder, libName.substring(libName.lastIndexOf("/") + 1));
+
+		return lib;
 	}
 
 	private void addClassPath(final URL url) throws IOException {

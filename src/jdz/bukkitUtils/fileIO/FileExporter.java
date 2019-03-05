@@ -39,9 +39,9 @@ public final class FileExporter {
 		InputStream stream = null;
 		OutputStream resStreamOut = null;
 		try {
-			stream = plugin.getClass().getResourceAsStream("/" + resourceName);
+			stream = plugin.getClass().getResourceAsStream(resourceName);
 			if (stream == null)
-				throw new Exception("Cannot get resource \"/" + resourceName + "\" from Jar file.");
+				throw new Exception("Cannot get resource " + resourceName + " from Jar file.");
 
 			int readBytes;
 			byte[] buffer = new byte[4096];
@@ -66,7 +66,7 @@ public final class FileExporter {
 	}
 
 	public boolean hasResource(String fileName) {
-		return plugin.getClass().getResourceAsStream("/" + fileName) != null;
+		return plugin.getClass().getResourceAsStream(fileName) != null;
 	}
 
 	public void ExportResourceSilent(String resourceName, String destinationPath) {
