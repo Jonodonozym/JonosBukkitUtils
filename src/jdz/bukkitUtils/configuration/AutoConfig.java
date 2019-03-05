@@ -78,14 +78,15 @@ public abstract class AutoConfig implements Listener {
 
 	@EventHandler
 	public void onConfigReload(ConfigReloadEvent event) {
-		if (!event.getPlugin().equals(plugin))
-			return;
-
-		if (!event.getName().equals(fileName))
+		if (!eventApplies(event))
 			return;
 
 		reloadConfig();
 		saveChanges();
+	}
+	
+	protected boolean eventApplies(ConfigReloadEvent event) {
+		return event.getPlugin().equals(plugin) && event.getName().equals(fileName);
 	}
 
 	@EventHandler
