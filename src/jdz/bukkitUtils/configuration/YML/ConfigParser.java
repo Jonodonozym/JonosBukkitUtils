@@ -3,6 +3,7 @@ package jdz.bukkitUtils.configuration.YML;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -12,7 +13,7 @@ import java.util.Map;
 import org.bukkit.configuration.ConfigurationSection;
 
 public interface ConfigParser<E> {
-	public E parse(ConfigurationSection section, String path);
+	public E parse(ConfigurationSection section, String path) throws ParseException;
 
 	public static final Map<Class<?>, ConfigParser<?>> parsers = new HashMap<>();
 
@@ -21,7 +22,7 @@ public interface ConfigParser<E> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public static <E> E parse(Type t, Class<E> c, ConfigurationSection section, String path) {
+	public static <E> E parse(Type t, Class<E> c, ConfigurationSection section, String path) throws ParseException {
 		if (t instanceof ParameterizedType)
 			return getCollectionParser((ParameterizedType) t, c).parse(section, path);
 		return getParser((Class<E>) t).parse(section, path);

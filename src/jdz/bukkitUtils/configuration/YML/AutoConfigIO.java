@@ -2,12 +2,15 @@
 package jdz.bukkitUtils.configuration.YML;
 
 import java.lang.reflect.Type;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 
 public class AutoConfigIO {
-	public static <E> E parse(Type t, Class<E> c, ConfigurationSection section, String path) {
+	public static <E> E parse(Type t, Class<E> c, ConfigurationSection section, String path) throws ParseException {
 		return ConfigParser.parse(t, c, section, path);
 	}
 
@@ -50,6 +53,10 @@ public class AutoConfigIO {
 				new IllegalArgumentException(s + " is not a valid material or material id").printStackTrace();
 			return m;
 		}, Material.class);
+
+		addAll((c, s) -> {
+			return new SimpleDateFormat().parse(c.getString(s));
+		}, Date.class);
 	}
 
 	private static void addAll(ConfigParser<?> parser, Class<?>... classes) {

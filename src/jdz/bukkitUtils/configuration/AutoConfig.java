@@ -4,6 +4,7 @@ package jdz.bukkitUtils.configuration;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -129,7 +130,7 @@ public abstract class AutoConfig implements Listener {
 					field.set(this, val);
 				}
 			}
-			catch (ReflectiveOperationException e) {
+			catch (ReflectiveOperationException | ParseException e) {
 				e.printStackTrace();
 			}
 			catch (NullPointerException e) {}
