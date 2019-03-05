@@ -4,6 +4,7 @@ version: 1.0
 author: Jonodonozym
 description: Bunch of utilities to fast-track plugin development
 softdepend: [Vault, WorldEdit]
+api-version: 1.13
 
 commands:
   reloadConfig:
