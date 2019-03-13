@@ -15,6 +15,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import jdz.bukkitUtils.commands.CommandArgumentParsers;
 import jdz.bukkitUtils.commands.JBU.ReloadConfigCommand;
 import jdz.bukkitUtils.commands.JBU.SaveConfigCommand;
+import jdz.bukkitUtils.components.ItemLock;
 import jdz.bukkitUtils.components.ServerTimer;
 import jdz.bukkitUtils.components.events.ListenerManager;
 import jdz.bukkitUtils.components.events.custom.JBUEvents;
@@ -50,6 +51,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 		new SaveConfigCommand().register(this);
 		new InteractableObjectListener().registerEvents(this);
 		new ConfigReloadEvent.ConfigReloadOnLaunch().registerEvents(this);
+		ItemLock.getInstance().registerEvents(this);
 
 		PluginUpdater.updateAll();
 

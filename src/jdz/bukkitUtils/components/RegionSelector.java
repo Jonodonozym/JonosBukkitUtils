@@ -12,6 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.components.events.Listener;
 import jdz.bukkitUtils.utils.ItemUtils;
@@ -66,4 +67,17 @@ public abstract class RegionSelector implements Listener {
 		player.sendMessage(ChatColor.LIGHT_PURPLE + "Corner " + corner + " set to "
 				+ WorldUtils.locationToLegibleString(location));
 	}
+	
+	@Override
+	public boolean registerEvents(Plugin plugin) {
+		ItemLock.lockItem(regionWand);
+		return Listener.super.registerEvents(plugin);
+	}
+	
+	@Override
+	public void unregisterEvents(Plugin plugin) {
+		ItemLock.unlockItem(regionWand);
+		Listener.super.unregisterEvents(plugin);
+	}
+	
 }
