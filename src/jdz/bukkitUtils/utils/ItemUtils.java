@@ -151,4 +151,23 @@ public class ItemUtils {
 					+ (entry.getValue() <= 1 ? "" : " " + RomanNumber.of(entry.getValue())));
 		return lore;
 	}
+
+	public boolean equals(ItemStack a, ItemStack b) {
+		if (a == null || b == null)
+			return false;
+
+		if (a.getType() != b.getType())
+			return false;
+
+		if (!a.hasItemMeta() && !b.hasItemMeta())
+			return true;
+
+		if (!a.hasItemMeta() || b.hasItemMeta())
+			return false;
+
+		ItemMeta metaA = a.getItemMeta(), metaB = b.getItemMeta();
+
+		return metaA.getDisplayName().equals(metaB.getDisplayName()) && metaA.getEnchants().equals(metaB.getEnchants())
+				&& metaA.getLore().equals(metaB.getLore());
+	}
 }
