@@ -152,7 +152,7 @@ public class ItemUtils {
 		return lore;
 	}
 
-	public boolean equals(ItemStack a, ItemStack b) {
+	public static boolean equals(ItemStack a, ItemStack b) {
 		if (a == null || b == null)
 			return false;
 
