@@ -38,10 +38,15 @@ public abstract class RegionSelector implements Listener {
 	}
 
 	public void giveWand(Player player) {
+		if (!hasWandInInventory(player))
+			player.getInventory().addItem(regionWand);
+	}
+
+	public boolean hasWandInInventory(Player player) {
 		for (ItemStack item : player.getInventory())
 			if (ItemUtils.equals(regionWand, item))
-				return;
-		player.getInventory().addItem(regionWand);
+				return true;
+		return false;
 	}
 
 	@EventHandler
@@ -67,17 +72,17 @@ public abstract class RegionSelector implements Listener {
 		player.sendMessage(ChatColor.LIGHT_PURPLE + "Corner " + corner + " set to "
 				+ WorldUtils.locationToLegibleString(location));
 	}
-	
+
 	@Override
 	public boolean registerEvents(Plugin plugin) {
 		ItemLock.lockItem(regionWand);
 		return Listener.super.registerEvents(plugin);
 	}
-	
+
 	@Override
 	public void unregisterEvents(Plugin plugin) {
 		ItemLock.unlockItem(regionWand);
 		Listener.super.unregisterEvents(plugin);
 	}
-	
+
 }
