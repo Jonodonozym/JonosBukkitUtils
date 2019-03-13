@@ -37,6 +37,9 @@ public abstract class RegionSelector implements Listener {
 	}
 
 	public void giveWand(Player player) {
+		for (ItemStack item : player.getInventory())
+			if (ItemUtils.equals(regionWand, item))
+				return;
 		player.getInventory().addItem(regionWand);
 	}
 
