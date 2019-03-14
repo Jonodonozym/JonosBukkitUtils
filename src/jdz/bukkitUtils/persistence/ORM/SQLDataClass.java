@@ -305,7 +305,7 @@ public class SQLDataClass {
 	private Map<Field, String> getFieldValues(Predicate<Field> shouldFetch) {
 		Map<Field, String> fields = new LinkedHashMap<>();
 		for (Field field : getClass().getDeclaredFields())
-			if (shouldFetch.test(field)) {
+			if (shouldFetch.test(field) && field.getAnnotation(NoSave.class) == null) {
 				if (!field.isAccessible())
 					field.setAccessible(true);
 				Class<?> clazz = field.getType();
