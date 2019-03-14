@@ -6,6 +6,7 @@ import java.util.UUID;
 import org.bukkit.Bukkit;
 import org.bukkit.Chunk;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -48,6 +49,12 @@ public class SQLDataClassBukkitParser {
 
 		SQLDataSerialiser.addParser(UUID.class, (s) -> {
 			return UUID.fromString(s);
+		});
+		
+		SQLDataSerialiser.addParserSerialiser(Material.class, (string) -> {
+			return Material.valueOf(string);
+		}, (material) -> {
+			return material.name();
 		});
 	}
 
