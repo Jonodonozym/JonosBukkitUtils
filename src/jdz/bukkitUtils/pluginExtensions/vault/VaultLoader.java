@@ -14,67 +14,35 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.RegisteredServiceProvider;
 
 import jdz.bukkitUtils.utils.ColorUtils;
+import lombok.Getter;
 import net.milkbowl.vault.chat.Chat;
 import net.milkbowl.vault.economy.Economy;
 import net.milkbowl.vault.permission.Permission;
 
 /**
  * Automatically loads Vault shiz so you don't have to worry about that
- * RegisteredServiceProvider stuff thingy.
+ * RegisteredServiceProviderFactoryClassLoaderModernImplementation stuff.
  *
  * @author Jonodonozym
  */
 public final class VaultLoader {
-	private static Economy economy = null;
-	private static Chat chat = null;
-	private static Permission perms = null;
+	@Getter private static Economy economy = fetch(Economy.class);
+	@Getter private static Chat chat = fetch(Chat.class);
+	@Getter private static Permission permission = fetch(Permission.class);
 
-	static {
-		setupEconomy();
-		setupChat();
-		setupPermissions();
-	}
-
-	private static void setupEconomy() {
-		if (Bukkit.getServer().getPluginManager().getPlugin("Vault") != null) {
-			RegisteredServiceProvider<Economy> rsp = Bukkit.getServer().getServicesManager()
-					.getRegistration(Economy.class);
-			if (rsp != null)
-				economy = rsp.getProvider();
-		}
-	}
-
-	private static void setupChat() {
-		RegisteredServiceProvider<Chat> rsp = Bukkit.getServer().getServicesManager().getRegistration(Chat.class);
-		if (rsp != null)
-			chat = rsp.getProvider();
-	}
-
-	private static void setupPermissions() {
-		RegisteredServiceProvider<Permission> rsp = Bukkit.getServer().getServicesManager()
-				.getRegistration(Permission.class);
-		if (rsp != null)
-			perms = rsp.getProvider();
-	}
-
-	public static Economy getEconomy() {
-		return economy;
-	}
-
-	public static Chat getChat() {
-		return chat;
-	}
-
-	public static Permission getPermission() {
-		return perms;
+	private static <T> T fetch(Class<T> clazz) {
+		RegisteredServiceProvider<T> provider = Bukkit.getServicesManager().getRegistration(clazz);
+		if (provider == null)
+			return null;
+		return provider.getProvider();
 	}
 
 	public static String getGroup(Player player) {
-		if (chat == null || perms == null)
+		if (chat == null || permission == null)
 			return "";
 
 		String prefix = chat.getPlayerPrefix(player);
-		String group = perms.getPrimaryGroup(player);
+		String group = permission.getPrimaryGroup(player);
 
 		if (prefix == null || prefix == "")
 			prefix = chat.getGroupPrefix(player.getWorld(), group);
