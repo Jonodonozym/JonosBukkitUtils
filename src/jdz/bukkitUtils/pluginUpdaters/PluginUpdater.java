@@ -13,6 +13,7 @@ import com.google.common.io.Files;
 import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.configuration.Config;
 import jdz.bukkitUtils.fileIO.FileLogger;
+import jdz.bukkitUtils.pluginUpdaters.fetch.PluginDownloader;
 
 public class PluginUpdater {
 	private static final File PLUGIN_UPDATE_DIR = new File(JonosBukkitUtils.getInstance().getDataFolder(),

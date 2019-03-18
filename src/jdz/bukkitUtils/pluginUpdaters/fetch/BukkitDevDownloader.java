@@ -1,4 +1,4 @@
-package jdz.bukkitUtils.pluginUpdaters;
+package jdz.bukkitUtils.pluginUpdaters.fetch;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -15,6 +15,9 @@ import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.json.simple.JSONValue;
 
+import jdz.bukkitUtils.pluginUpdaters.PluginUpdateResult;
+import jdz.bukkitUtils.pluginUpdaters.PluginUpdateType;
+import jdz.bukkitUtils.pluginUpdaters.Version;
 import lombok.Getter;
 
 /**
@@ -39,7 +42,7 @@ import lombok.Getter;
  * @version 2.4
  */
 
-public class BukkitDevUpdater extends PluginDownloader {
+public class BukkitDevDownloader extends PluginDownloader {
 	private static final String TITLE_VALUE = "name";
 	private static final String LINK_VALUE = "downloadUrl";
 	private static final String VERSION_VALUE = "gameVersion";
@@ -64,7 +67,7 @@ public class BukkitDevUpdater extends PluginDownloader {
 	private String versionLink;
 	private String versionGameVersion;
 
-	public BukkitDevUpdater(Plugin plugin, int curseID, PluginUpdateType type, String APIKey) throws Exception {
+	public BukkitDevDownloader(Plugin plugin, int curseID, PluginUpdateType type, String APIKey) throws Exception {
 		this.plugin = plugin;
 		this.type = type;
 		this.curseID = curseID;
@@ -72,7 +75,7 @@ public class BukkitDevUpdater extends PluginDownloader {
 		version = new Version(plugin);
 
 		try {
-			BukkitPluginURL = new URL(BukkitDevUpdater.HOST + BukkitDevUpdater.QUERY + this.curseID);
+			BukkitPluginURL = new URL(BukkitDevDownloader.HOST + BukkitDevDownloader.QUERY + this.curseID);
 		}
 		catch (final MalformedURLException e) {
 			Bukkit.getLogger().log(Level.SEVERE,
@@ -91,7 +94,7 @@ public class BukkitDevUpdater extends PluginDownloader {
 	}
 
 	@Override
-	PluginUpdateResult getResult() {
+	public PluginUpdateResult getResult() {
 		waitForDataFetch();
 		return result;
 	}
@@ -113,9 +116,9 @@ public class BukkitDevUpdater extends PluginDownloader {
 	}
 
 	@Override
-	boolean updateToLatestVersion() {
+	public boolean updateToLatestVersion() {
 		waitForDataFetch();
-		for (final String string : BukkitDevUpdater.NO_UPDATE_TAG)
+		for (final String string : BukkitDevDownloader.NO_UPDATE_TAG)
 			if (version.toString().contains(string))
 				return false;
 		return true;
@@ -143,7 +146,7 @@ public class BukkitDevUpdater extends PluginDownloader {
 
 			if (BukkitAPIKey != null)
 				conn.addRequestProperty("X-API-Key", BukkitAPIKey);
-			conn.addRequestProperty("User-Agent", BukkitDevUpdater.USER_AGENT);
+			conn.addRequestProperty("User-Agent", BukkitDevDownloader.USER_AGENT);
 
 			conn.setDoOutput(true);
 
@@ -159,9 +162,9 @@ public class BukkitDevUpdater extends PluginDownloader {
 			}
 
 			JSONObject latestUpdate = (JSONObject) array.get(array.size() - 1);
-			version = new Version((String) latestUpdate.get(BukkitDevUpdater.TITLE_VALUE));
-			versionLink = (String) latestUpdate.get(BukkitDevUpdater.LINK_VALUE);
-			versionGameVersion = (String) latestUpdate.get(BukkitDevUpdater.VERSION_VALUE);
+			version = new Version((String) latestUpdate.get(BukkitDevDownloader.TITLE_VALUE));
+			versionLink = (String) latestUpdate.get(BukkitDevDownloader.LINK_VALUE);
+			versionGameVersion = (String) latestUpdate.get(BukkitDevDownloader.VERSION_VALUE);
 
 			return true;
 		}

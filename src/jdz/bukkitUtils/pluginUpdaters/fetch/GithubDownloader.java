@@ -1,5 +1,5 @@
 
-package jdz.bukkitUtils.pluginUpdaters;
+package jdz.bukkitUtils.pluginUpdaters.fetch;
 
 import java.io.File;
 import java.net.URL;
@@ -10,9 +10,12 @@ import org.kohsuke.github.GHRelease;
 import org.kohsuke.github.GHRepository;
 import org.kohsuke.github.GitHub;
 
+import jdz.bukkitUtils.pluginUpdaters.PluginUpdateResult;
+import jdz.bukkitUtils.pluginUpdaters.PluginUpdateType;
+import jdz.bukkitUtils.pluginUpdaters.Version;
 import lombok.Getter;
 
-public class GithubUpdater extends PluginDownloader {
+public class GithubDownloader extends PluginDownloader {
 	@Getter private final Plugin plugin;
 	@Getter private final PluginUpdateType type;
 	@Getter private final PluginUpdateResult result = PluginUpdateResult.DISABLED;
@@ -22,7 +25,7 @@ public class GithubUpdater extends PluginDownloader {
 	private Version latestVersion;
 	private URL versionURL;
 
-	public GithubUpdater(Plugin plugin, PluginUpdateType type, String repository, String login,
+	public GithubDownloader(Plugin plugin, PluginUpdateType type, String repository, String login,
 			String oauthAccessToken) {
 		this.plugin = plugin;
 		this.type = type;
@@ -60,12 +63,12 @@ public class GithubUpdater extends PluginDownloader {
 	}
 
 	@Override
-	boolean updateToLatestVersion() {
+	public boolean updateToLatestVersion() {
 		return versionURL != null;
 	}
 
 	@Override
-	File download(File targetFolder) {
+	public File download(File targetFolder) {
 		waitForDataFetch();
 		return download(versionURL, targetFolder);
 	}

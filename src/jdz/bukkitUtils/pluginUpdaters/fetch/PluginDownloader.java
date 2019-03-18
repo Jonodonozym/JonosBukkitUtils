@@ -1,5 +1,5 @@
 
-package jdz.bukkitUtils.pluginUpdaters;
+package jdz.bukkitUtils.pluginUpdaters.fetch;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -15,6 +15,11 @@ import java.util.logging.Level;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
+import jdz.bukkitUtils.pluginUpdaters.PluginUpdateResult;
+import jdz.bukkitUtils.pluginUpdaters.PluginUpdateType;
+import jdz.bukkitUtils.pluginUpdaters.PluginUpdater;
+import jdz.bukkitUtils.pluginUpdaters.UpdateListener;
+import jdz.bukkitUtils.pluginUpdaters.Version;
 import lombok.Getter;
 
 public abstract class PluginDownloader {
@@ -33,15 +38,15 @@ public abstract class PluginDownloader {
 
 	public abstract Version getLatestVersion();
 
-	abstract boolean updateToLatestVersion();
+	public abstract boolean updateToLatestVersion();
 
-	abstract File download(File targetFolder);
+	public abstract File download(File targetFolder);
 
-	abstract Plugin getPlugin();
+	public abstract Plugin getPlugin();
 
-	abstract PluginUpdateType getType();
+	public abstract PluginUpdateType getType();
 
-	abstract PluginUpdateResult getResult();
+	public abstract PluginUpdateResult getResult();
 
 	public void updatePlugin() {
 		PluginUpdater.update(this);
