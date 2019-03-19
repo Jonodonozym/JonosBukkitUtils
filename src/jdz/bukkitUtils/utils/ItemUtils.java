@@ -22,15 +22,14 @@ import org.bukkit.inventory.meta.ItemMeta;
 import jdz.bukkitUtils.components.RomanNumber;
 
 public class ItemUtils {
-	public static boolean itemHasName(ItemStack stack, String name) {
-		if (stack == null)
-			return false;
-		ItemMeta meta = stack.getItemMeta();
-		if (meta == null)
-			return false;
-		if (!meta.hasDisplayName())
-			return false;
-		return meta.getDisplayName().equalsIgnoreCase(name);
+	public static boolean hasName(ItemStack item) {
+		return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName();
+	}
+
+	public static boolean hasName(ItemStack stack, String name) {
+		if (hasName(stack))
+			return stack.getItemMeta().getDisplayName().equalsIgnoreCase(name);
+		return false;
 	}
 
 	public static ItemStack setName(ItemStack itemStack, String name) {
@@ -42,16 +41,18 @@ public class ItemUtils {
 		return itemStack;
 	}
 
+	public static boolean isDamageable(ItemStack itemStack, int data) {
+		return itemStack.hasItemMeta() && itemStack instanceof Damageable;
+	}
+
 	public static ItemStack setData(ItemStack itemStack, int data) {
 		return setDamage(itemStack, data);
 	}
 
 	public static ItemStack setDamage(ItemStack itemStack, int damage) {
-		ItemMeta meta = itemStack.getItemMeta();
-		if (meta == null)
-			meta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
-		if (!(meta instanceof Damageable))
+		if (!isDamageable(itemStack, damage))
 			return itemStack;
+		ItemMeta meta = itemStack.getItemMeta();
 		((Damageable) meta).setDamage(damage);
 		itemStack.setItemMeta(meta);
 		return itemStack;
@@ -64,6 +65,21 @@ public class ItemUtils {
 		return ((Damageable) meta).getDamage();
 	}
 
+	public static boolean hasLore(ItemStack item) {
+		return item != null && item.hasItemMeta() && item.getItemMeta().hasLore()
+				&& !item.getItemMeta().getLore().isEmpty();
+	}
+
+	public static boolean hasLore(ItemStack item, List<String> lore) {
+		if (!hasLore(item))
+			return lore.isEmpty() || lore == null;
+		List<String> itemLore = item.getItemMeta().getLore();
+		for (int i = 0; i < lore.size(); i++)
+			if (!lore.get(i).equals(itemLore.get(i)))
+				return false;
+		return true;
+	}
+
 	public static ItemStack setLore(ItemStack itemStack, List<String> lore) {
 		ItemMeta meta = itemStack.getItemMeta();
 		if (meta == null)
@@ -71,6 +87,12 @@ public class ItemUtils {
 		meta.setLore(lore);
 		itemStack.setItemMeta(meta);
 		return itemStack;
+	}
+
+	public static List<String> getLore(ItemStack itemStack) {
+		if (!hasLore(itemStack))
+			return new ArrayList<>();
+		return itemStack.getItemMeta().getLore();
 	}
 
 	public static void give(Player player, ItemStack item) {
@@ -108,23 +130,47 @@ public class ItemUtils {
 		HashMap<Integer, ItemStack> itemOverflow = inv.addItem(items.toArray(new ItemStack[1]));
 		return new ArrayList<>(itemOverflow.values());
 	}
+	
+	public static boolean has(Inventory inv, Material m, int amount) {
+		return count(inv, m) >= amount;
+	}
+	
+	public static boolean has(Inventory inv, ItemStack item, int amount) {
+		return count(inv, item) >= amount;
+	}
+
+	public static int count(Inventory inv, Material m) {
+		return count(inv, new ItemStack(m));
+	}
+
+	public static int count(Inventory inv, ItemStack item) {
+		int count = 0;
+		for (ItemStack inventoryItem : inv.getContents())
+			if (equals(inventoryItem, item))
+				count += inventoryItem.getAmount();
+		return count;
+	}
 
 	public static void remove(Inventory inv, Material m, int quantity) {
+		remove(inv, new ItemStack(m), quantity);
+	}
+
+	public static void remove(Inventory inv, ItemStack item, int quantity) {
 		ItemStack[] contents = inv.getContents();
 		for (int i = 0; i < contents.length; i++) {
-			ItemStack item = contents[i];
-			if (item == null || m != item.getType())
+			ItemStack inventoryItem = contents[i];
+			if (!equals(inventoryItem, item))
 				continue;
 
-			if (quantity >= item.getAmount()) {
-				quantity -= item.getAmount();
+			if (quantity >= inventoryItem.getAmount()) {
+				quantity -= inventoryItem.getAmount();
 				inv.setItem(i, new ItemStack(Material.AIR));
 				if (quantity == 0)
 					return;
 			}
 			else {
-				ItemStack newItem = new ItemStack(item);
-				newItem.setAmount(item.getAmount() - quantity);
+				ItemStack newItem = new ItemStack(inventoryItem);
+				newItem.setAmount(inventoryItem.getAmount() - quantity);
 				inv.setItem(i, newItem);
 				return;
 			}
