@@ -26,40 +26,46 @@ public class ItemUtils {
 		return item != null && item.hasItemMeta() && item.getItemMeta().hasDisplayName();
 	}
 
-	public static boolean hasName(ItemStack stack, String name) {
-		if (hasName(stack))
-			return stack.getItemMeta().getDisplayName().equalsIgnoreCase(name);
+	public static boolean hasName(ItemStack item, String name) {
+		if (hasName(item))
+			return item.getItemMeta().getDisplayName().equalsIgnoreCase(name);
 		return false;
 	}
 
-	public static ItemStack setName(ItemStack itemStack, String name) {
-		ItemMeta meta = itemStack.getItemMeta();
+	public static ItemStack setName(ItemStack item, String name) {
+		ItemMeta meta = item.getItemMeta();
 		if (meta == null)
-			meta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
+			meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 		meta.setDisplayName(name);
-		itemStack.setItemMeta(meta);
-		return itemStack;
+		item.setItemMeta(meta);
+		return item;
 	}
 
-	public static boolean isDamageable(ItemStack itemStack, int data) {
-		return itemStack.hasItemMeta() && itemStack instanceof Damageable;
+	public static String getName(ItemStack item) {
+		if (!hasName(item))
+			return StringUtils.capitalizeWords(item.getType().toString());
+		return item.getItemMeta().getDisplayName();
 	}
 
-	public static ItemStack setData(ItemStack itemStack, int data) {
-		return setDamage(itemStack, data);
+	public static boolean isDamageable(ItemStack item) {
+		return item.hasItemMeta() && item instanceof Damageable;
 	}
 
-	public static ItemStack setDamage(ItemStack itemStack, int damage) {
-		if (!isDamageable(itemStack, damage))
-			return itemStack;
-		ItemMeta meta = itemStack.getItemMeta();
+	public static ItemStack setData(ItemStack item, int data) {
+		return setDamage(item, data);
+	}
+
+	public static ItemStack setDamage(ItemStack item, int damage) {
+		if (!isDamageable(item))
+			return item;
+		ItemMeta meta = item.getItemMeta();
 		((Damageable) meta).setDamage(damage);
-		itemStack.setItemMeta(meta);
-		return itemStack;
+		item.setItemMeta(meta);
+		return item;
 	}
 
-	public static int getDamage(ItemStack itemStack) {
-		ItemMeta meta = itemStack.getItemMeta();
+	public static int getDamage(ItemStack item) {
+		ItemMeta meta = item.getItemMeta();
 		if (meta == null || !(meta instanceof Damageable))
 			return 0;
 		return ((Damageable) meta).getDamage();
@@ -80,19 +86,19 @@ public class ItemUtils {
 		return true;
 	}
 
-	public static ItemStack setLore(ItemStack itemStack, List<String> lore) {
-		ItemMeta meta = itemStack.getItemMeta();
+	public static ItemStack setLore(ItemStack item, List<String> lore) {
+		ItemMeta meta = item.getItemMeta();
 		if (meta == null)
-			meta = Bukkit.getItemFactory().getItemMeta(itemStack.getType());
+			meta = Bukkit.getItemFactory().getItemMeta(item.getType());
 		meta.setLore(lore);
-		itemStack.setItemMeta(meta);
-		return itemStack;
+		item.setItemMeta(meta);
+		return item;
 	}
 
-	public static List<String> getLore(ItemStack itemStack) {
-		if (!hasLore(itemStack))
+	public static List<String> getLore(ItemStack item) {
+		if (!hasLore(item))
 			return new ArrayList<>();
-		return itemStack.getItemMeta().getLore();
+		return item.getItemMeta().getLore();
 	}
 
 	public static void give(Player player, ItemStack item) {
@@ -130,11 +136,11 @@ public class ItemUtils {
 		HashMap<Integer, ItemStack> itemOverflow = inv.addItem(items.toArray(new ItemStack[1]));
 		return new ArrayList<>(itemOverflow.values());
 	}
-	
+
 	public static boolean has(Inventory inv, Material m, int amount) {
 		return count(inv, m) >= amount;
 	}
-	
+
 	public static boolean has(Inventory inv, ItemStack item, int amount) {
 		return count(inv, item) >= amount;
 	}
@@ -176,23 +182,27 @@ public class ItemUtils {
 			}
 		}
 	}
+	
+	public static boolean hasEnchants(ItemStack item) {
+		return item != null && !item.getEnchantments().isEmpty();
+	}
 
-	public static Map<Enchantment, Integer> getCustomEnchants(ItemStack stack) {
+	public static Map<Enchantment, Integer> getCustomEnchants(ItemStack item) {
 		Map<Enchantment, Integer> customEnchants = new HashMap<>();
 
-		if (stack.getEnchantments() == null)
+		if (item.getEnchantments() == null)
 			return customEnchants;
 
-		for (Entry<Enchantment, Integer> entry : stack.getEnchantments().entrySet())
+		for (Entry<Enchantment, Integer> entry : item.getEnchantments().entrySet())
 			if (jdz.bukkitUtils.components.Enchantment.isCustom(entry.getKey()))
 				customEnchants.put(entry.getKey(), entry.getValue());
 
 		return customEnchants;
 	}
 
-	public static List<String> getCustomEnchantsLore(ItemStack stack) {
+	public static List<String> getCustomEnchantsLore(ItemStack item) {
 		List<String> lore = new ArrayList<>();
-		for (Entry<Enchantment, Integer> entry : getCustomEnchants(stack).entrySet())
+		for (Entry<Enchantment, Integer> entry : getCustomEnchants(item).entrySet())
 			lore.add(ChatColor.GRAY + entry.getKey().getKey().getKey()
 					+ (entry.getValue() <= 1 ? "" : " " + RomanNumber.of(entry.getValue())));
 		return lore;
