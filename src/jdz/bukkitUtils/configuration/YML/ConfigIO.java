@@ -20,14 +20,6 @@ import org.bukkit.inventory.ItemStack;
 import jdz.bukkitUtils.utils.WorldUtils;
 
 public class ConfigIO {
-	public static <E> E parse(Type genericType, Class<E> type, ConfigurationSection section, String path) throws ParseException {
-		return ConfigParser.parse(genericType, type, section, path);
-	}
-
-	public static <E> void save(Type genericType, Class<E> type, ConfigurationSection section, String path, Object value) {
-		ConfigSerializer.save(genericType, type, section, path, value);
-	}
-
 	static {
 		addAll((c, s) -> {
 			return c.getInt(s);
@@ -73,7 +65,7 @@ public class ConfigIO {
 		}, (c, s, mat) -> {
 			c.set(s, ((Material) mat).name());
 		}, Material.class);
-		
+
 		addAll(new ItemStackParserSerializer(), new ItemStackParserSerializer(), ItemStack.class);
 
 		addAll((c, s) -> {
@@ -101,12 +93,34 @@ public class ConfigIO {
 		}, Chunk.class);
 	}
 
-	private static <T> void addAll(ConfigParser<T> parser, ConfigSerializer<T> serializer, Class<T> c) {
+	public static <E> E parse(Type genericType, Class<E> type, ConfigurationSection section, String path)
+			throws ParseException {
+		return ConfigParser.parse(genericType, type, section, path);
+	}
+
+	public static <E> void save(Type genericType, Class<E> type, ConfigurationSection section, String path,
+			Object value) {
+		ConfigSerializer.save(genericType, type, section, path, value);
+	}
+
+	public static <T> void addParser(ConfigParser<T> parser, Class<T> c) {
+		ConfigParser.add(c, parser);
+	}
+
+	public static <T> void addSerializer(ConfigSerializer<T> serializer, Class<T> c) {
+		ConfigSerializer.add(c, serializer);
+	}
+
+	public static <T> void addGenericSerializer(Class<T> c) {
+		ConfigSerializer.addGeneric(c);
+	}
+
+	public static <T> void addAll(ConfigParser<T> parser, ConfigSerializer<T> serializer, Class<T> c) {
 		ConfigParser.add(c, parser);
 		ConfigSerializer.add(c, serializer);
 	}
 
-	private static void addAll(ConfigParser<?> parser, Class<?>... classes) {
+	public static void addAll(ConfigParser<?> parser, Class<?>... classes) {
 		for (Class<?> c : classes) {
 			ConfigParser.add(c, parser);
 			ConfigSerializer.addGeneric(c);
