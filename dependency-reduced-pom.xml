@@ -4,7 +4,7 @@
   <groupId>jdz.bukkit</groupId>
   <artifactId>JonosBukkitUtils</artifactId>
   <name>Jonos Bukkit Utils</name>
-  <version>1.0</version>
+  <version>1.1</version>
   <description>Bunch of utilities to fast-track bukkit plugin development</description>
   <url>https://github.com/Jonodonozym/JonosBukkitUtils</url>
   <build>
@@ -24,7 +24,7 @@
         </includes>
       </resource>
     </resources>
-    <finalName>JBU - 1.13</finalName>
+    <finalName>JBU${version} - ${api-version}</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -214,5 +214,6 @@
   </dependencies>
   <properties>
     <powermock.version>1.6.6</powermock.version>
+    <api-version>1.13</api-version>
   </properties>
 </project>

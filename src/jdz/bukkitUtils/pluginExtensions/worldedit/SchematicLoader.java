@@ -1,23 +1,19 @@
 package jdz.bukkitUtils.pluginExtensions.worldedit;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
-import com.sk89q.worldedit.extent.clipboard.Clipboard;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormat;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardFormats;
-import com.sk89q.worldedit.extent.clipboard.io.ClipboardReader;
+import com.sk89q.worldedit.CuboidClipboard;
 
+@SuppressWarnings("deprecation")
 public class SchematicLoader {
-	private final Map<String, Clipboard> schemas = new HashMap<>();
+	private final Map<String, CuboidClipboard> schemas = new HashMap<>();
 
-	public Clipboard getSchema(String name) {
+	public CuboidClipboard getSchema(String name) {
 		return schemas.get(name);
 	}
 
@@ -33,21 +29,14 @@ public class SchematicLoader {
 			for (File file : files)
 				if (file.isDirectory())
 					loadSchematics(file);
-				else {
-					ClipboardFormat format = ClipboardFormats.findByFile(file);
-					if (format == null)
-						continue;
-
-					try (ClipboardReader reader = format.getReader(new FileInputStream(file))) {
-						String schematicName = file.getName();
-						if (schematicName.lastIndexOf(".") != -1)
-							schematicName = schematicName.substring(0, file.getName().lastIndexOf(".") - 1);
-						schemas.put(schematicName, reader.read());
+				else if (file.getName().endsWith(".schematic"))
+					try {
+						CuboidClipboard cc = CuboidClipboard.loadSchematic(file);
+						schemas.put(file.getName().replace(".schematic", ""), cc);
 					}
-					catch (IOException e) {
+					catch (Exception e) {
 						Bukkit.getLogger().info("Error loading schematic: " + e);
 					}
-				}
 		}
 	}
 }

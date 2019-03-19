@@ -16,7 +16,6 @@ import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.Damageable;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import jdz.bukkitUtils.components.RomanNumber;
@@ -48,27 +47,22 @@ public class ItemUtils {
 	}
 
 	public static boolean isDamageable(ItemStack item) {
-		return item.hasItemMeta() && item instanceof Damageable;
-	}
-
-	public static ItemStack setData(ItemStack item, int data) {
-		return setDamage(item, data);
+		return true;
 	}
 
 	public static ItemStack setDamage(ItemStack item, int damage) {
-		if (!isDamageable(item))
-			return item;
-		ItemMeta meta = item.getItemMeta();
-		((Damageable) meta).setDamage(damage);
-		item.setItemMeta(meta);
+		item.setDurability((short) damage);
+		return item;
+	}
+
+	@SuppressWarnings("deprecation")
+	public static ItemStack setData(ItemStack item, int data) {
+		item.getData().setData((byte) data);
 		return item;
 	}
 
 	public static int getDamage(ItemStack item) {
-		ItemMeta meta = item.getItemMeta();
-		if (meta == null || !(meta instanceof Damageable))
-			return 0;
-		return ((Damageable) meta).getDamage();
+		return item.getDurability();
 	}
 
 	public static boolean hasLore(ItemStack item) {
@@ -182,7 +176,7 @@ public class ItemUtils {
 			}
 		}
 	}
-	
+
 	public static boolean hasEnchants(ItemStack item) {
 		return item != null && !item.getEnchantments().isEmpty();
 	}
@@ -203,7 +197,7 @@ public class ItemUtils {
 	public static List<String> getCustomEnchantsLore(ItemStack item) {
 		List<String> lore = new ArrayList<>();
 		for (Entry<Enchantment, Integer> entry : getCustomEnchants(item).entrySet())
-			lore.add(ChatColor.GRAY + entry.getKey().getKey().getKey()
+			lore.add(ChatColor.GRAY + StringUtils.capitalizeWord(entry.getKey().getName())
 					+ (entry.getValue() <= 1 ? "" : " " + RomanNumber.of(entry.getValue())));
 		return lore;
 	}

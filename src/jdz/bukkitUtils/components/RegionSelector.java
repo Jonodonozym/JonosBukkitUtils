@@ -2,6 +2,7 @@
 package jdz.bukkitUtils.components;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 
 import org.bukkit.ChatColor;
@@ -54,7 +55,8 @@ public abstract class RegionSelector implements Listener {
 		if (!ItemUtils.equals(regionWand, event.getItem()))
 			return;
 
-		Block target = event.getPlayer().getTargetBlock(null, 100);
+		@SuppressWarnings("deprecation")
+		Block target = event.getPlayer().getTargetBlock((HashSet<Byte>) null, 100);
 		if (target == null)
 			return;
 

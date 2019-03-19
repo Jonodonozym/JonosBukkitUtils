@@ -13,7 +13,7 @@
 
 	<properties>
 		<powermock.version>1.6.6</powermock.version>
-		<api-version>1.13</api-version>
+		<api-version>pre1.13</api-version>
 	</properties>
 
 	<build>
@@ -130,19 +130,19 @@
 		<dependency>
 			<groupId>net.milkbowl.vault</groupId>
 			<artifactId>VaultAPI</artifactId>
-			<version>1.7</version>
+			<version>1.6</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.spigotmc</groupId>
 			<artifactId>spigot-api</artifactId>
-			<version>1.13.2-R0.1-SNAPSHOT</version>
+			<version>1.12.2-R0.1-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.sk89q.worldedit</groupId>
 			<artifactId>worldedit-bukkit</artifactId>
-			<version>7.0.0-SNAPSHOT</version>
+			<version>6.1.4-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
 		<dependency>

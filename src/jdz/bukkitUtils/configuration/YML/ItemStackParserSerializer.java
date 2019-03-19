@@ -35,7 +35,6 @@ public class ItemStackParserSerializer implements ConfigParser<ItemStack>, Confi
 
 	private void saveEnchants(ItemStack item, ConfigurationSection enchantsSection) {
 		for (Enchantment enchant : item.getEnchantments().keySet()) {
-			@SuppressWarnings("deprecation")
 			ConfigurationSection enchantSection = enchantsSection.createSection(enchant.getName());
 			enchantSection.set("level", item.getEnchantmentLevel(enchant));
 		}
@@ -86,7 +85,6 @@ public class ItemStackParserSerializer implements ConfigParser<ItemStack>, Confi
 
 	private void applyEnchant(ItemStack item, String key, ConfigurationSection enchantSection) {
 		try {
-			@SuppressWarnings("deprecation") // TODO replace with better method
 			Enchantment enchant = Enchantment.getByName(key);
 			int level = enchantSection.getInt("level", 0);
 			item.addUnsafeEnchantment(enchant, level);
