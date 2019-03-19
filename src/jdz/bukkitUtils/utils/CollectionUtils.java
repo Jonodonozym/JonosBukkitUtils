@@ -2,12 +2,16 @@
 package jdz.bukkitUtils.utils;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class CollectionUtils {
+import jdz.bukkitUtils.components.Random;
 
+public class CollectionUtils {
 	@SuppressWarnings("unchecked")
 	public static <K, T extends Number> void addToAll(Map<K, T> map, T value) {
 		for (K key : map.keySet())
@@ -51,7 +55,21 @@ public class CollectionUtils {
 			return new Integer(a.intValue() + b.intValue());
 	}
 
-	public static interface Condition<E> {
-		public boolean isTrue(E object);
+	public static interface Condition<T> {
+		public boolean isTrue(T object);
+	}
+
+	public static <T> T getRandomElement(Collection<T> collection) {
+		if (collection.size() == 0)
+			return null;
+
+		int index = Random.nextInt(collection.size());
+		if (collection instanceof List)
+			return ((List<T>) collection).get(index);
+
+		Iterator<T> iter = collection.iterator();
+		for (int i = 0; i < index; i++)
+			iter.next();
+		return iter.next();
 	}
 }
