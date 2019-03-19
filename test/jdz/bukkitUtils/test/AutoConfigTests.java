@@ -17,7 +17,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import jdz.bukkitUtils.configuration.AutoConfig;
-import jdz.bukkitUtils.configuration.YML.AutoConfigIO;
+import jdz.bukkitUtils.configuration.YML.ConfigIO;
 
 public class AutoConfigTests {
 	private static Field field = AutoConfigClass.class.getDeclaredFields()[0];
@@ -45,7 +45,7 @@ public class AutoConfigTests {
 	@Test
 	public void saveCollection() {
 		ConfigurationSection section = mock(ConfigurationSection.class);
-		AutoConfigIO.save(field.getGenericType(), field.getType(), section, "asdf", AutoConfigClass.stringList);
+		ConfigIO.save(field.getGenericType(), field.getType(), section, "asdf", AutoConfigClass.stringList);
 		verify(section).set("asdf.type", "java.util.ArrayList");
 		verify(section).set("asdf.0", "test");
 	}
@@ -62,7 +62,7 @@ public class AutoConfigTests {
 
 		when(subSection.getKeys(false)).thenReturn(new HashSet<String>(Arrays.asList("type", "0")));
 
-		Object o = AutoConfigIO.parse(field.getGenericType(), field.getType(), section, "asdf");
+		Object o = ConfigIO.parse(field.getGenericType(), field.getType(), section, "asdf");
 
 		System.out.println(o);
 	}

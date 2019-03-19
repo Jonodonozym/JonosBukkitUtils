@@ -15,16 +15,17 @@ import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.inventory.ItemStack;
 
 import jdz.bukkitUtils.utils.WorldUtils;
 
-public class AutoConfigIO {
-	public static <E> E parse(Type t, Class<E> c, ConfigurationSection section, String path) throws ParseException {
-		return ConfigParser.parse(t, c, section, path);
+public class ConfigIO {
+	public static <E> E parse(Type genericType, Class<E> type, ConfigurationSection section, String path) throws ParseException {
+		return ConfigParser.parse(genericType, type, section, path);
 	}
 
-	public static <E> void save(Type t, Class<E> c, ConfigurationSection section, String path, Object value) {
-		ConfigSerializer.save(t, c, section, path, value);
+	public static <E> void save(Type genericType, Class<E> type, ConfigurationSection section, String path, Object value) {
+		ConfigSerializer.save(genericType, type, section, path, value);
 	}
 
 	static {
@@ -72,6 +73,8 @@ public class AutoConfigIO {
 		}, (c, s, mat) -> {
 			c.set(s, ((Material) mat).name());
 		}, Material.class);
+		
+		addAll(new ItemStackParserSerializer(), new ItemStackParserSerializer(), ItemStack.class);
 
 		addAll((c, s) -> {
 			return Bukkit.getOfflinePlayer(UUID.fromString(c.getString(s)));

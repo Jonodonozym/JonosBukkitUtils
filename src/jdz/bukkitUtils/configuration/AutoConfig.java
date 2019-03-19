@@ -15,7 +15,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.components.events.Listener;
-import jdz.bukkitUtils.configuration.YML.AutoConfigIO;
+import jdz.bukkitUtils.configuration.YML.ConfigIO;
 import lombok.Getter;
 
 public abstract class AutoConfig implements Listener {
@@ -126,7 +126,7 @@ public abstract class AutoConfig implements Listener {
 			try {
 				if (section.contains(field.getName())) {
 					field.setAccessible(true);
-					Object val = AutoConfigIO.parse(field.getGenericType(), field.getType(), section, field.getName());
+					Object val = ConfigIO.parse(field.getGenericType(), field.getType(), section, field.getName());
 					field.set(this, val);
 				}
 			}
@@ -141,7 +141,7 @@ public abstract class AutoConfig implements Listener {
 			try {
 				field.setAccessible(true);
 				Object val = field.get(this);
-				AutoConfigIO.save(field.getGenericType(), field.getType(), section, field.getName(), val);
+				ConfigIO.save(field.getGenericType(), field.getType(), section, field.getName(), val);
 			}
 			catch (ReflectiveOperationException e) {
 				e.printStackTrace();
