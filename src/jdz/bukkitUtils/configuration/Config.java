@@ -80,7 +80,7 @@ public final class Config {
 		dbReconnectTime = dbReconnectTime <= 600 ? 600 : dbReconnectTime;
 		boolean preferSQL = config.getBoolean("preferSQL", true);
 
-		return new SQLConfig(dbURL, dbName, dbUsername, dbPassword, SQLDriver.MYSQL_DRIVER, preferSQL);
+		return new SQLConfig(dbURL, dbName, dbUsername, dbPassword, SQLDriver.MYSQL, preferSQL);
 	}
 
 	@Deprecated

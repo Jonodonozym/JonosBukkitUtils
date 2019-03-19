@@ -14,7 +14,7 @@ public class SQLConfig {
 	final String dbUsername;
 	final String dbPassword;
 
-	SQLDriver driver = SQLDriver.MYSQL_DRIVER;
+	SQLDriver driver = SQLDriver.MYSQL;
 
 	boolean preferSQL = false;
 	int dbPort = 3306;
