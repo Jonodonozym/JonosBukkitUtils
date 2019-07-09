@@ -17,6 +17,15 @@ public class SQLDataSerialiser {
 	}
 
 	@SuppressWarnings("unchecked")
+	public static String serialize(Object o) {
+		return getSerialiser(o.getClass()).serialise(o);
+	}
+
+	public static <E> E parse(Class<E> type, String s) {
+		return getParser(type).parse(s);
+	}
+
+	@SuppressWarnings("unchecked")
 	public static <T> ParserMethod<T> getParser(Class<T> c) {
 		return (ParserMethod<T>) parserMethods.get(c);
 	}

@@ -19,4 +19,8 @@ public interface Cancellable extends org.bukkit.event.Cancellable {
 		else
 			set.remove(this);
 	}
+	
+	public default void cancel() {
+		setCancelled(true);
+	}
 }

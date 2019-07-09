@@ -12,9 +12,8 @@ import org.bukkit.plugin.Plugin;
 import jdz.bukkitUtils.components.guiMenu.itemStacks.ClickableStack;
 
 public class GuiMenuList extends GuiMenu {
-	private List<GuiMenuListPage> pages = new ArrayList<>();
-
-	private List<ClickableStack> items = new ArrayList<>();
+	protected List<GuiMenuListPage> pages = new ArrayList<>();
+	protected List<ClickableStack> items = new ArrayList<>();
 
 	private final Plugin plugin;
 	private final String name;
@@ -41,20 +40,23 @@ public class GuiMenuList extends GuiMenu {
 	public void setItems(List<ClickableStack> items) {
 		this.items = items;
 
-		pages.clear();
-		int numPages = items.size() <= 54 ? 1 : (items.size() + 44) / 45;
+		pages = createEmptyPages(items.size());
+		for (int i = 0; i < pages.size(); i++)
+			setupPage(i);
+	}
+
+	protected List<GuiMenuListPage> createEmptyPages(int numItems) {
+		List<GuiMenuListPage> pages = new ArrayList<>();
+		int numPages = numItems <= 54 ? 1 : (items.size() + 44) / 45;
 		for (int i = 0; i < numPages; i++)
 			pages.add(new GuiMenuListPage(plugin, name, i));
+		return pages;
+	}
 
-		for (int i = 0; i < numPages; i++) {
-			GuiMenu nextPage = null;
-			GuiMenu previousPage = null;
-			if (i > 0)
-				previousPage = pages.get(i - 1);
-			if (i < numPages - 1)
-				nextPage = pages.get(i + 1);
-			pages.get(i).setup(items, previousPage, nextPage, superMenu);
-		}
+	protected void setupPage(int index) {
+		GuiMenu nextPage = index > 0 ? pages.get(index - 1) : null;
+		GuiMenu previousPage = index < pages.size() - 1 ? pages.get(index + 1) : null;
+		pages.get(index).setup(items, previousPage, nextPage, superMenu);
 	}
 
 	public void add(ClickableStack stack) {

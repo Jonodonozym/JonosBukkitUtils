@@ -6,6 +6,8 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map.Entry;
 
+import jdz.bukkitUtils.persistence.ORM.SQLDataSerialiser;
+
 public class SQLRow {
 	private final LinkedHashMap<String, String> columnToValue;
 	private final List<String> values = new ArrayList<>();
@@ -18,6 +20,22 @@ public class SQLRow {
 
 	public String get(int index) {
 		return values().get(index);
+	}
+
+	public int getInt(int index) {
+		return Integer.parseInt(get(index));
+	}
+
+	public long getLong(int index) {
+		return Long.parseLong(get(index));
+	}
+
+	public double getDouble(int index) {
+		return Double.parseDouble(get(index));
+	}
+
+	public <E> E get(Class<E> type, int index) {
+		return SQLDataSerialiser.parse(type, get(index));
 	}
 
 	public boolean has(String columnName) {

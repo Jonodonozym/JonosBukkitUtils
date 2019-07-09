@@ -130,7 +130,29 @@ public abstract class Database {
 		return queryFirst(statement.toString());
 	}
 
-	protected List<String> getColumns(String table) {
+	public List<SQLRow> queryAndClose(PreparedStatement statement) {
+		List<SQLRow> result = query(statement);
+		try {
+			statement.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public SQLRow queryFirstAndClose(PreparedStatement statement) {
+		SQLRow result = queryFirst(statement);
+		try {
+			statement.close();
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
+
+	public List<String> getColumns(String table) {
 		List<String> columns = new ArrayList<>();
 		if (!isConnected())
 			return columns;
@@ -172,7 +194,7 @@ public abstract class Database {
 		}
 
 		try {
-			return update(dbConnection.prepareStatement(update));
+			return updateAndClose(dbConnection.prepareStatement(update));
 		}
 		catch (SQLException e) {
 			onError(e, update);
@@ -190,6 +212,18 @@ public abstract class Database {
 		}
 	}
 
+	public boolean updateAndClose(PreparedStatement statement) {
+		try {
+			boolean result = statement.execute();
+			statement.close();
+			return result;
+		}
+		catch (SQLException exception) {
+			onError(exception, statement.toString());
+			return false;
+		}
+	}
+
 	private final Executor executor = Executors.newCachedThreadPool();
 
 	/**
@@ -197,7 +231,7 @@ public abstract class Database {
 	 *
 	 * @param update
 	 */
-	protected void updateAsync(String update) {
+	public void updateAsync(String update) {
 		try {
 			if (!isConnected()) {
 				runOnConnect(() -> {
@@ -206,16 +240,22 @@ public abstract class Database {
 				return;
 			}
 
-			updateAsync(dbConnection.prepareStatement(update));
+			updateAndCloseAsync(dbConnection.prepareStatement(update));
 		}
 		catch (SQLException e) {
 			onError(e, update);
 		}
 	}
 
-	protected void updateAsync(PreparedStatement update) {
+	public void updateAsync(PreparedStatement update) {
 		executor.execute(() -> {
 			update(update);
+		});
+	}
+
+	public void updateAndCloseAsync(PreparedStatement update) {
+		executor.execute(() -> {
+			updateAndClose(update);
 		});
 	}
 
@@ -225,7 +265,7 @@ public abstract class Database {
 	 * @param tableName
 	 * @return
 	 */
-	protected boolean hasTable(String tableName) {
+	public boolean hasTable(String tableName) {
 		if (!isConnected())
 			return false;
 
@@ -270,7 +310,7 @@ public abstract class Database {
 			updatePrimaryKeys(tableName, columns);
 	}
 
-	protected void removeTable(String tableName) {
+	public void removeTable(String tableName) {
 		String update = "DROP TABLE IF EXISTS " + tableName + ";";
 		update(update);
 	}
@@ -281,7 +321,7 @@ public abstract class Database {
 	 * @param tableName
 	 * @param column
 	 */
-	protected void addColumn(String tableName, SQLColumn column) {
+	public void addColumn(String tableName, SQLColumn column) {
 		addColumns(tableName, column);
 	}
 
@@ -291,7 +331,7 @@ public abstract class Database {
 	 * @param tableName
 	 * @param columns
 	 */
-	protected void addColumns(String tableName, SQLColumn... columns) {
+	public void addColumns(String tableName, SQLColumn... columns) {
 		if (columns == null || columns.length == 0)
 			return;
 
@@ -335,7 +375,7 @@ public abstract class Database {
 	 * @param tableName
 	 * @param column
 	 */
-	protected void removeColumn(String tableName, String column) {
+	public void removeColumn(String tableName, String column) {
 		removeColumns(tableName, column);
 	}
 
@@ -345,7 +385,7 @@ public abstract class Database {
 	 * @param tableName
 	 * @param columns
 	 */
-	protected void removeColumns(String tableName, String... columns) {
+	public void removeColumns(String tableName, String... columns) {
 		if (columns == null || columns.length == 0)
 			return;
 
@@ -369,7 +409,7 @@ public abstract class Database {
 		}
 	}
 
-	protected List<String> getPrimaryKeys(String table) {
+	public List<String> getPrimaryKeys(String table) {
 		List<String> keys = new ArrayList<>();
 		if (!isConnected())
 			return keys;
@@ -381,7 +421,7 @@ public abstract class Database {
 		return keys;
 	}
 
-	protected void updatePrimaryKeys(String table, SQLColumn... columns) {
+	public void updatePrimaryKeys(String table, SQLColumn... columns) {
 		List<String> keys = new ArrayList<>();
 		for (SQLColumn c : columns)
 			if (c.isPrimary())
@@ -389,7 +429,7 @@ public abstract class Database {
 		setPrimaryKeys(table, keys.toArray(new String[keys.size()]));
 	}
 
-	protected void setPrimaryKeys(String table, String[] keys) {
+	public void setPrimaryKeys(String table, String[] keys) {
 		if (!isConnected()) {
 			runOnConnect(() -> {
 				setPrimaryKeys(table, keys);
@@ -501,7 +541,7 @@ public abstract class Database {
 			System.out.println("Using query: " + query);
 	}
 
-	protected boolean executeTransaction(Transaction t) {
+	public boolean executeTransaction(Transaction t) {
 		try {
 			dbConnection.setAutoCommit(false);
 			boolean success = false;
@@ -528,7 +568,7 @@ public abstract class Database {
 		public boolean execute() throws SQLException;
 	}
 
-	protected void addIndex(String table, String indexName, SQLColumn... columns) {
+	public void addIndex(String table, String indexName, SQLColumn... columns) {
 		if (columns.length == 0)
 			throw new IllegalArgumentException("an index must have at least 1 column");
 
