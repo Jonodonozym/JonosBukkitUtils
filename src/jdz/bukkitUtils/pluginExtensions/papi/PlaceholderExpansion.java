@@ -1,8 +1,9 @@
 
-package jdz.bukkitUtils.pluginExtensions;
+package jdz.bukkitUtils.pluginExtensions.papi;
 
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.Plugin;
 
 import lombok.AllArgsConstructor;
@@ -27,5 +28,13 @@ public class PlaceholderExpansion extends me.clip.placeholderapi.expansion.Place
 	@Override
 	public String getVersion() {
 		return plugin.getDescription().getVersion();
+	}
+
+	@Override
+	public boolean register() {
+		if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") == null)
+			return false;
+		
+		return super.register();
 	}
 }
