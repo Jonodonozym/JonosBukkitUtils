@@ -4,7 +4,7 @@
   <groupId>jdz.bukkit</groupId>
   <artifactId>JonosBukkitUtils</artifactId>
   <name>Jonos Bukkit Utils</name>
-  <version>1.1</version>
+  <version>1.2</version>
   <description>Bunch of utilities to fast-track bukkit plugin development</description>
   <url>https://github.com/Jonodonozym/JonosBukkitUtils</url>
   <build>
@@ -24,7 +24,7 @@
         </includes>
       </resource>
     </resources>
-    <finalName>JBU${version} - ${api-version}</finalName>
+    <finalName>JBU${version}${api-version}</finalName>
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
@@ -110,7 +110,7 @@
     <dependency>
       <groupId>net.milkbowl.vault</groupId>
       <artifactId>VaultAPI</artifactId>
-      <version>1.7</version>
+      <version>1.6</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -122,7 +122,7 @@
     <dependency>
       <groupId>org.spigotmc</groupId>
       <artifactId>spigot-api</artifactId>
-      <version>1.13.2-R0.1-SNAPSHOT</version>
+      <version>1.8.8-R0.1-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
         <exclusion>
@@ -138,6 +138,10 @@
           <groupId>com.google.code.gson</groupId>
         </exclusion>
         <exclusion>
+          <artifactId>ebean</artifactId>
+          <groupId>org.avaje</groupId>
+        </exclusion>
+        <exclusion>
           <artifactId>snakeyaml</artifactId>
           <groupId>org.yaml</groupId>
         </exclusion>
@@ -150,24 +154,16 @@
     <dependency>
       <groupId>com.sk89q.worldedit</groupId>
       <artifactId>worldedit-bukkit</artifactId>
-      <version>7.0.0-SNAPSHOT</version>
+      <version>6.1.4-SNAPSHOT</version>
       <scope>provided</scope>
       <exclusions>
-        <exclusion>
-          <artifactId>worldedit-core</artifactId>
-          <groupId>com.sk89q.worldedit</groupId>
-        </exclusion>
         <exclusion>
           <artifactId>dummypermscompat</artifactId>
           <groupId>com.sk89q</groupId>
         </exclusion>
         <exclusion>
-          <artifactId>bstats-bukkit</artifactId>
-          <groupId>org.bstats</groupId>
-        </exclusion>
-        <exclusion>
-          <artifactId>paperlib</artifactId>
-          <groupId>io.papermc</groupId>
+          <artifactId>worldedit-core</artifactId>
+          <groupId>com.sk89q.worldedit</groupId>
         </exclusion>
         <exclusion>
           <artifactId>bukkit</artifactId>
@@ -214,6 +210,6 @@
   </dependencies>
   <properties>
     <powermock.version>1.6.6</powermock.version>
-    <api-version>1.13</api-version>
+    <api-version>b</api-version>
   </properties>
 </project>
