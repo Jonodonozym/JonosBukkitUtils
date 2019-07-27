@@ -17,7 +17,7 @@
 	</properties>
 
 	<build>
-		<finalName>JBU${version} - ${api-version}</finalName>
+		<finalName>JBU${project.version} - ${api-version}</finalName>
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
 			<resource>
@@ -46,6 +46,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>3.1.0</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>

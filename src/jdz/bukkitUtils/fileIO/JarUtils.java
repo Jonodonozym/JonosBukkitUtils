@@ -38,7 +38,7 @@ public final class JarUtils {
 			for (final String libName : libNames) {
 				File lib = getExportLocation(libName);
 				if (!lib.exists())
-					extractFromJar(libName, lib.getAbsolutePath());
+					extractFromJar("libs/" + libName, lib.getAbsolutePath());
 			}
 
 			loadLibs(libNames);
@@ -60,7 +60,7 @@ public final class JarUtils {
 			File lib = getExportLocation(libName);
 			if (!lib.exists()) {
 				String errorMessage = "There was a critical error loading " + plugin.getName()
-						+ "! Could not find lib: " + libName
+						+ "! Could not find lib: " + lib.getAbsolutePath()
 						+ ". If the problem persists, add it manually to your plugins directory";
 				Bukkit.getLogger().warning(errorMessage);
 				Bukkit.getServer().getPluginManager().disablePlugin(plugin);

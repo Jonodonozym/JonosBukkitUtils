@@ -39,7 +39,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 	public void onLoad() {
 		instance = this;
 
-		new JarUtils(this).extractLibs("libs/lombok.jar", "libs/exp4j.jar", "libs/mockito.jar");
+		new JarUtils(this).extractLibs("lombok.jar", "exp4j.jar", "mockito.jar");
 	}
 
 	@Override
@@ -55,6 +55,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 
 		PluginUpdater.updateAll();
 
+		new ConfigReloadEvent(this).call();
 		JBUEvents.registerAll(this);
 		ServerTimer.start();
 	}
