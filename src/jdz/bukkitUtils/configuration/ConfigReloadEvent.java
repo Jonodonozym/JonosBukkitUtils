@@ -10,6 +10,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.server.PluginEnableEvent;
 import org.bukkit.plugin.Plugin;
 
+import jdz.bukkitUtils.JonosBukkitUtils;
 import jdz.bukkitUtils.components.events.Cancellable;
 import jdz.bukkitUtils.components.events.Event;
 import jdz.bukkitUtils.components.events.Listener;
@@ -46,7 +47,9 @@ public class ConfigReloadEvent extends Event implements Cancellable {
 	public static class ConfigReloadOnLaunch implements Listener {
 		@EventHandler
 		public void onLoad(PluginEnableEvent event) {
-			Bukkit.getScheduler().runTask(event.getPlugin(), () -> {
+			if (event.getPlugin() == JonosBukkitUtils.getInstance())
+				return;
+			Bukkit.getScheduler().runTask(JonosBukkitUtils.getInstance(), () -> {
 				new ConfigReloadEvent(event.getPlugin()).call();
 			});
 		}
