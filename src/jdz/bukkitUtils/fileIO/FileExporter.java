@@ -21,6 +21,7 @@ import java.util.jar.JarFile;
 import org.bukkit.plugin.Plugin;
 
 import jdz.bukkitUtils.JonosBukkitUtils;
+import lombok.Getter;
 
 /**
  * Lets you export files that you include in your plugin's .jar
@@ -29,7 +30,7 @@ import jdz.bukkitUtils.JonosBukkitUtils;
  */
 public final class FileExporter {
 	static boolean RUNNING_FROM_JAR = false;
-	private final Plugin plugin;
+	@Getter private final Plugin plugin;
 
 	public FileExporter(Plugin plugin) {
 		this.plugin = plugin;

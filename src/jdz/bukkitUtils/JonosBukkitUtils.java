@@ -16,12 +16,12 @@ import jdz.bukkitUtils.commands.CommandArgumentParsers;
 import jdz.bukkitUtils.commands.JBU.ReloadConfigCommand;
 import jdz.bukkitUtils.commands.JBU.SaveConfigCommand;
 import jdz.bukkitUtils.components.ItemLock;
+import jdz.bukkitUtils.components.LibraryLoader;
 import jdz.bukkitUtils.components.ServerTimer;
 import jdz.bukkitUtils.components.events.ListenerManager;
 import jdz.bukkitUtils.components.events.custom.JBUEvents;
 import jdz.bukkitUtils.components.interactableObject.InteractableObjectListener;
 import jdz.bukkitUtils.configuration.ConfigReloadEvent;
-import jdz.bukkitUtils.fileIO.JarUtils;
 import jdz.bukkitUtils.persistence.minecraft.SQLDataClassBukkitParser;
 import jdz.bukkitUtils.pluginUpdaters.PluginUpdater;
 import lombok.Getter;
@@ -38,8 +38,7 @@ public final class JonosBukkitUtils extends JavaPlugin {
 	@Override
 	public void onLoad() {
 		instance = this;
-
-		new JarUtils(this).extractLibs("lombok.jar", "exp4j.jar", "mockito.jar");
+		LibraryLoader.extractAndLoadLibraries(this, "lombok.jar", "mockito.jar");
 	}
 
 	@Override
