@@ -26,34 +26,23 @@ public abstract class GuiMenu implements Listener {
 	}
 
 	@EventHandler()
-	public void onInventoryClick(InventoryClickEvent e) {
-		Player p = (Player) e.getWhoClicked();
+	public void onInventoryClick(InventoryClickEvent event) {
+		Player p = (Player) event.getWhoClicked();
 
 		Inventory inv = p.getOpenInventory().getTopInventory();
+		if (inv == null || !pages.containsKey(inv))
+			return;
 
-		ItemStack stack = null;
-		if (e.getCurrentItem() != null)
-			stack = e.getCurrentItem();
-		else if (e.getCursor() != null)
-			stack = e.getCursor();
-
+		ItemStack stack = getStack(event);
 		if (stack == null)
 			return;
-		if (inv == null)
+
+		event.setCancelled(true);
+
+		if (event.getRawSlot() != event.getSlot())
 			return;
 
-		if (!pages.containsKey(inv))
-			return;
-
-		e.setCancelled(true);
-
-		if (e.getRawSlot() != e.getSlot())
-			return;
-
-		if (!pages.get(inv).containsKey(e.getSlot()))
-			return;
-
-		ClickableStack clickable = pages.get(inv).get(e.getSlot());
+		ClickableStack clickable = pages.get(inv).get(event.getSlot());
 		if (clickable == null)
 			return;
 
@@ -61,8 +50,16 @@ public abstract class GuiMenu implements Listener {
 			p.closeInventory();
 
 		Bukkit.getScheduler().runTaskLater(JonosBukkitUtils.getInstance(), () -> {
-			clickable.onClick((Player) e.getWhoClicked(), this, e);
+			clickable.onClick((Player) event.getWhoClicked(), this, event);
 		}, 1);
+	}
+	
+	private ItemStack getStack(InventoryClickEvent event) {
+		if (event.getCurrentItem() != null)
+			return event.getCurrentItem();
+		else if (event.getCursor() != null)
+			return event.getCursor();
+		return null;
 	}
 
 	@EventHandler
@@ -99,6 +96,10 @@ public abstract class GuiMenu implements Listener {
 		pages.get(inv).put(slot, item);
 		inv.setItem(slot, item.getStack());
 		return true;
+	}
+	
+	protected boolean delete(Inventory inv) {
+		return pages.remove(inv) != null;
 	}
 
 	public void updateAll() {
