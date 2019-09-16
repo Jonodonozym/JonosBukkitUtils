@@ -17,6 +17,7 @@ import org.bukkit.World;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+import jdz.bukkitUtils.utils.ColorUtils;
 import jdz.bukkitUtils.utils.WorldUtils;
 
 public class ConfigIO {
@@ -46,7 +47,7 @@ public class ConfigIO {
 		}, Boolean.class, boolean.class);
 
 		addAll((c, s) -> {
-			return c.getString(s);
+			return ColorUtils.translate(c.getString(s));
 		}, String.class);
 
 		DateFormat format = new SimpleDateFormat();
